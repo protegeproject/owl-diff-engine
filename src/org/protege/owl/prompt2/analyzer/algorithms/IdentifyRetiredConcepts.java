@@ -4,10 +4,11 @@ import java.net.URI;
 import java.util.Properties;
 
 import org.protege.owl.prompt2.analyzer.AnalyzerAlgorithm;
-import org.protege.owl.prompt2.analyzer.util.AnalyzerAlgorithmComparator;
 import org.protege.owl.prompt2.analyzer.EntityBasedDiff;
 import org.protege.owl.prompt2.analyzer.MatchDescription;
 import org.protege.owl.prompt2.analyzer.MatchedAxiom;
+import org.protege.owl.prompt2.analyzer.util.AnalyzerAlgorithmComparator;
+import org.protege.owl.prompt2.diff.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
@@ -17,7 +18,7 @@ public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
     
     private URI retirementUri;
     
-    public void initialise(Properties parameters) {
+    public void initialise(OwlDiffMap diffMap, Properties parameters) {
         String retirementString = (String) parameters.get(RETIREMENT_CLASS_PROPERTY);
         if (retirementString != null) {
             retirementUri = URI.create(retirementString);

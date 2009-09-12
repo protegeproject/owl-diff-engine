@@ -32,8 +32,7 @@ public class MatchById implements DiffAlgorithm {
         this.diffMap = diffMap;
     }
 
-    public boolean run() {
-        boolean progress = false;
+    public void run() {
         if (!disabled) {
             diffMap.announce(this);
             try {
@@ -67,20 +66,20 @@ public class MatchById implements DiffAlgorithm {
                         }
                     });
                     if (found) {
-                        progress = true;
                         matchingMap.put(unmatchedSourceEntity, unmatchedSourceEntity);
                     }
                 }
-                if (progress) {
-                    diffMap.addMatchingEntities(matchingMap);
-                }
+                diffMap.addMatchingEntities(matchingMap);
             }
             finally {
                 diffMap.summarize();
             }
         }
         disabled = true;
-        return progress;
+    }
+    
+    public void reset() {
+
     }
 
 }

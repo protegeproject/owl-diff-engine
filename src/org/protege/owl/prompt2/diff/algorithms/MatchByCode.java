@@ -63,8 +63,7 @@ public class MatchByCode implements DiffAlgorithm {
         }
     }
 
-    public boolean run() {
-        boolean progress = false;
+    public void run() {
         if (!disabled) {
             diffMap.announce(this);
             try {
@@ -75,14 +74,17 @@ public class MatchByCode implements DiffAlgorithm {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Matching source entities with target entities");
                 }
-                progress = matchEntities(codeToEntityMap);
+                matchEntities(codeToEntityMap);
             }
             finally {
                 diffMap.summarize();
             }
         }
         disabled = true;
-        return progress;
+    }
+    
+    public void reset() {
+
     }
     
     private boolean matchEntities(Map<String, Collection<OWLEntity>> targetCodeToEntitiesMap) {

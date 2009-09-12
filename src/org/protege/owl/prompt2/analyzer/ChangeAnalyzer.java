@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
@@ -23,9 +24,11 @@ public class ChangeAnalyzer {
     TreeSet<AnalyzerAlgorithm> algorithms = new TreeSet<AnalyzerAlgorithm>(new AnalyzerAlgorithmComparator());
 
     private OwlDiffMap diffMap;
+    private Properties parameters;
     
-    public ChangeAnalyzer(OwlDiffMap diffMap) {
+    public ChangeAnalyzer(OwlDiffMap diffMap, Properties parameters) {
         this.diffMap = diffMap;
+        this.parameters = parameters;
         initialiseDiffs();
     }
 
@@ -43,6 +46,7 @@ public class ChangeAnalyzer {
     
     public void setAlgorihtms(AnalyzerAlgorithm[] algorithms) {
         for (AnalyzerAlgorithm algorithm : algorithms) {
+            algorithm.initialise(diffMap, parameters);
             this.algorithms.add(algorithm);
         }
     }

@@ -2,7 +2,6 @@ package org.protege.owl.prompt2.diff;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;

@@ -41,8 +41,7 @@ public class MatchStandardVocabulary implements DiffAlgorithm {
         diffs = diffMap;
     }
 
-    public boolean run() {
-        boolean progress = false;
+    public void run() {
         if (!alreadyRun) {
             try {
                 diffs.announce(this);
@@ -50,7 +49,6 @@ public class MatchStandardVocabulary implements DiffAlgorithm {
                 for (OWLEntity entity : diffs.getUnmatchedSourceEntities()) {
                     if (STANDARD_OWL_IRIS.contains(entity.getIRI())) {
                         matches.put(entity, entity);
-                        progress = true;
                     }
                 }
                 diffs.addMatchingEntities(matches);
@@ -60,7 +58,10 @@ public class MatchStandardVocabulary implements DiffAlgorithm {
             }
             alreadyRun = true;
         }
-        return progress;
+    }
+    
+    public void reset() {
+
     }
 
 }

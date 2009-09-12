@@ -54,7 +54,7 @@ public class OpenAndCompare {
         watch.measure();
         OwlDiffMap diffs = e.getOwlDiffMap();
         logger.info("Collecting by entity");
-        ChangeAnalyzer analyzer = new ChangeAnalyzer(diffs);
+        ChangeAnalyzer analyzer = new ChangeAnalyzer(diffs, p);
         Collection<EntityBasedDiff> ediffs = analyzer.getEntityBasedDiffs();
         for (EntityBasedDiff ediff : ediffs) {
             if (ediff.getDiffType() != DiffType.EQUIVALENT) {
