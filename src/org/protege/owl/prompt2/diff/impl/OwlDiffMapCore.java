@@ -153,6 +153,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
             potentialMatchingSourceAxioms.removeAll(unmatchedAxioms);
             for (UnmatchedAxiom unmatched : unmatchedAxioms) {
                 unmatched.trim(entityMap.keySet(), anonymousIndividualMap.keySet());
+                fireUnmatchedAxiomMoved(unmatched);
                 insert(unmatched);
             }
         }

@@ -31,7 +31,9 @@ public interface OwlDiffMap {
     void addMatch(OWLEntity source, OWLEntity target);
     void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target);
 
-
+    void addDiffListener(DiffListener listener);
+    void removeDiffListener(DiffListener listener);
+    
     void announce(DiffAlgorithm da);
     void summarize();
 

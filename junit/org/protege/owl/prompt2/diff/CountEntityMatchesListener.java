@@ -31,6 +31,10 @@ public class CountEntityMatchesListener implements DiffListener {
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
 
     }
+    
+    public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+
+    }
 
     public void addMatchedAxiom(OWLAxiom axiom) {
 

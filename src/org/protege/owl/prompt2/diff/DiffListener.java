@@ -13,6 +13,7 @@ public interface DiffListener {
     void addMatch(OWLEntity source, OWLEntity target);
     void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target);
     
+    void unmatchedAxiomMoved(UnmatchedAxiom unmatched);
     void addUnmatcheableAxiom(OWLAxiom axiom);
     void addMatchedAxiom(OWLAxiom axiom);
     

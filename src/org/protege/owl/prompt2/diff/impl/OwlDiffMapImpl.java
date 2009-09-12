@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.protege.owl.prompt2.diff.DiffAlgorithm;
 import org.protege.owl.prompt2.diff.DiffListener;
-import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
+import org.protege.owl.prompt2.diff.util.DiffListenerAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -26,7 +26,7 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     private DiffAlgorithm lastAnnouncedDiffAlgorithm;
     private long          lastAnnounceTime = -1;
     
-    private DiffListener trackingListener = new DiffListener() {
+    private DiffListener trackingListener = new DiffListenerAdapter() {
 
         public void addMatch(OWLEntity source, OWLEntity target) {
             matchedEntitiesSinceAnnounce++;
@@ -36,20 +36,8 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
             matchedEntitiesSinceAnnounce += newMatches.size();
         }
 
-        public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {
-
-        }
-
-        public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
-
-        }
-
         public void addMatchedAxiom(OWLAxiom axiom) {
             matchedAxiomsSinceAnnounce++;
-        }
-
-        public void addUnmatcheableAxiom(OWLAxiom axiom) {
-
         }
         
     };

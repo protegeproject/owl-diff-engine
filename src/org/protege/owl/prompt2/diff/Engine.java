@@ -28,6 +28,7 @@ public class Engine {
 
     public void run() {
         boolean progress;
+        boolean finished = false;
         do {
             progress  = false;
             Collections.sort(algorithms, new DiffAlgorithmComparator());
@@ -35,6 +36,10 @@ public class Engine {
                 try {
                     int entitiesCount = diffMap.getUnmatchedSourceEntities().size();
                     int individualsCount = diffMap.getUnmatchedSourceAnonymousIndividuals().size();
+                    if (entitiesCount == 0 && individualsCount == 0) {
+                        finished = true;
+                        break;
+                    }
                     da.run();
                     progress = progress ||
                                    (entitiesCount > diffMap.getUnmatchedSourceEntities().size()) ||
@@ -45,7 +50,7 @@ public class Engine {
                 }
             }
         }
-        while (progress);
+        while (progress && !finished);
         
         for (DiffAlgorithm algorithm : algorithms) {
             try {

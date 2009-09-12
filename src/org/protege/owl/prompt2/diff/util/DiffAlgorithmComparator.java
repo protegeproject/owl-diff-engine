@@ -8,6 +8,7 @@ import org.protege.owl.prompt2.diff.DiffAlgorithm;
 public class DiffAlgorithmComparator implements Comparator<DiffAlgorithm> {
     public static final int MIN_PRIORITY = 1;
     public static final int MAX_PRIORITY = 10;
+    public static final int DEFAULT_PRIORITY = 5;
 
     /*
      * ordering is the inverse of the obvious so that high priority algorithms come first.

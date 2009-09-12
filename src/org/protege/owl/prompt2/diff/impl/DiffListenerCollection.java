@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.protege.owl.prompt2.diff.DiffListener;
+import org.protege.owl.prompt2.diff.UnmatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -40,6 +41,12 @@ public class DiffListenerCollection {
     protected void fireAddMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target){
         for (DiffListener listener : listeners) {
             listener.addMatch(source, target);
+        }
+    }
+    
+    protected void fireUnmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+        for (DiffListener listener : listeners) {
+            listener.unmatchedAxiomMoved(unmatched);
         }
     }
     
