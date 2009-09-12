@@ -33,21 +33,21 @@ public class Engine {
             progress  = false;
             Collections.sort(algorithms, new DiffAlgorithmComparator());
             for (DiffAlgorithm da : algorithms) {
-                try {
-                    int entitiesCount = diffMap.getUnmatchedSourceEntities().size();
-                    int individualsCount = diffMap.getUnmatchedSourceAnonymousIndividuals().size();
-                    if (entitiesCount == 0 && individualsCount == 0) {
-                        finished = true;
-                        break;
-                    }
-                    da.run();
-                    progress = progress ||
-                                   (entitiesCount > diffMap.getUnmatchedSourceEntities().size()) ||
-                                   (individualsCount > diffMap.getUnmatchedSourceAnonymousIndividuals().size());
+                int entitiesCount = diffMap.getUnmatchedSourceEntities().size();
+                int individualsCount = diffMap.getUnmatchedSourceAnonymousIndividuals().size();
+                if (entitiesCount == 0 && individualsCount == 0) {
+                    finished = true;
+                    break;
                 }
+                try {
+                    da.run();
+                 }
                 catch (Throwable t) {
                     logger.warn("Diff Algorithm " + da.getAlgorithmName()  + "failed (" + t + ").  Continuing...");
                 }
+                progress = progress ||
+                              (entitiesCount > diffMap.getUnmatchedSourceEntities().size()) ||
+                              (individualsCount > diffMap.getUnmatchedSourceAnonymousIndividuals().size());
             }
         }
         while (progress && !finished);
