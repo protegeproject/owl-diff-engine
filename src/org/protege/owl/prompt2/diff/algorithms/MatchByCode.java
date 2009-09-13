@@ -3,10 +3,8 @@ package org.protege.owl.prompt2.diff.algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.prompt2.diff.DiffAlgorithm;
@@ -84,7 +82,7 @@ public class MatchByCode implements DiffAlgorithm {
     }
     
     public void reset() {
-
+        disabled=false;
     }
     
     private boolean matchEntities(Map<String, Collection<OWLEntity>> targetCodeToEntitiesMap) {

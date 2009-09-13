@@ -79,7 +79,7 @@ public class MatchById implements DiffAlgorithm {
     }
     
     public void reset() {
-
+        disabled=false;
     }
 
 }

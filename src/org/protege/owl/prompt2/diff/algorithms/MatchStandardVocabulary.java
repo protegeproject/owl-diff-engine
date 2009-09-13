@@ -61,7 +61,7 @@ public class MatchStandardVocabulary implements DiffAlgorithm {
     }
     
     public void reset() {
-
+        alreadyRun = false;
     }
 
 }

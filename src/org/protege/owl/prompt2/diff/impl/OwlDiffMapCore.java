@@ -104,39 +104,39 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
      * Match Processing methods
      */
     public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches) {
-        fireAddMatchingEntities(newMatches);
         unmatchedSourceEntities.removeAll(newMatches.keySet());
         unmatchedTargetEntities.removeAll(newMatches.values());
         entityMap.putAll(newMatches);
         for (OWLEntity newEntity : newMatches.keySet()) {
             updateUnmatchedAxiomsForNewMatch(newEntity);
         }
+        fireAddMatchingEntities(newMatches);
     }
     
     public void addMatch(OWLEntity source, OWLEntity target) {
-        fireAddMatch(source, target);
         unmatchedSourceEntities.remove(source);
         unmatchedTargetEntities.remove(target);
         entityMap.put(source, target);
         updateUnmatchedAxiomsForNewMatch(source);
+        fireAddMatch(source, target);
     }
     
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
-        fireAddMatchingAnonymousIndividuals(newMatches);
         unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
         unmatchedTargetAnonIndividuals.removeAll(newMatches.keySet());
         anonymousIndividualMap.putAll(newMatches);
         for (OWLAnonymousIndividual newMatchingIndividual : newMatches.keySet()) {
             updateUnmatchedAxiomsForNewMatch(newMatchingIndividual);
         }
+        fireAddMatchingAnonymousIndividuals(newMatches);
     }
     
     public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {
-        fireAddMatch(source, target);
         unmatchedSourceAnonIndividuals.remove(source);
         unmatchedTargetAnonIndividuals.remove(target);
         anonymousIndividualMap.put(source, target);
         updateUnmatchedAxiomsForNewMatch(source);
+        fireAddMatch(source, target);
     }
     
     public boolean processingDone() {
@@ -153,8 +153,8 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
             potentialMatchingSourceAxioms.removeAll(unmatchedAxioms);
             for (UnmatchedAxiom unmatched : unmatchedAxioms) {
                 unmatched.trim(entityMap.keySet(), anonymousIndividualMap.keySet());
-                fireUnmatchedAxiomMoved(unmatched);
                 insert(unmatched);
+                fireUnmatchedAxiomMoved(unmatched);
             }
         }
     }
@@ -165,9 +165,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
             DiffDuplicator duplicator = new DiffDuplicator(this);
             OWLAxiom potentialTargetAxiom = duplicator.duplicateObject(unmatched.getAxiom());
             if (unmatchedTargetAxioms.contains(potentialTargetAxiom)) {
-                fireAddMatchedAxiom(potentialTargetAxiom);
                 unmatchedSourceAxioms.remove(unmatched.getAxiom());
                 unmatchedTargetAxioms.remove(potentialTargetAxiom);
+                fireAddMatchedAxiom(potentialTargetAxiom);
             }
             else {
                 fireAddUnmatcheableAxiom(potentialTargetAxiom);
