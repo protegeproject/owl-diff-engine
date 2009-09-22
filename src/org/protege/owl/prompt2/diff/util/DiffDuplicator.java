@@ -3,7 +3,6 @@ package org.protege.owl.prompt2.diff.util;
 import java.util.Map;
 
 import org.protege.owl.prompt2.diff.OwlDiffMap;
-import org.protege.owl.prompt2.diff.impl.OwlDiffMapImpl;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
@@ -58,7 +57,7 @@ public class DiffDuplicator extends OWLObjectDuplicator {
     public void visit(OWLAnonymousIndividual individual) {
         Map<OWLAnonymousIndividual, OWLAnonymousIndividual> individualMap = diffs.getAnonymousIndividualMap();
         if (!individualMap.containsKey(individual)) {
-            throw new IllegalStateException("Entity map should contain all referenced anonymous individuals");
+            throw new UnmappedEntityException("Entity map should contain all referenced anonymous individuals");
         }
         setLastObject(individualMap.get(individual));
     }
@@ -92,7 +91,7 @@ public class DiffDuplicator extends OWLObjectDuplicator {
     private void handleEntity(OWLEntity entity) {
         Map<OWLEntity, OWLEntity> entityMap = diffs.getEntityMap();
         if (!entityMap.containsKey(entity)) {
-            throw new IllegalStateException("Entity map should contain all referenced entities");
+            throw new UnmappedEntityException("Entity map should contain all referenced entities");
         }
         setLastObject(entityMap.get(entity));
     }

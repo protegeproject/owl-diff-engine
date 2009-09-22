@@ -21,6 +21,7 @@ public interface OwlDiffMap {
     Set<OWLEntity>              getUnmatchedSourceEntities();
     Set<OWLAnonymousIndividual> getUnmatchedSourceAnonymousIndividuals();
     Set<OWLAxiom>               getUnmatchedSourceAxioms();
+    Set<UnmatchedAxiom> getPotentialMatchingSourceAxioms();
 
     Set<OWLEntity>              getUnmatchedTargetEntities();
     Set<OWLAnonymousIndividual> getUnmatchedTargetAnonymousIndividuals();
