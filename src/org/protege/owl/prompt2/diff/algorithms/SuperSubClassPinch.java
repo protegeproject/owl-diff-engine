@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.protege.owl.prompt2.diff.DiffAlgorithm;
 import org.protege.owl.prompt2.diff.DiffListener;
 import org.protege.owl.prompt2.diff.OwlDiffMap;
@@ -14,16 +15,24 @@ import org.protege.owl.prompt2.diff.UnmatchedAxiom;
 import org.protege.owl.prompt2.diff.util.DiffAlgorithmComparator;
 import org.protege.owl.prompt2.diff.util.DiffListenerAdapter;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class SuperSubClassPinch implements DiffAlgorithm {
-   private OwlDiffMap diffMap;
-   private boolean firstRun = true;
-   private DiffListener listener;
-   private Map<OWLClass, Set<UnmatchedAxiom>> superClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
-   private Map<OWLClass, Set<UnmatchedAxiom>> subClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
-   private Map<OWLEntity, OWLEntity> newMatches = new  HashMap<OWLEntity, OWLEntity>();
+    public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
+    private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
+    
+    private OwlDiffMap diffMap;
+    private DiffListener listener;
+    
+    private boolean firstRun = true;
+    private boolean disabled = false;
+    private int requiredSubclasses;
+    
+    private Map<OWLClass, Set<UnmatchedAxiom>> superClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
+    private Map<OWLClass, Set<UnmatchedAxiom>> subClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
+    private Map<OWLEntity, OWLEntity> newMatches = new  HashMap<OWLEntity, OWLEntity>();
    
     public String getAlgorithmName() {
         return "Super-Sub class pinch algorithm";
@@ -35,6 +44,16 @@ public class SuperSubClassPinch implements DiffAlgorithm {
 
     public void initialise(OwlDiffMap diffMap, Properties parameters) {
         this.diffMap = diffMap;
+        requiredSubclasses = 1;
+        if (parameters.get(REQUIRED_SUBCLASSES_PROPERTY) != null) {
+            try {
+                requiredSubclasses = Integer.parseInt((String) parameters.get(REQUIRED_SUBCLASSES_PROPERTY));
+            }
+            catch (Throwable t) {
+                log.warn("Could not initialize required subclasses value", t);
+                disabled = true;
+            }
+        }
     }
 
     public void reset() {
@@ -82,8 +101,25 @@ public class SuperSubClassPinch implements DiffAlgorithm {
         }
     }
     
-    private boolean  searchForMatches(OWLClass sourceClass, OWLClass sourceSuperClass, Set<OWLClass> desiredTargetSubClasses) {
-        return true;
+    private boolean searchForMatches(OWLClass sourceClass, OWLClass sourceSuperClass, Set<OWLClass> desiredTargetSubClasses) {
+        OWLClass targetSuperClass = (OWLClass) diffMap.getEntityMap().get(sourceClass);
+        if (targetSuperClass != null) {
+            for (OWLClassExpression potentialTargetMatch  : targetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
+                if (!potentialTargetMatch.isAnonymous()) {
+                    OWLClass potentialMatchingClass = potentialTargetMatch.asOWLClass();
+                    int count = 0;
+                    for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
+                        if (!targetSubclass.isAnonymous() && desiredTargetSubClasses.contains(targetSubclass)) {
+                            if (++count >= requiredSubclasses) {
+                                newMatches.put(sourceClass, potentialMatchingClass);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
     
     private void findCandidateUnmatchedAxioms() {
