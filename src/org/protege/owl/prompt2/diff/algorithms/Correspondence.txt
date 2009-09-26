@@ -1,0 +1,24 @@
+
+ClassesWithSameSubclassAndSuperclass   ==>   SuperSubClassPinch
+CompareConceptIDs                      ==>   MatchById, MatchByCode, MatchStandardVocabulary
+CompareOWLAnonymousClasses             ==>   Core Engine (this one is better)
+CompareOWLIntersectionAndUnionClasses  ==>   Core Engine (this one is better)
+
+CompareFrameNamesAndTypes
+CompareOWLAnonymousIndividuals
+FramesWithSimilarNames
+InstancesWithSameSlotValues
+LoneUnmatchedRestrictionOfSameType
+LoneUnmatchedSibling
+LoneUnmatchedTemplateSlot
+MultipleUnmatchedSiblings
+MultipleUnmatchedSiblingsWithSimilarNames
+SameRestrictionTypeForSamePropertyAtSameClass
+SiblingsWithSameSuffixes
+SingleUnmatchedAllowedClass
+SingleUnmatchedDomain
+SlotsWithSameAllowedClass
+UnmatchedInverseSlot
+UnmatchedSuperclass
+UnmatchedTemplateSlotsAtClass
+
