@@ -123,7 +123,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
         unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
-        unmatchedTargetAnonIndividuals.removeAll(newMatches.keySet());
+        unmatchedTargetAnonIndividuals.removeAll(newMatches.values());
         anonymousIndividualMap.putAll(newMatches);
         for (OWLAnonymousIndividual newMatchingIndividual : newMatches.keySet()) {
             updateUnmatchedAxiomsForNewMatch(newMatchingIndividual);
@@ -152,7 +152,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         if (unmatchedAxioms != null) {
             potentialMatchingSourceAxioms.removeAll(unmatchedAxioms);
             for (UnmatchedAxiom unmatched : unmatchedAxioms) {
-                unmatched.trim(entityMap.keySet(), anonymousIndividualMap.keySet());
+                unmatched.trim(this);
                 insert(unmatched);
                 fireUnmatchedAxiomMoved(unmatched);
             }

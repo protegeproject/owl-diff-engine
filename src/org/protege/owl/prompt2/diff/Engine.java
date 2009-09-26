@@ -8,6 +8,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.protege.owl.prompt2.diff.impl.OwlDiffMapImpl;
 import org.protege.owl.prompt2.diff.util.DiffAlgorithmComparator;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
@@ -17,11 +18,11 @@ public class Engine {
     private List<DiffAlgorithm> algorithms = new ArrayList<DiffAlgorithm>();
     private Properties parameters;
     
-    public Engine(OWLOntologyManager manager, 
+    public Engine(OWLDataFactory factory, 
                   OWLOntology ontology1, 
                   OWLOntology ontology2,
                   Properties parameters) {   
-        diffMap = new OwlDiffMapImpl(manager.getOWLDataFactory(), ontology1, ontology2);
+        diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
         this.parameters = parameters;
     }
 

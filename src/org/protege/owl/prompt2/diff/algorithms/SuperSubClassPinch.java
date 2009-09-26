@@ -24,9 +24,7 @@ public class SuperSubClassPinch implements DiffAlgorithm {
     private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
     
     private OwlDiffMap diffMap;
-    private DiffListener listener;
     
-    private boolean firstRun = true;
     private boolean disabled = false;
     private int requiredSubclasses;
     
@@ -62,15 +60,13 @@ public class SuperSubClassPinch implements DiffAlgorithm {
     }
 
     public void run() {
+        if (disabled) {
+            return;
+        }
         diffMap.announce(this);
         try {
             newMatches.clear();
-            if (firstRun) {
-                listener = new FindCandidateUnmatchedAxiomListener();
-                diffMap.addDiffListener(listener);
-                findCandidateUnmatchedAxioms();
-                firstRun = false;
-            }
+            findCandidateUnmatchedAxioms();
             searchForMatches();
             diffMap.addMatchingEntities(newMatches);
         }
@@ -82,7 +78,11 @@ public class SuperSubClassPinch implements DiffAlgorithm {
     private void searchForMatches() {
         for (Entry<OWLClass, Set<UnmatchedAxiom>> entry : superClassOf.entrySet()) {
             OWLClass sourceClass = entry.getKey();
-            if (diffMap.getUnmatchedSourceEntities().contains(sourceClass) || !subClassOf.containsKey(sourceClass)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Can I match " + sourceClass + "?");
+            }
+            if (!diffMap.getUnmatchedSourceEntities().contains(sourceClass) || !subClassOf.containsKey(sourceClass)) {
+                log.debug("no good");
                 continue;
             }
             Set<OWLClass>  desiredTargetSubClasses = new HashSet<OWLClass>();
@@ -90,10 +90,15 @@ public class SuperSubClassPinch implements DiffAlgorithm {
                 OWLClass sourceSubClass = ((OWLSubClassOfAxiom) subClassAxiom.getAxiom()).getSubClass().asOWLClass();
                 desiredTargetSubClasses.add((OWLClass) diffMap.getEntityMap().get(sourceSubClass));
             }
+            if (log.isDebugEnabled()) {
+                log.debug("" + sourceClass + " subclasses map to "  + desiredTargetSubClasses);
+            }
             for (UnmatchedAxiom superClassAxiom : entry.getValue()) {
                 if (superClassAxiom.getReferencedUnmatchedEntities().size() == 1) {
                     OWLClass sourceSuperClass = ((OWLSubClassOfAxiom) superClassAxiom.getAxiom()).getSuperClass().asOWLClass();
                     if (searchForMatches(sourceClass, sourceSuperClass, desiredTargetSubClasses)) {
+                        subClassOf.remove(sourceClass);
+                        superClassOf.remove(sourceClass);
                         return;
                     }
                 }
@@ -102,20 +107,34 @@ public class SuperSubClassPinch implements DiffAlgorithm {
     }
     
     private boolean searchForMatches(OWLClass sourceClass, OWLClass sourceSuperClass, Set<OWLClass> desiredTargetSubClasses) {
-        OWLClass targetSuperClass = (OWLClass) diffMap.getEntityMap().get(sourceClass);
+        OWLClass targetSuperClass = (OWLClass) diffMap.getEntityMap().get(sourceSuperClass);
         if (targetSuperClass != null) {
             for (OWLClassExpression potentialTargetMatch  : targetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
                 if (!potentialTargetMatch.isAnonymous()) {
                     OWLClass potentialMatchingClass = potentialTargetMatch.asOWLClass();
+                    if (log.isDebugEnabled()) {
+                        log.debug("" + sourceClass + " is a subset of " + sourceSuperClass);
+                        log.debug("might map to " + potentialMatchingClass + " is a subset of " + targetSuperClass);
+                        log.debug("examining subclasses  of " + potentialMatchingClass);
+                    }
                     int count = 0;
                     for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("\t" + targetSubclass);
+                        }
                         if (!targetSubclass.isAnonymous() && desiredTargetSubClasses.contains(targetSubclass)) {
+                            log.debug("\tgood subclass");
                             if (++count >= requiredSubclasses) {
+                                log.debug("match added");
                                 newMatches.put(sourceClass, potentialMatchingClass);
                                 return true;
                             }
                         }
+                        else {
+                            log.debug("\tbad subclass");
+                        }
                     }
+                    log.debug("didn't work out");
                 }
             }
         }
@@ -129,32 +148,38 @@ public class SuperSubClassPinch implements DiffAlgorithm {
     }
     
     private void addCandidateUnmatchedAxiom(UnmatchedAxiom unmatched) {
+        if (log.isDebugEnabled()) {
+            log.debug("Examining  axiom " + unmatched);
+        }
         if (!isCandidiateUnmatchedAxiom(unmatched)) {
+            log.debug("no good");
             return;
         }
         OWLSubClassOfAxiom subClassOfAxiom = (OWLSubClassOfAxiom) unmatched.getAxiom();
         OWLClass subClass = subClassOfAxiom.getSubClass().asOWLClass();
         OWLClass superClass = subClassOfAxiom.getSuperClass().asOWLClass();
         if (diffMap.getUnmatchedSourceEntities().contains(subClass)) {
-            addToMap(subClassOf, superClass, unmatched);
+            if (log.isDebugEnabled()) {
+                log.debug("found super class of " + subClass);
+            }
+            addToMap(superClassOf, subClass, unmatched);
         }
         else {
-            addToMap(superClassOf, subClass, unmatched);
+            if (log.isDebugEnabled()) {
+                log.debug("found sub class of " + superClass);
+            }
+            addToMap(subClassOf, superClass, unmatched);
         }
     }
 
     private boolean isCandidiateUnmatchedAxiom(UnmatchedAxiom unmatched) {
-        return unmatched.getReferencedUnmatchedEntities().size() == 1 &&
-                    unmatched.getAxiom() instanceof OWLSubClassOfAxiom &&
-                    !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous() &&
-                    !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous();
-    }
-    
-    private class FindCandidateUnmatchedAxiomListener extends DiffListenerAdapter {    
-        @Override
-        public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
-            SuperSubClassPinch.this.addCandidateUnmatchedAxiom(unmatched);
+        if (unmatched.getAxiom() instanceof OWLSubClassOfAxiom &&
+                !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous() &&
+                !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous()) {
+            unmatched.trim(diffMap);
+            return unmatched.getReferencedUnmatchedEntities().size() == 1;
         }
+        return false;
     }
     
     public static <X, Y> void addToMap(Map<X, Set<Y>>  map, X x, Y y) {

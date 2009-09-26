@@ -45,19 +45,19 @@ public class UnmatchedAxiom {
         }
     }
     
-    public void trim(Set<OWLEntity> entitiesToRemove, Set<OWLAnonymousIndividual> individualsToRemove) {
+    public void trim(OwlDiffMap diffMap) {
         Iterator<OWLEntity> referencedIt = referencedUnmatchedEntities.iterator();
         while (referencedIt.hasNext()) {
             OWLEntity referencedEntity = referencedIt.next();
-            if (entitiesToRemove.contains(referencedEntity)) {
+            if (!diffMap.getUnmatchedSourceEntities().contains(referencedEntity)) {
                 referencedIt.remove();
             }
         }
         Iterator<OWLAnonymousIndividual> referencedIndIt = referencedUnmatchedAnonymousIndividuals.iterator();
         while (referencedIndIt.hasNext()) {
             OWLAnonymousIndividual referencedIndividual = referencedIndIt.next();
-            if (individualsToRemove.contains(referencedIndividual)) {
-                referencedIt.remove();
+            if (!diffMap.getUnmatchedSourceAnonymousIndividuals().contains(referencedIndividual)) {
+                referencedIndIt.remove();
             }
         }
     }
