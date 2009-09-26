@@ -1,8 +1,11 @@
 package org.protege.owl.prompt2.diff;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -10,18 +13,18 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 
 public class CountEntityMatchesListener implements DiffListener {
-    private List<Integer> counts = new ArrayList<Integer>();
+    private List<Set<OWLEntity>> entityMatches = new ArrayList<Set<OWLEntity>>();
     
-    public List<Integer> getCounts() {
-        return counts;
+    public List<Set<OWLEntity>> getEntityMatches() {
+        return Collections.unmodifiableList(entityMatches);
     }
 
     public void addMatch(OWLEntity source, OWLEntity target) {
-        counts.add(1);
+        entityMatches.add(Collections.singleton(source));
     }
 
     public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches) {
-        counts.add(newMatches.size());
+        entityMatches.add(new HashSet<OWLEntity>(newMatches.keySet()));
     }
 
     public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {

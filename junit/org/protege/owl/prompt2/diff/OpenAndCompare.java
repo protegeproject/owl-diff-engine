@@ -45,7 +45,7 @@ public class OpenAndCompare {
         OWLOntology ontology2 = manager.loadOntologyFromPhysicalURI(f2.toURI());
         watch.measure();
         logger.info("Running prompt diff");
-        Engine e = new Engine(manager, ontology1, ontology2, p);
+        Engine e = new Engine(manager.getOWLDataFactory(), ontology1, ontology2, p);
         e.setDiffAlgorithms(new DiffAlgorithm[] {
            new MatchByCode(),
            new MatchById()     
