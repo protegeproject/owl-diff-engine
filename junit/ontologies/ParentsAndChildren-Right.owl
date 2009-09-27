@@ -20,9 +20,20 @@
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:owl="http://www.w3.org/2002/07/owl#">
     <owl:Ontology rdf:about=""/>
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="#code">
+        <code rdf:datatype="&xsd;string">code</code>
+    </owl:AnnotationProperty>
     
-
-
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -36,7 +47,9 @@
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#p -->
 
-    <owl:ObjectProperty rdf:about="#p"/>
+    <owl:ObjectProperty rdf:about="#p">
+        <code rdf:datatype="&xsd;string">p</code>
+    </owl:ObjectProperty>
     
 
 
@@ -53,21 +66,24 @@
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#A -->
 
-    <owl:Class rdf:about="#A"/>
+    <owl:Class rdf:about="#AR">
+        <code rdf:datatype="&xsd;string">A</code>
+    </owl:Class>
     
 
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#BR -->
 
     <owl:Class rdf:about="#BR">
-        <rdfs:subClassOf rdf:resource="#A"/>
+        <rdfs:subClassOf rdf:resource="#AR"/>
     </owl:Class>
     
 
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#C -->
 
-    <owl:Class rdf:about="#C">
+    <owl:Class rdf:about="#CR">
+        <code rdf:datatype="&xsd;string">C</code>
         <rdfs:subClassOf rdf:resource="#BR"/>
     </owl:Class>
     
@@ -75,7 +91,8 @@
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#D -->
 
-    <owl:Class rdf:about="#D">
+    <owl:Class rdf:about="#DR">
+        <code rdf:datatype="&xsd;string">D</code>
         <rdfs:subClassOf rdf:resource="#BR"/>
     </owl:Class>
     
@@ -90,7 +107,7 @@
                     <rdf:Description rdf:about="#BR"/>
                     <owl:Restriction>
                         <owl:onProperty rdf:resource="#p"/>
-                        <owl:someValuesFrom rdf:resource="#C"/>
+                        <owl:someValuesFrom rdf:resource="#CR"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
@@ -102,7 +119,8 @@
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#F -->
 
-    <owl:Class rdf:about="#F">
+    <owl:Class rdf:about="#FR">
+        <code rdf:datatype="&xsd;string">F</code>
         <rdfs:subClassOf rdf:resource="#ER"/>
     </owl:Class>
     
@@ -110,7 +128,8 @@
 
     <!-- http://www.tigraworld.com/protege/ParentsAndChildren.owl#G -->
 
-    <owl:Class rdf:about="#G">
+    <owl:Class rdf:about="#GR">
+        <code rdf:datatype="&xsd;string">G</code>
         <rdfs:subClassOf rdf:resource="#ER"/>
     </owl:Class>
 </rdf:RDF>
