@@ -1,8 +1,11 @@
 
-ClassesWithSameSubclassAndSuperclass   ==>   SuperSubClassPinch
-CompareConceptIDs                      ==>   MatchById, MatchByCode, MatchStandardVocabulary
-CompareOWLAnonymousClasses             ==>   Core Engine (this one is better)
-CompareOWLIntersectionAndUnionClasses  ==>   Core Engine (this one is better)
+ClassesWithSameSubclassAndSuperclass          ==>   SuperSubClassPinch
+CompareConceptIDs                             ==>   MatchById, MatchByCode, MatchStandardVocabulary
+CompareOWLAnonymousClasses                    ==>   Core Engine (this one is better)
+CompareOWLIntersectionAndUnionClasses         ==>   Core Engine (this one is better)
+
+SameRestrictionTypeForSamePropertyAtSameClass  our version would have to do this in the change analyzer.
+
 
 CompareFrameNamesAndTypes
 CompareOWLAnonymousIndividuals
@@ -13,7 +16,7 @@ LoneUnmatchedSibling
 LoneUnmatchedTemplateSlot
 MultipleUnmatchedSiblings
 MultipleUnmatchedSiblingsWithSimilarNames
-SameRestrictionTypeForSamePropertyAtSameClass
+
 SiblingsWithSameSuffixes
 SingleUnmatchedAllowedClass
 SingleUnmatchedDomain
