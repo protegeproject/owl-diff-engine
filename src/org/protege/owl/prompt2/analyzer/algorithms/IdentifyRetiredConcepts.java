@@ -39,7 +39,7 @@ public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
                 OWLSubClassOfAxiom subClass = (OWLSubClassOfAxiom) match.getTargetAxiom();
                 if (!subClass.getSubClass().isAnonymous() && 
                         !subClass.getSuperClass().isAnonymous() &&
-                        subClass.getSuperClass().asOWLClass().getURI().equals(retirementUri)) {
+                        subClass.getSuperClass().asOWLClass().getIRI().toURI().equals(retirementUri)) {
                     retiring = match;
                     break;
                 }
