@@ -20,12 +20,10 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEntityVisitorEx;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLStringLiteral;
-import org.semanticweb.owlapi.model.OWLTypedLiteral;
-import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 public class MatchByCode implements DiffAlgorithm {
     private Logger logger = Logger.getLogger(MatchByCode.class);
@@ -50,11 +48,11 @@ public class MatchByCode implements DiffAlgorithm {
         else {
             IRI codeIri = IRI.create((String) codeName);
             codeProperty = factory.getOWLAnnotationProperty(codeIri);
-            if (!diffMap.getSourceOntology().containsAnnotationPropertyReference(codeIri)) {
+            if (!diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeIri)) {
                 logger.warn("Source ontology does not have selected code annotation " + codeName);
                 disabled = true;
             }
-            else if (!diffMap.getTargetOntology().containsAnnotationPropertyReference(codeIri)) {
+            else if (!diffMap.getTargetOntology().containsAnnotationPropertyInSignature(codeIri)) {
                 logger.warn("Target ontology does not have selected code annotation " + codeName);
                 disabled = true;
             }
@@ -88,7 +86,7 @@ public class MatchByCode implements DiffAlgorithm {
     private boolean matchEntities(Map<String, Collection<OWLEntity>> targetCodeToEntitiesMap) {
         Map<OWLEntity, OWLEntity> matchMap = new HashMap<OWLEntity, OWLEntity>();
         OWLOntology sourceOntology = diffMap.getSourceOntology();
-        for (OWLEntity sourceEntity : sourceOntology.getReferencedEntities()) {
+        for (OWLEntity sourceEntity : sourceOntology.getSignature()) {
             String code = getCode(sourceOntology, sourceEntity);
             if (code == null) {
                 continue;
@@ -151,7 +149,7 @@ public class MatchByCode implements DiffAlgorithm {
     
     private Map<String, Collection<OWLEntity>> generateCodeToEntityMap(OWLOntology ontology) {
         Map<String, Collection<OWLEntity>> codeToEntity  = new HashMap<String, Collection<OWLEntity>>();
-        for (OWLEntity entity : ontology.getReferencedEntities()) {
+        for (OWLEntity entity : ontology.getSignature()) {
             String code = getCode(ontology, entity);
             if (code != null) {
                 Collection<OWLEntity> entities = codeToEntity.get(code);
@@ -171,12 +169,8 @@ public class MatchByCode implements DiffAlgorithm {
                 continue;
             }
             OWLAnnotationValue value = annotation.getValue();
-            if (value instanceof OWLStringLiteral) {
-                return ((OWLStringLiteral) value).getLiteral();
-            }
-            else if (value instanceof OWLTypedLiteral &&
-                      ((OWLTypedLiteral) value).getDatatype().getIRI().equals(OWL2Datatype.XSD_STRING.getIRI())) {
-                return ((OWLTypedLiteral) value).getLiteral();
+            if (value instanceof OWLLiteral) {
+                return ((OWLLiteral) value).getLiteral();
             }
         }
         return null;

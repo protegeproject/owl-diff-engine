@@ -107,7 +107,7 @@ public class GetAxiomSourceVisitor implements OWLAxiomVisitor {
     
     private void add(OWLIndividual i) {
         if (!i.isAnonymous()) {
-            sources.add(i.asNamedIndividual());
+            sources.add(i.asOWLNamedIndividual());
         }
     }
     
@@ -276,16 +276,16 @@ public class GetAxiomSourceVisitor implements OWLAxiomVisitor {
         OWLAnnotationSubject subject = axiom.getSubject();
         if (subject instanceof IRI) {
             IRI iri = (IRI) subject;
-            if (ontology.containsClassReference(iri)) {
+            if (ontology.containsClassInSignature(iri)) {
                 sources.add(factory.getOWLClass(iri));
             }
-            if (ontology.containsDataPropertyReference(iri)) {
+            if (ontology.containsDataPropertyInSignature(iri)) {
                 sources.add(factory.getOWLDataProperty(iri));
             }
-            if (ontology.containsObjectPropertyReference(iri)) {
+            if (ontology.containsObjectPropertyInSignature(iri)) {
                 sources.add(factory.getOWLObjectProperty(iri));
             }
-            if (ontology.containsIndividualReference(iri)) {
+            if (ontology.containsIndividualInSignature(iri)) {
                 sources.add(factory.getOWLNamedIndividual(iri));
             }
         }

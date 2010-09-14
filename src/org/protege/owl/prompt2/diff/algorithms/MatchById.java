@@ -42,27 +42,27 @@ public class MatchById implements DiffAlgorithm {
                     boolean found = unmatchedSourceEntity.accept(new OWLEntityVisitorEx<Boolean>() {
 
                         public Boolean visit(OWLClass sourceEntity) {
-                            return targetOntology.containsClassReference(sourceEntity.getIRI());
+                            return targetOntology.containsClassInSignature(sourceEntity.getIRI());
                         }
 
                         public Boolean visit(OWLObjectProperty property) {
-                            return targetOntology.containsObjectPropertyReference(property.getIRI());
+                            return targetOntology.containsObjectPropertyInSignature(property.getIRI());
                         }
 
                         public Boolean visit(OWLDataProperty property) {
-                            return targetOntology.containsDataPropertyReference(property.getIRI());
+                            return targetOntology.containsDataPropertyInSignature(property.getIRI());
                         }
 
                         public Boolean visit(OWLAnnotationProperty property) {
-                            return targetOntology.containsAnnotationPropertyReference(property.getIRI());
+                            return targetOntology.containsAnnotationPropertyInSignature(property.getIRI());
                         }
 
                         public Boolean visit(OWLNamedIndividual individual) {
-                            return targetOntology.containsIndividualReference(individual.getIRI());
+                            return targetOntology.containsIndividualInSignature(individual.getIRI());
                         }
 
                         public Boolean visit(OWLDatatype datatype) {
-                            return targetOntology.containsDatatypeReference(datatype.getIRI());
+                            return targetOntology.containsDatatypeInSignature(datatype.getIRI());
                         }
                     });
                     if (found) {

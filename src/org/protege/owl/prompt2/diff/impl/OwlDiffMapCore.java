@@ -56,7 +56,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
             unmatchedSourceAnonIndividuals.addAll(unmatched.getReferencedUnmatchedAnonymousIndividuals());
         }
         
-        unmatchedTargetEntities = new HashSet<OWLEntity>(targetOntology.getReferencedEntities());
+        unmatchedTargetEntities = new HashSet<OWLEntity>(targetOntology.getSignature());
         unmatchedTargetAnonIndividuals = new HashSet<OWLAnonymousIndividual>(targetOntology.getReferencedAnonymousIndividuals());        
     }
     
