@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Prompt Version II
-Bundle-SymbolicName: org.protege.owl.prompt.diff
+Bundle-Name: OWL Diff Library
+Bundle-SymbolicName: org.protege.owl.diff
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Protege Team
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
