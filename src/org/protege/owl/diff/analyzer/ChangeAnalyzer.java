@@ -16,8 +16,6 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class ChangeAnalyzer {
-    private Logger logger = Logger.getLogger(ChangeAnalyzer.class);
-
     private Collection<OWLAxiom> unmatchedSourceAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     private Collection<OWLAxiom> unmatchedTargetAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
@@ -44,7 +42,7 @@ public class ChangeAnalyzer {
         return unmatchedTargetAxiomsWithNoSubject;
     }
     
-    public void setAlgorihtms(AnalyzerAlgorithm[] algorithms) {
+    public void setAlgorithms(AnalyzerAlgorithm[] algorithms) {
         for (AnalyzerAlgorithm algorithm : algorithms) {
             algorithm.initialise(diffMap, parameters);
             this.algorithms.add(algorithm);
