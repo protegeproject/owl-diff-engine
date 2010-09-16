@@ -13,4 +13,4 @@ Export-Package: org.protege.owl.diff.analyzer,
  org.protege.owl.diff.raw,
  org.protege.owl.diff.raw.algorithms,
  org.protege.owl.diff.raw.util
-
+No-Plugin-XML: true
