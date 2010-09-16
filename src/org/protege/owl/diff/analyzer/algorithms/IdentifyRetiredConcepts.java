@@ -1,6 +1,5 @@
 package org.protege.owl.diff.analyzer.algorithms;
 
-import java.net.URI;
 import java.util.Properties;
 
 import org.protege.owl.diff.analyzer.AnalyzerAlgorithm;
@@ -16,17 +15,14 @@ public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
 
     public static final String RETIREMENT_CLASS_PROPERTY = "retirement.class";
     
-    private URI retirementUri;
+    private String retirementString;
     
     public void initialise(OwlDiffMap diffMap, Properties parameters) {
-        String retirementString = (String) parameters.get(RETIREMENT_CLASS_PROPERTY);
-        if (retirementString != null) {
-            retirementUri = URI.create(retirementString);
-        }
+    	retirementString = (String) parameters.get(RETIREMENT_CLASS_PROPERTY);
     }
 
     public void apply(EntityBasedDiff diff) {
-        if (retirementUri == null) {
+        if (retirementString == null) {
             return;
         }
         MatchedAxiom retiring = null;
@@ -39,7 +35,7 @@ public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
                 OWLSubClassOfAxiom subClass = (OWLSubClassOfAxiom) match.getTargetAxiom();
                 if (!subClass.getSubClass().isAnonymous() && 
                         !subClass.getSuperClass().isAnonymous() &&
-                        subClass.getSuperClass().asOWLClass().getIRI().toURI().equals(retirementUri)) {
+                        subClass.getSuperClass().asOWLClass().getIRI().toString().startsWith(retirementString)) {
                     retiring = match;
                     break;
                 }
