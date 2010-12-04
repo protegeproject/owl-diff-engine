@@ -59,7 +59,10 @@ public class Engine {
             try {
                 algorithm.reset();
             }
-            catch (Throwable t) {
+            catch (Error t) {
+                logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
+            }
+            catch (Exception t) {
                 logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
             }
         }
