@@ -24,8 +24,8 @@ public class OpenAndCompare {
     // private static File f1 = new File("/home/tredmond/Shared/ontologies/NCI/2009-07-08/BGT_UAT3_file.owl");
     // private static File f2 = new File("/home/tredmond/Shared/ontologies/NCI/2009-07-08/BiomedGT_baseline.owl");
 
-    private static File f1 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-08.06d.owl");
-    private static File f2 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-08.07d.owl");
+    private static File f1 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-09.12d.owl");
+    private static File f2 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-10.04f.owl");
     // private static File f1 = new File("/Users/tredmond/Shared/ontologies/simple/pizza-good.owl");
     // private static File f2 = new File("/Users/tredmond/Shared/ontologies/simple/pizza.owl");
 
@@ -39,16 +39,18 @@ public class OpenAndCompare {
         p.put(MatchByCode.USE_CODE_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
         
         StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompare.class));
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        manager.setSilentMissingImportsHandling(true);
+        OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
+        manager1.setSilentMissingImportsHandling(true);
         logger.info("Loading " + f1);
-        OWLOntology ontology1 = manager.loadOntologyFromOntologyDocument(f1);
+        OWLOntology ontology1 = manager1.loadOntologyFromOntologyDocument(f1);
         watch.measure();
+        OWLOntologyManager manager2 = OWLManager.createOWLOntologyManager();
+        manager2.setSilentMissingImportsHandling(true);
         logger.info("Loading " + f2);
-        OWLOntology ontology2 = manager.loadOntologyFromOntologyDocument(f2);
+        OWLOntology ontology2 = manager2.loadOntologyFromOntologyDocument(f2);
         watch.measure();
         logger.info("Running diff");
-        Engine e = new Engine(manager.getOWLDataFactory(), ontology1, ontology2, p);
+        Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
         e.setDiffAlgorithms(new DiffAlgorithm[] {
            new MatchByCode(),
            new MatchById()     
