@@ -214,6 +214,19 @@ author=The Protege Development Team
         </java>
     </target>
 
+
+    <target name = "openAndCompare" depends="compile">
+        <java fork = "true"
+              classname = "org.protege.owl.diff.OpenAndCompare">
+            <jvmarg value = "-Dlog4j.configuration=file:log4j.xml"/>
+            <jvmarg value = "-Xmx3400M"/>
+        	<classpath refid="project.classpath"/>
+            <classpath>
+              <pathelement path="${classes}"/>
+            </classpath>
+        </java>
+    </target>
+
 	
    <target name = "clean">
      <delete dir = "${build}"/>
