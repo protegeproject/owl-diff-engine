@@ -40,12 +40,16 @@ public class MatchedAxiom implements Comparable<MatchedAxiom> {
     public int compareTo(MatchedAxiom o) {
         int ret;
         
-        if ((ret = description.compareTo(o.getDescription())) != 0) {
+        ret = description.compareTo(o.getDescription());
+        if (ret != 0) {
             return ret;
         }
-        if ((ret = compareAxioms(sourceAxiom, o.getSourceAxiom())) != 0) {
+        
+        ret = compareAxioms(sourceAxiom, o.getSourceAxiom());
+        if (ret != 0) {
             return ret;
         }
+        
         return compareAxioms(targetAxiom, o.getTargetAxiom());
     }
     
@@ -59,6 +63,8 @@ public class MatchedAxiom implements Comparable<MatchedAxiom> {
         else if (ax1 == null && ax2 != null) {
             return -1;
         }
-        else return 0;
+        else {
+        	return 0;
+        }
     }
 }
