@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 
 public class AlgorithmTest extends TestCase {
-    public static final String PROJECTS_DIRECTORY="junit/ontologies/";
+    public static final String PROJECTS_DIRECTORY="src/test/resources/";
     private OWLDataFactory factory;
     private OWLOntology ontology1;
     private OWLOntology ontology2;
@@ -31,7 +31,8 @@ public class AlgorithmTest extends TestCase {
     private void loadOntologies(String prefix) throws OWLOntologyCreationException {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         ontology1 = manager.loadOntologyFromOntologyDocument(new File(PROJECTS_DIRECTORY + prefix + "-Left.owl"));
-        ontology2 = manager.loadOntologyFromOntologyDocument(new File(PROJECTS_DIRECTORY + prefix + "-Right.owl"));
+        OWLOntologyManager manager2 = OWLManager.createOWLOntologyManager();
+        ontology2 = manager2.loadOntologyFromOntologyDocument(new File(PROJECTS_DIRECTORY + prefix + "-Right.owl"));
         factory = manager.getOWLDataFactory();
     }
     

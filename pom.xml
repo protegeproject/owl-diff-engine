@@ -102,16 +102,15 @@
               <extensions>true</extensions>
               <configuration>
                 <instructions>
-                  <Bundle-SymbolicName>org.protege.owl.diff;singleton:=true</Bundle-SymbolicName>
+                  <Bundle-SymbolicName>org.protege.owl.diff</Bundle-SymbolicName>
                   <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                   <Import-Package>
                       *
                   </Import-Package>
+                  <Export-Package>
+                    org.protege.owl.diff.*
+                  </Export-Package>
                   <Bundle-ClassPath>.</Bundle-ClassPath>
-                  <Include-Resource>plugin.xml</Include-Resource>
-                  <Include-Resource>
-                      plugin.xml
-                  </Include-Resource>
                 </instructions>
                 <executions>
                   <execution>
