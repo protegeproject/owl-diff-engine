@@ -1,9 +1,9 @@
 package org.protege.owl.diff.analyzer;
 
 public class MatchDescription implements Comparable<MatchDescription> {
-    public static int MAX_SEQUENCE = 10;
-    public static int DEFAULT_SEQUENCE = 5;
-    public static int MIN_SEQUENCE = 0;
+    public final static int MAX_SEQUENCE = 10;
+    public final static int DEFAULT_SEQUENCE = 5;
+    public final static int MIN_SEQUENCE = 0;
     
     private String description;
     private int sequence;

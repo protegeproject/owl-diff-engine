@@ -75,8 +75,16 @@ public class Engine {
     public void setDiffAlgorithms(DiffAlgorithm [] algorithms) {
         this.algorithms.clear();
         for (DiffAlgorithm algorithm : algorithms) {
-            algorithm.initialise(diffMap, parameters);
-            this.algorithms.add(algorithm);
+        	try {
+        		algorithm.initialise(diffMap, parameters);
+                this.algorithms.add(algorithm);
+        	}
+        	catch (Error e) {
+        		logger.warn("Could not initialize algorithm " + algorithm.getAlgorithmName());
+        	}
+        	catch (Exception e) {
+        		logger.warn("Could not initialize algorithm " + algorithm.getAlgorithmName());
+        	}
         }
     }
 }

@@ -47,7 +47,7 @@ public class SuperSubClassPinch implements DiffAlgorithm {
             try {
                 requiredSubclasses = Integer.parseInt((String) parameters.get(REQUIRED_SUBCLASSES_PROPERTY));
             }
-            catch (Throwable t) {
+            catch (NumberFormatException t) {
                 log.warn("Could not initialize required subclasses value", t);
                 disabled = true;
             }
