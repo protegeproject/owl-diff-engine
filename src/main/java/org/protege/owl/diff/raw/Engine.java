@@ -45,7 +45,7 @@ public class Engine {
                 catch (Error e) {
                     logger.warn("Diff Algorithm " + da.getAlgorithmName()  + "failed (" + e + ").  Continuing...");
                 }
-                catch (Throwable t) {
+                catch (Exception t) {
                     logger.warn("Diff Algorithm " + da.getAlgorithmName()  + "failed (" + t + ").  Continuing...");
                 }
                 progress = progress ||
