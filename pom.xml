@@ -5,7 +5,7 @@
 	<groupId>protege4</groupId>
 	<artifactId>org.protege.owl.diff</artifactId>
 	<packaging>bundle</packaging>
-	<name>OWL Difference UI</name>
+	<name>OWL Difference Engine</name>
 	<!-- We have to disable the feature until the bug in the plugin is solved
 	  <version>${core.major.version}.${core.minor.version}.${core.micro.version}.b${core.build.number}-SNAPSHOT</version> 
 	 -->
