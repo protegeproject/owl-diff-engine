@@ -11,7 +11,7 @@ import org.protege.owl.diff.raw.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
-    public static MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.MIN_SEQUENCE);
+    public static final MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.MIN_SEQUENCE);
 
     public static final String RETIREMENT_CLASS_PROPERTY = "retirement.class";
     

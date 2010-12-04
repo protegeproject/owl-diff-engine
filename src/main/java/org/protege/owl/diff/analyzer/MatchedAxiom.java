@@ -3,8 +3,8 @@ package org.protege.owl.diff.analyzer;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class MatchedAxiom implements Comparable<MatchedAxiom> {
-    public static MatchDescription AXIOM_ADDED   = new MatchDescription("Added Axiom", MatchDescription.MAX_SEQUENCE);
-    public static MatchDescription AXIOM_DELETED = new MatchDescription("Deleted Axiom", MatchDescription.MAX_SEQUENCE);
+    public static final MatchDescription AXIOM_ADDED   = new MatchDescription("Added Axiom", MatchDescription.MAX_SEQUENCE);
+    public static final MatchDescription AXIOM_DELETED = new MatchDescription("Deleted Axiom", MatchDescription.MAX_SEQUENCE);
     
     private OWLAxiom sourceAxiom;
     private OWLAxiom targetAxiom;

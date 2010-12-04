@@ -18,8 +18,8 @@ import org.semanticweb.owlapi.model.OWLEntity;
 public class ChangeAnalyzer {
     private Collection<OWLAxiom> unmatchedSourceAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     private Collection<OWLAxiom> unmatchedTargetAxiomsWithNoSubject = new HashSet<OWLAxiom>();
-    TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
-    TreeSet<AnalyzerAlgorithm> algorithms = new TreeSet<AnalyzerAlgorithm>(new AnalyzerAlgorithmComparator());
+    private TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
+    private TreeSet<AnalyzerAlgorithm> algorithms = new TreeSet<AnalyzerAlgorithm>(new AnalyzerAlgorithmComparator());
 
     private OwlDiffMap diffMap;
     private Properties parameters;
