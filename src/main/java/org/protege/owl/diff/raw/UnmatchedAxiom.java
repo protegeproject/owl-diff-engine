@@ -2,7 +2,9 @@ package org.protege.owl.diff.raw;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -11,16 +13,16 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.util.OWLEntityCollector;
 
 public class UnmatchedAxiom {    
-    private Collection<OWLEntity> referencedUnmatchedEntities;
+    private Set<OWLEntity> referencedUnmatchedEntities;
     private Collection<OWLAnonymousIndividual> referencedUnmatchedAnonymousIndividuals;
     private OWLAxiom axiom;
     
     public UnmatchedAxiom(OWLAxiom axiom) {
         this.axiom = axiom;
-        OWLEntityCollector collector = new OWLEntityCollector();
+        referencedUnmatchedEntities = new HashSet<OWLEntity>();
+        referencedUnmatchedAnonymousIndividuals = new HashSet<OWLAnonymousIndividual>();
+        OWLEntityCollector collector = new OWLEntityCollector(referencedUnmatchedEntities, referencedUnmatchedAnonymousIndividuals);
         axiom.accept(collector);
-        referencedUnmatchedEntities = collector.getObjects();
-        referencedUnmatchedAnonymousIndividuals = collector.getAnonymousIndividuals();
     }
 
     public Collection<OWLEntity> getReferencedUnmatchedEntities() {
