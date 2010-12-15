@@ -9,7 +9,8 @@
 	<!-- We have to disable the feature until the bug in the plugin is solved
 	  <version>${core.major.version}.${core.minor.version}.${core.micro.version}.b${core.build.number}-SNAPSHOT</version> 
 	 -->
-	<version>4.1.0.213_SNAPSHOT</version>
+	<!-- <version>1.0.0.SNAPSHOT</version> -->
+    <version>1.0.0.2010_12_15_1130</version>
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
