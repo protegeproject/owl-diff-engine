@@ -4,27 +4,28 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.analyzer.util.AnalyzerAlgorithmComparator;
 import org.protege.owl.diff.raw.OwlDiffMap;
 import org.protege.owl.diff.raw.util.GetAxiomSourceVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public class ChangeAnalyzer {
+public class Changes {
     private Collection<OWLAxiom> unmatchedSourceAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     private Collection<OWLAxiom> unmatchedTargetAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     private TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
+    private Map<OWLEntity, EntityBasedDiff> sourceDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
+    private Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
     private TreeSet<AnalyzerAlgorithm> algorithms = new TreeSet<AnalyzerAlgorithm>(new AnalyzerAlgorithmComparator());
 
     private OwlDiffMap diffMap;
     private Properties parameters;
     
-    public ChangeAnalyzer(OwlDiffMap diffMap, Properties parameters) {
+    public Changes(OwlDiffMap diffMap, Properties parameters) {
         this.diffMap = diffMap;
         this.parameters = parameters;
         initialiseDiffs();
@@ -32,7 +33,19 @@ public class ChangeAnalyzer {
 
     public  Collection<EntityBasedDiff> getEntityBasedDiffs() {
         return entityBasedDiffs;
-    } 
+    }
+    
+    public Map<OWLEntity, EntityBasedDiff> getSourceDiffMap() {
+		return sourceDiffMap;
+	}
+    
+    public Map<OWLEntity, EntityBasedDiff> getTargetDiffMap() {
+		return targetDiffMap;
+	}
+    
+    public OwlDiffMap getRawDiffMap() {
+		return diffMap;
+	}
     
     public Collection<OWLAxiom> getUnmatchedSourceAxiomsWithNoSubject() {
         return unmatchedSourceAxiomsWithNoSubject;
@@ -42,24 +55,20 @@ public class ChangeAnalyzer {
         return unmatchedTargetAxiomsWithNoSubject;
     }
     
-    public void setAlgorithms(AnalyzerAlgorithm[] algorithms) {
+    public void setAlgorithms(AnalyzerAlgorithm... algorithms) {
         for (AnalyzerAlgorithm algorithm : algorithms) {
-            algorithm.initialise(diffMap, parameters);
+            algorithm.initialise(this, parameters);
             this.algorithms.add(algorithm);
         }
     }
     
     public void runAlgorithms() {
-        for (EntityBasedDiff diff : entityBasedDiffs) {
-            for (AnalyzerAlgorithm algorithm : algorithms) {
-                algorithm.apply(diff);
-            }
-        }
+    	for (AnalyzerAlgorithm algorithm : algorithms) {
+    		algorithm.apply();
+    	}
     }
 
     private void initialiseDiffs() {
-        Map<OWLEntity, EntityBasedDiff> sourceDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
-        Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
         for (OWLEntity source : diffMap.getUnmatchedSourceEntities()) {
             EntityBasedDiff d = new EntityBasedDiff();
             d.setSourceEntity(source);

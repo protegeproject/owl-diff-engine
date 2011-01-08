@@ -72,7 +72,7 @@ public class Engine {
         return diffMap;
     }
     
-    public void setDiffAlgorithms(DiffAlgorithm [] algorithms) {
+    public void setDiffAlgorithms(DiffAlgorithm... algorithms) {
         this.algorithms.clear();
         for (DiffAlgorithm algorithm : algorithms) {
         	try {

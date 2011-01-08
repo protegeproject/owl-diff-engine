@@ -6,9 +6,11 @@ import org.protege.owl.diff.raw.OwlDiffMap;
 
 public interface AnalyzerAlgorithm {
     
-    void initialise(OwlDiffMap diffMap, Properties parameters);
+    void initialise(Changes analyzer, Properties parameters);
 
-    void apply(EntityBasedDiff diff);
+    void apply();
     
     int getPriority();
+    
+    void setPriority(int priority);
 }

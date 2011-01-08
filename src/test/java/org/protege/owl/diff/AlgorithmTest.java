@@ -40,7 +40,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCode");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.USE_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.run();
@@ -55,7 +55,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.USE_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.run();
@@ -70,7 +70,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.USE_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchById() });
         e.run();
@@ -85,7 +85,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("ParentsAndChildren");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.USE_CODE_PROPERTY, 
+        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, 
                                "http://www.tigraworld.com/protege/ParentsAndChildren.owl#code");
         parameters.setProperty(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);

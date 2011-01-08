@@ -1,5 +1,7 @@
 package org.protege.owl.diff.raw.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -25,6 +27,13 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     private int           matchedAxiomsSinceAnnounce = 0;
     private DiffAlgorithm lastAnnouncedDiffAlgorithm;
     private long          lastAnnounceTime = -1;
+    
+    /*
+     * Services used by more than one plugin.
+     */
+    private Collection<Object> services = new ArrayList<Object>();
+    
+    
     
     private DiffListener trackingListener = new DiffListenerAdapter() {
 
@@ -68,8 +77,23 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     }
 
  
+    /*
+     * Services
+     */
     
-
+    public void addService(Object o) {
+    	services.add(o);
+    }
+    
+    @Override
+    public <X> X getService(Class<? extends X> implementing) {
+    	for (Object o : services) {
+    		if (implementing.isAssignableFrom(o.getClass())) {
+    			return implementing.cast(o);
+    		}
+    	}
+    	return null;
+    }
 
 
     

@@ -22,6 +22,20 @@ public class MatchDescription implements Comparable<MatchDescription> {
         return description;
     }
     
+    @Override
+    public boolean equals(Object obj) {
+    	if (!(obj instanceof MatchDescription)) {
+    		return false;
+    	}
+    	MatchDescription other = (MatchDescription) obj;
+    	return description.equals(other.description) && sequence == other.sequence;
+    }
+    
+    @Override
+    public int hashCode() {
+    	return sequence + 42 * description.hashCode();
+    }
+    
     public int compareTo(MatchDescription o) {
         if (sequence < o.sequence) {
             return -1;
@@ -32,6 +46,11 @@ public class MatchDescription implements Comparable<MatchDescription> {
         else {
             return description.compareTo(o.description);
         }
+    }
+    
+    @Override
+    public String toString() {
+    	return description;
     }
 
 }

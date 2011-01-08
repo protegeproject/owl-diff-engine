@@ -39,5 +39,8 @@ public interface OwlDiffMap {
     void summarize();
 
     boolean processingDone();
+    
+    void addService(Object o);
+    <X> X getService(Class<? extends X> implementing);
 
 }

@@ -1,5 +1,7 @@
 package org.protege.owl.diff.raw.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,8 +42,6 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     private Set<UnmatchedAxiom>                 potentialMatchingSourceAxioms  = new HashSet<UnmatchedAxiom>();
     private Set<OWLAxiom>                       unmatchedSourceAxioms;
     private Set<OWLAxiom>                       unmatchedTargetAxioms;
-
-
     
     protected OwlDiffMapCore(OWLDataFactory factory,
                              OWLOntology sourceOntology, 

@@ -10,6 +10,14 @@
              <param name="ConversionPattern" value="%m%n"/>
            </layout>
         </appender>
+        
+        <appender name="file" class="org.apache.log4j.FileAppender">
+            <param name="File" value="diff.log"/>
+            <param name="Threshold" value="DEBUG"/>
+            <layout class="org.apache.log4j.PatternLayout">
+                <param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+            </layout>
+        </appender>
 
         <category name="org.mindswap.pellet">
             <priority value="error"/>
@@ -24,6 +32,7 @@
         <root>
            <priority value ="info" />
            <appender-ref ref="console" />
+           <appender-ref ref="file"/>
         </root>
 
 </log4j:configuration>

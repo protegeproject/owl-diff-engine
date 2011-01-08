@@ -67,4 +67,9 @@ public class MatchedAxiom implements Comparable<MatchedAxiom> {
         	return 0;
         }
     }
+    
+    @Override
+    public String toString() {
+    	return description.toString() + ": " + sourceAxiom + " --> " + targetAxiom;
+    }
 }

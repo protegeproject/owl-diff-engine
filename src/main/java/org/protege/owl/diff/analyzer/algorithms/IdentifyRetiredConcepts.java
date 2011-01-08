@@ -1,56 +1,57 @@
 package org.protege.owl.diff.analyzer.algorithms;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
-import org.protege.owl.diff.analyzer.AnalyzerAlgorithm;
+import org.protege.owl.diff.analyzer.Changes;
 import org.protege.owl.diff.analyzer.EntityBasedDiff;
 import org.protege.owl.diff.analyzer.MatchDescription;
 import org.protege.owl.diff.analyzer.MatchedAxiom;
 import org.protege.owl.diff.analyzer.util.AnalyzerAlgorithmComparator;
-import org.protege.owl.diff.raw.OwlDiffMap;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.protege.owl.diff.service.RetirementClassService;
 
-public class IdentifyRetiredConcepts implements AnalyzerAlgorithm {
+public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
     public static final MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.MIN_SEQUENCE);
+    public static final int DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY = AnalyzerAlgorithmComparator.DEFAULT_PRIORITY + 2;
 
-    public static final String RETIREMENT_CLASS_PROPERTY = "retirement.class";
+    private Changes changes;
+    private RetirementClassService retiredClassService;
     
-    private String retirementString;
+    public IdentifyRetiredConcepts() {
+    	setPriority(DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY);
+    }
     
-    public void initialise(OwlDiffMap diffMap, Properties parameters) {
-    	retirementString = (String) parameters.get(RETIREMENT_CLASS_PROPERTY);
+    public void initialise(Changes changes, Properties parameters) {
+    	this.changes = changes;
+    	retiredClassService = RetirementClassService.getRetirementClassService(changes.getRawDiffMap(), parameters);
+    }	
+    
+    public void apply() {
+    	for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
+    		apply(diff);
+    	}
     }
 
-    public void apply(EntityBasedDiff diff) {
-        if (retirementString == null) {
+    private void apply(EntityBasedDiff diff) {
+        if (retiredClassService.isDisabled()) {
             return;
         }
-        MatchedAxiom retiring = null;
+        Collection<MatchedAxiom> retiringMatches = new ArrayList<MatchedAxiom>();
         for (MatchedAxiom match : diff.getAxiomMatches()) {
             if (match.isFinal()) {
                 continue;
             }
-            if (match.getDescription() == MatchedAxiom.AXIOM_ADDED &&
-                    match.getTargetAxiom() instanceof OWLSubClassOfAxiom) {
-                OWLSubClassOfAxiom subClass = (OWLSubClassOfAxiom) match.getTargetAxiom();
-                if (!subClass.getSubClass().isAnonymous() && 
-                        !subClass.getSuperClass().isAnonymous() &&
-                        subClass.getSuperClass().asOWLClass().getIRI().toString().startsWith(retirementString)) {
-                    retiring = match;
-                    break;
-                }
+            if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) && retiredClassService.isRetirementAxiom(match.getTargetAxiom())) {
+            	retiringMatches.add(match);
             }
         }
-        if (retiring != null) {
-            MatchedAxiom newRetired = new MatchedAxiom(null, retiring.getTargetAxiom(), RETIRED);
+        for (MatchedAxiom match : retiringMatches) {
+            MatchedAxiom newRetired = new MatchedAxiom(null, match.getTargetAxiom(), RETIRED);
             newRetired.setFinal(true);
-            diff.removeMatch(retiring);
+            diff.removeMatch(match);
             diff.addMatch(newRetired);
         }
-    }
-
-    public int getPriority() {
-        return AnalyzerAlgorithmComparator.DEFAULT_PRIORITY + 2;
     }
 
 }
