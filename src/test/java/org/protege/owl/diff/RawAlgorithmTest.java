@@ -26,7 +26,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 
-public class AlgorithmTest extends TestCase {
+public class RawAlgorithmTest extends TestCase {
     public static final String PROJECTS_DIRECTORY="src/test/resources/";
     private OWLDataFactory factory;
     private OWLOntology ontology1;
