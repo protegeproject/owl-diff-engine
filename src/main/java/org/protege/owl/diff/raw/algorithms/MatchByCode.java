@@ -23,8 +23,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class MatchByCode implements DiffAlgorithm {
     private Logger logger = Logger.getLogger(MatchByCode.class);
     
-    public static final String ALIGN_USING_CODE_PROPERTY = "use.align.by.code";
-    
     private boolean disabled = false;
     private OwlDiffMap diffMap;
     private CodeToEntityMapper codeMapper;
@@ -35,10 +33,6 @@ public class MatchByCode implements DiffAlgorithm {
 
     public void initialise(OwlDiffMap diffMap, Properties parameters) {
         this.diffMap = diffMap;
-        Object useCode = parameters.get(ALIGN_USING_CODE_PROPERTY);
-        if (useCode == null || !(useCode instanceof String) || !((String) useCode).toLowerCase().equals("true")) {
-            disabled = true;
-        }
         codeMapper = CodeToEntityMapper.generateCodeToEntityMap(diffMap, parameters);
         if (codeMapper.codeNotPresent()) {
         	disabled = true;

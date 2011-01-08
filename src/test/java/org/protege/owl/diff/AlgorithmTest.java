@@ -1,6 +1,8 @@
 package org.protege.owl.diff;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -13,6 +15,9 @@ import org.protege.owl.diff.raw.algorithms.MatchByCode;
 import org.protege.owl.diff.raw.algorithms.MatchById;
 import org.protege.owl.diff.raw.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.raw.algorithms.SuperSubClassPinch;
+import org.protege.owl.diff.raw.impl.OwlDiffMapImpl;
+import org.protege.owl.diff.raw.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -39,7 +44,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCode");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
@@ -54,7 +59,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
@@ -69,7 +74,7 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchById() });
         e.phase1();
@@ -84,25 +89,28 @@ public class AlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("ParentsAndChildren");
         Properties parameters = new Properties();
-        parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, 
+        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, 
                                "http://www.tigraworld.com/protege/ParentsAndChildren.owl#code");
         parameters.setProperty(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
-        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        OwlDiffMap diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
         CountEntityMatchesListener listener = new CountEntityMatchesListener();
-        e.getOwlDiffMap().addDiffListener(listener);
-        e.setDiffAlgorithms(new DiffAlgorithm[] { 
-                new MatchByCode(),
-                new MatchStandardVocabulary(),
-                new SuperSubClassPinch() 
-        });
-        
-        e.phase1();
-        
-        OwlDiffMap diffs = e.getOwlDiffMap();
-        assertTrue(diffs.getUnmatchedSourceEntities().size() == 0);
-        assertTrue(diffs.getUnmatchedTargetEntities().size() == 0);
-        assertTrue(diffs.getUnmatchedSourceAxioms().isEmpty());
-        assertTrue(diffs.getUnmatchedTargetAxioms().isEmpty());
+        diffMap.addDiffListener(listener);
+        List<DiffAlgorithm> algorithms = new ArrayList<DiffAlgorithm>();
+        algorithms.add(new MatchByCode());
+        algorithms.add(new MatchStandardVocabulary());
+        algorithms.add(new SuperSubClassPinch());
+        Collections.sort(algorithms, new DiffAlgorithmComparator());
+        for (int i =0 ;i < 2; i++) {
+        	for (DiffAlgorithm algorithm : algorithms) {
+        		algorithm.initialise(diffMap, parameters);
+        		algorithm.run();
+        	}
+        }
+
+        assertTrue(diffMap.getUnmatchedSourceEntities().size() == 0);
+        assertTrue(diffMap.getUnmatchedTargetEntities().size() == 0);
+        assertTrue(diffMap.getUnmatchedSourceAxioms().isEmpty());
+        assertTrue(diffMap.getUnmatchedTargetAxioms().isEmpty());
         
         List<Set<OWLEntity>> matches = listener.getEntityMatches();
         assertTrue(matches.size() == 4);

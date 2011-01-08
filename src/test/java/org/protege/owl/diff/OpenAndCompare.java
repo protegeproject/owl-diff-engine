@@ -40,7 +40,6 @@ public class OpenAndCompare {
      */
     public static void main(String[] args) throws OWLOntologyCreationException {
         Properties p = new Properties();
-        p.put(MatchByCode.ALIGN_USING_CODE_PROPERTY, "True");
         p.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
         p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Into");
         p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status");

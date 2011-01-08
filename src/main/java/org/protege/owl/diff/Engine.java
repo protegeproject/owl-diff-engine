@@ -41,12 +41,11 @@ public class Engine {
 
 
     public void phase1() {
-        diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
+    	phase1Init();
         boolean progress;
         boolean finished = false;
         do {
             progress  = false;
-            Collections.sort(diffAlgorithms, new DiffAlgorithmComparator());
             for (DiffAlgorithm da : diffAlgorithms) {
                 int entitiesCount = diffMap.getUnmatchedSourceEntities().size();
                 int individualsCount = diffMap.getUnmatchedSourceAnonymousIndividuals().size();
@@ -70,6 +69,17 @@ public class Engine {
         }
         while (progress && !finished);
         
+        phase1Cleanup();
+    }
+    
+    private void phase1Init() {
+    	diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
+    	for (DiffAlgorithm algorithm : diffAlgorithms) {
+    		algorithm.initialise(diffMap, parameters);
+    	}
+    }
+    
+    private void phase1Cleanup() {
         for (DiffAlgorithm algorithm : diffAlgorithms) {
             try {
                 algorithm.reset();
@@ -91,7 +101,6 @@ public class Engine {
         this.diffAlgorithms.clear();
         for (DiffAlgorithm algorithm : algorithms) {
         	try {
-        		algorithm.initialise(diffMap, parameters);
                 this.diffAlgorithms.add(algorithm);
         	}
         	catch (Error e) {
@@ -101,6 +110,7 @@ public class Engine {
         		logger.warn("Could not initialize algorithm " + algorithm.getAlgorithmName());
         	}
         }
+        Collections.sort(diffAlgorithms, new DiffAlgorithmComparator());
     }
     
     public void phase2() {
