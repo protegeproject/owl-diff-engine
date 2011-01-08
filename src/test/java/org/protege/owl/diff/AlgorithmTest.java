@@ -8,7 +8,6 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.protege.owl.diff.raw.DiffAlgorithm;
-import org.protege.owl.diff.raw.Engine;
 import org.protege.owl.diff.raw.OwlDiffMap;
 import org.protege.owl.diff.raw.algorithms.MatchByCode;
 import org.protege.owl.diff.raw.algorithms.MatchById;
@@ -43,7 +42,7 @@ public class AlgorithmTest extends TestCase {
         parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
-        e.run();
+        e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
         assertTrue(diffs.getUnmatchedTargetEntities().isEmpty());
@@ -58,7 +57,7 @@ public class AlgorithmTest extends TestCase {
         parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
-        e.run();
+        e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 1);
         assertTrue(diffs.getUnmatchedTargetEntities().size() == 1);
@@ -73,7 +72,7 @@ public class AlgorithmTest extends TestCase {
         parameters.setProperty(MatchByCode.ALIGN_USING_CODE_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
         e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchById() });
-        e.run();
+        e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 0);
         assertTrue(diffs.getUnmatchedTargetEntities().size() == 0);
@@ -97,7 +96,7 @@ public class AlgorithmTest extends TestCase {
                 new SuperSubClassPinch() 
         });
         
-        e.run();
+        e.phase1();
         
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 0);

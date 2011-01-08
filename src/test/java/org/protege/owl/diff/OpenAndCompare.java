@@ -10,7 +10,6 @@ import org.protege.owl.diff.analyzer.EntityBasedDiff;
 import org.protege.owl.diff.analyzer.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.analyzer.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.analyzer.algorithms.IdentifyRetiredConcepts;
-import org.protege.owl.diff.raw.Engine;
 import org.protege.owl.diff.raw.OwlDiffMap;
 import org.protege.owl.diff.raw.algorithms.MatchByCode;
 import org.protege.owl.diff.raw.algorithms.MatchById;
@@ -62,7 +61,7 @@ public class OpenAndCompare {
         logger.info("Running diff");
         Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
         e.setDiffAlgorithms(new MatchByCode(), new MatchById());
-        e.run();
+        e.phase1();
         watch.measure();
         OwlDiffMap diffs = e.getOwlDiffMap();
         logger.info("Collecting by entity");
