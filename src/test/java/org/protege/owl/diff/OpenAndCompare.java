@@ -60,21 +60,12 @@ public class OpenAndCompare {
         logger.info("Running diff");
         Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
         e.setDiffAlgorithms(new MatchByCode(), new MatchById());
+        e.setChangeAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
         e.phase1();
         watch.measure();
-        OwlDiffMap diffs = e.getOwlDiffMap();
-        logger.info("Collecting by entity");
-        Changes analyzer = new Changes(diffs, p);
-        
-        analyzer.setAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
-        analyzer.runAlgorithms();
-       
-        Collection<EntityBasedDiff> ediffs = analyzer.getEntityBasedDiffs();
-        for (EntityBasedDiff ediff : ediffs) {
-            if (ediff.getDiffType() != DiffType.EQUIVALENT) {
-                logger.info(ediff.getDescription());
-            }
-        }
+        logger.info("Calculating presentation");
+        e.phase2();
+        e.display();
         watch.finish();
     }
 
