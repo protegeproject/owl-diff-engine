@@ -32,6 +32,7 @@ public class MatchByCode implements DiffAlgorithm {
     }
 
     public void initialise(OwlDiffMap diffMap, Properties parameters) {
+    	
         this.diffMap = diffMap;
         codeMapper = CodeToEntityMapper.generateCodeToEntityMap(diffMap, parameters);
         if (codeMapper.codeNotPresent()) {
@@ -44,13 +45,9 @@ public class MatchByCode implements DiffAlgorithm {
             diffMap.announce(this);
             try {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Generating map of codes to owl entities for target ontology");
-                }
-                Map<String, Collection<OWLEntity>> codeToEntityMap = codeMapper.getTargetCodeToEntityMap();
-                if (logger.isDebugEnabled()) {
                     logger.debug("Matching source entities with target entities");
                 }
-                matchEntities(codeToEntityMap);
+                matchEntities();
             }
             finally {
                 diffMap.summarize();
@@ -63,7 +60,7 @@ public class MatchByCode implements DiffAlgorithm {
         disabled=false;
     }
     
-    private boolean matchEntities(Map<String, Collection<OWLEntity>> targetCodeToEntitiesMap) {
+    private boolean matchEntities() {
         Map<OWLEntity, OWLEntity> matchMap = new HashMap<OWLEntity, OWLEntity>();
         OWLOntology sourceOntology = diffMap.getSourceOntology();
         for (OWLEntity sourceEntity : sourceOntology.getSignature()) {
@@ -71,7 +68,7 @@ public class MatchByCode implements DiffAlgorithm {
             if (code == null) {
                 continue;
             }
-            Collection<OWLEntity> targetEntities = targetCodeToEntitiesMap.get(code);
+            Collection<OWLEntity> targetEntities = codeMapper.getTargetEntities(code);
             if (targetEntities == null) {
                 continue;
             }
@@ -83,10 +80,8 @@ public class MatchByCode implements DiffAlgorithm {
                 }
             }
             if (matchedTargetEntity != null) {
-                targetEntities.remove(matchedTargetEntity);
                 matchMap.put(sourceEntity, matchedTargetEntity);
-            }
-            
+            }  
         }
         if (matchMap.isEmpty()) {
             return false;

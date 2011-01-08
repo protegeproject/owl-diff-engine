@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.raw.OwlDiffMap;
@@ -73,7 +74,17 @@ public class CodeToEntityMapper {
         return null;
     }
     
-    public Map<String, Collection<OWLEntity>> getTargetCodeToEntityMap() {
+    public Collection<OWLEntity> getTargetEntities(String code) {
+    	Collection<OWLEntity> targetEntities = getTargetCodeToEntityMap().get(code);
+    	if (targetEntities == null) {
+    		return Collections.emptySet();
+    	}
+    	else {
+    		return Collections.unmodifiableCollection(targetEntities);
+    	}
+    }
+    
+    private Map<String, Collection<OWLEntity>> getTargetCodeToEntityMap() {
     	if (targetCodeToEntityMap == null) {
     		targetCodeToEntityMap = generateCodeToEntityMap(diffMap.getTargetOntology());
     	}
@@ -94,7 +105,83 @@ public class CodeToEntityMapper {
                 entities.add(entity);
             }
         }
-        return codeToEntityMap;
+        return Collections.unmodifiableMap(codeToEntityMap);
+    }
+    
+    public class UnmodifiableMap<X, Y> implements Map<X, Collection<Y>> {
+
+		@Override
+		public int size() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean containsKey(Object key) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean containsValue(Object value) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Collection<Y> get(Object key) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<Y> put(X key, Collection<Y> value) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<Y> remove(Object key) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void putAll(Map<? extends X, ? extends Collection<Y>> m) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void clear() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Set<X> keySet() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<Collection<Y>> values() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Set<java.util.Map.Entry<X, Collection<Y>>> entrySet() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+    	
     }
 }
 

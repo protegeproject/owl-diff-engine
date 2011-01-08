@@ -20,7 +20,6 @@ public class Changes {
     private TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> sourceDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
-    private TreeSet<AnalyzerAlgorithm> algorithms = new TreeSet<AnalyzerAlgorithm>(new AnalyzerAlgorithmComparator());
 
     private OwlDiffMap diffMap;
     private Properties parameters;
@@ -53,19 +52,6 @@ public class Changes {
 
     public Collection<OWLAxiom> getUnmatchedTargetAxiomsWithNoSubject() {
         return unmatchedTargetAxiomsWithNoSubject;
-    }
-    
-    public void setAlgorithms(AnalyzerAlgorithm... algorithms) {
-        for (AnalyzerAlgorithm algorithm : algorithms) {
-            algorithm.initialise(this, parameters);
-            this.algorithms.add(algorithm);
-        }
-    }
-    
-    public void runAlgorithms() {
-    	for (AnalyzerAlgorithm algorithm : algorithms) {
-    		algorithm.apply();
-    	}
     }
 
     private void initialiseDiffs() {
