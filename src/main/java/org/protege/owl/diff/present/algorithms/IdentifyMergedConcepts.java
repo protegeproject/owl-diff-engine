@@ -70,7 +70,6 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 					OWLEntity keptEntity = keptEntities.iterator().next();
 					mergedIntoMap.put(retiringEntity, keptEntity.getIRI());
 					mergedFromMap.put(keptEntity, retiringEntity);
-					break;
 				}
 			}
 		}
@@ -92,7 +91,7 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 			EntityBasedDiff keptEntityDiff = changes.getTargetDiffMap().get(keptEntity);
 			EntityBasedDiff retiringEntityDiff = changes.getTargetDiffMap().get(retiringEntity);
 			if (retiringEntityDiff != null) {
-				handleMergeAxiom(retiringEntityDiff, keptEntityDiff);
+				handleMergeDeclaration(retiringEntityDiff, keptEntityDiff);
 				handleRetire(retiringEntityDiff);
 			}
 			handleAxiomAdjustments(keptEntityDiff, keptEntityDiff);
@@ -102,6 +101,45 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 		}
 	}
 	
+	private void handleMergeDeclaration(EntityBasedDiff retiringEntityDiff, EntityBasedDiff keptEntityDiff) {
+	    MatchedAxiom mergeDecl = null;
+	    for (MatchedAxiom match : retiringEntityDiff.getAxiomMatches()) {
+	        if (match.isFinal()) {
+	            continue;
+	        }
+	        if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) 
+	        		&& isMergedIntoAxiom(match.getTargetAxiom())) {
+	        	mergeDecl = match;
+	        	break;
+	        }
+	    }
+	    if (mergeDecl != null) {
+	    	MatchedAxiom newMergeDecl = new MatchedAxiom(null, mergeDecl.getTargetAxiom(), MERGE);
+	    	newMergeDecl.setFinal(true);
+	        retiringEntityDiff.removeMatch(mergeDecl);
+	        retiringEntityDiff.addMatch(newMergeDecl);
+	        keptEntityDiff.addMatch(newMergeDecl);
+	    }
+	}
+
+	private void handleRetire(EntityBasedDiff diff) {
+	    Collection<MatchedAxiom> retiringMatches = new ArrayList<MatchedAxiom>();
+	    for (MatchedAxiom match : diff.getAxiomMatches()) {
+	        if (match.isFinal()) {
+	            continue;
+	        }
+	        if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) && retiredClassService.isRetirementAxiom(match.getTargetAxiom())) {
+	        	retiringMatches.add(match);
+	        }
+	    }
+	    for (MatchedAxiom match : retiringMatches) {
+	        MatchedAxiom newRetired = new MatchedAxiom(null, match.getTargetAxiom(), RETIRED_DUE_TO_MERGE);
+	        newRetired.setFinal(true);
+	        diff.removeMatch(match);
+	        diff.addMatch(newRetired);
+	    }
+	}
+
 	private void handleAxiomAdjustments(EntityBasedDiff retiringEntityDiff, EntityBasedDiff keptEntityDiff) {
 		if (retiringEntityDiff.getSourceEntity() == null) {
 			return;
@@ -121,45 +159,6 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 				}
 			}
 		}
-	}
-	
-	private void handleMergeAxiom(EntityBasedDiff retiringEntityDiff, EntityBasedDiff keptEntityDiff) {
-        MatchedAxiom mergeDecl = null;
-        for (MatchedAxiom match : retiringEntityDiff.getAxiomMatches()) {
-            if (match.isFinal()) {
-                continue;
-            }
-            if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) 
-            		&& isMergedIntoAxiom(match.getTargetAxiom())) {
-            	mergeDecl = match;
-            	break;
-            }
-        }
-        if (mergeDecl != null) {
-        	MatchedAxiom newMergeDecl = new MatchedAxiom(null, mergeDecl.getTargetAxiom(), MERGE);
-        	newMergeDecl.setFinal(true);
-            retiringEntityDiff.removeMatch(mergeDecl);
-            retiringEntityDiff.addMatch(newMergeDecl);
-            keptEntityDiff.addMatch(newMergeDecl);
-        }
-	}
-		
-	private void handleRetire(EntityBasedDiff diff) {
-        Collection<MatchedAxiom> retiringMatches = new ArrayList<MatchedAxiom>();
-        for (MatchedAxiom match : diff.getAxiomMatches()) {
-            if (match.isFinal()) {
-                continue;
-            }
-            if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) && retiredClassService.isRetirementAxiom(match.getTargetAxiom())) {
-            	retiringMatches.add(match);
-            }
-        }
-        for (MatchedAxiom match : retiringMatches) {
-            MatchedAxiom newRetired = new MatchedAxiom(null, match.getTargetAxiom(), RETIRED_DUE_TO_MERGE);
-            newRetired.setFinal(true);
-            diff.removeMatch(match);
-            diff.addMatch(newRetired);
-        }
 	}
 	
 	private boolean isMergedIntoAxiom(OWLAxiom axiom) {

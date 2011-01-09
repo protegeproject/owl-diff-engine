@@ -11,16 +11,19 @@ import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
+import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class PresentationAlgorithmTest extends TestCase {
     private OWLDataFactory factory;
@@ -124,4 +127,42 @@ public class PresentationAlgorithmTest extends TestCase {
     	assertTrue(modifiedCount == 1);
     	e.display();
     }
+    
+    public void testRetire() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/SimpleRetire.owl";
+    	loadOntologies("SimpleRetire");
+    	Properties p = new Properties();
+    	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retire");
+    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Concept_Status");
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.setPresentationAlgorithms(new IdentifyRetiredConcepts());
+    	e.phase1();
+    	e.phase2();
+    	int retiredSubClassCount = 0;
+    	int retiredAnnotationCount = 0;
+    	for (EntityBasedDiff diff : e.getChanges().getEntityBasedDiffs()) {
+    		if (diff.getDiffType().equals(DiffType.EQUIVALENT)) {
+    			continue;
+    		}
+    		for (MatchedAxiom match : diff.getAxiomMatches()) {
+    			if (match.getDescription().equals(IdentifyRetiredConcepts.RETIRED)) {
+    				assertTrue(match.getSourceAxiom() == null);
+    				if (match.getTargetAxiom() instanceof OWLSubClassOfAxiom) {
+    					retiredSubClassCount++;
+    				}
+    				else if (match.getTargetAxiom() instanceof OWLAnnotationAssertionAxiom) {
+    					retiredAnnotationCount++;
+    				}
+    			}
+    			else {
+    				fail();
+    			}
+    		}
+    	}
+    	assertTrue(retiredAnnotationCount == 1);
+    	assertTrue(retiredSubClassCount == 1);
+    	e.display();
+	}
 }
