@@ -12,6 +12,7 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
+import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -46,6 +47,53 @@ public class PresentationAlgorithmTest extends TestCase {
     	Engine e = new Engine(factory, ontology1, ontology2, p);
     	e.setDiffAlgorithms(new MatchByCode(), new MatchById());
     	e.setChangeAlgorithms(new IdentifyMergedConcepts());
+    	e.phase1();
+    	e.phase2();
+    	Changes changes = e.getChanges();
+    	EntityBasedDiff keptEntityDiffs = changes.getSourceDiffMap().get(factory.getOWLClass(IRI.create(ns + "#A")));
+    	EntityBasedDiff retiredEntityDiffs = changes.getSourceDiffMap().get(factory.getOWLClass(IRI.create(ns + "#B")));
+
+    	int mergeCount = 0;
+    	int retiredCount = 0;
+    	for (MatchedAxiom match : retiredEntityDiffs.getAxiomMatches()) {
+    		MatchDescription description = match.getDescription();
+    		if (description.equals(IdentifyMergedConcepts.MERGE)) {
+    			mergeCount++;
+    			assertTrue(keptEntityDiffs.getAxiomMatches().contains(match));
+    		}
+    		else if (description.equals(IdentifyMergedConcepts.RETIRED_DUE_TO_MERGE)) {
+    			retiredCount++;
+    		}
+    	}
+    	assertTrue(mergeCount == 1);
+    	assertTrue(retiredCount == 2);
+    	
+    	int modifiedCount = 0;
+    	for (MatchedAxiom match : keptEntityDiffs.getAxiomMatches()) {
+    		if (match.getDescription().equals(IdentifyMergedConcepts.MERGE_AXIOM)) {
+    			modifiedCount++;
+    		}
+    	}
+    	assertTrue(modifiedCount == 1);
+    	e.display();
+    }
+    
+    /*
+     * This is the same as the previous test except the retirement step is at a lower priority and
+     * does not kick in.
+     */
+    public void testMergeWithVacuousRetire() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/Merge.owl";
+    	loadOntologies("Merge");
+    	Properties p = new Properties();
+    	p.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
+    	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
+    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
+    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+    	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setDiffAlgorithms(new MatchByCode(), new MatchById());
+    	e.setChangeAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
     	e.phase1();
     	e.phase2();
     	Changes changes = e.getChanges();
