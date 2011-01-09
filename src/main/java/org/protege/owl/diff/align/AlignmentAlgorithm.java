@@ -3,7 +3,7 @@ package org.protege.owl.diff.align;
 import java.util.Properties;
 
 
-public interface DiffAlgorithm {
+public interface AlignmentAlgorithm {
     
     void initialise(OwlDiffMap diffMap, Properties parameters);
     

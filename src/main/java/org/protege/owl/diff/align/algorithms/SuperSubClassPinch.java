@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.align.DiffAlgorithm;
-import org.protege.owl.diff.align.DiffListener;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
 import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class SuperSubClassPinch implements DiffAlgorithm {
+public class SuperSubClassPinch implements AlignmentAlgorithm {
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
     private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
     

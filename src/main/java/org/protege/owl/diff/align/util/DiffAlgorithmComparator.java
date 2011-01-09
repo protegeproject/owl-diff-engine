@@ -2,10 +2,10 @@ package org.protege.owl.diff.align.util;
 
 import java.util.Comparator;
 
-import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 
 
-public class DiffAlgorithmComparator implements Comparator<DiffAlgorithm> {
+public class DiffAlgorithmComparator implements Comparator<AlignmentAlgorithm> {
     public static final int MIN_PRIORITY = 1;
     public static final int MAX_PRIORITY = 10;
     public static final int DEFAULT_PRIORITY = 5;
@@ -13,7 +13,7 @@ public class DiffAlgorithmComparator implements Comparator<DiffAlgorithm> {
     /*
      * ordering is the inverse of the obvious so that high priority algorithms come first.
      */
-    public int compare(DiffAlgorithm da1, DiffAlgorithm da2) {
+    public int compare(AlignmentAlgorithm da1, AlignmentAlgorithm da2) {
         int priority1 = getPriority(da1);
         int priority2 = getPriority(da2);
         if (priority1 > priority2) {
@@ -27,7 +27,7 @@ public class DiffAlgorithmComparator implements Comparator<DiffAlgorithm> {
         }
     }
     
-    private int getPriority(DiffAlgorithm da) {
+    private int getPriority(AlignmentAlgorithm da) {
         int priority = da.getPriority();
         if (priority < MIN_PRIORITY) {
             priority = MIN_PRIORITY;

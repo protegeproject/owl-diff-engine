@@ -2,9 +2,7 @@ package org.protege.owl.diff.present;
 
 import java.util.Properties;
 
-import org.protege.owl.diff.align.OwlDiffMap;
-
-public interface AnalyzerAlgorithm {
+public interface PresentationAlgorithm {
     
     void initialise(Changes analyzer, Properties parameters);
 

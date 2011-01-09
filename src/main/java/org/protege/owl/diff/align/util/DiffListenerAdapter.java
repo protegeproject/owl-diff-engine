@@ -3,13 +3,13 @@ package org.protege.owl.diff.align.util;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.protege.owl.diff.align.DiffListener;
+import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.UnmatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public class DiffListenerAdapter implements DiffListener {
+public class DiffListenerAdapter implements AlignmentListener {
 
     public void addMatch(OWLEntity source, OWLEntity target) {
 

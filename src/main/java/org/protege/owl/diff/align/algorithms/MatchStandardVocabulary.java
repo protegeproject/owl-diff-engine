@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
 import org.semanticweb.owlapi.model.IRI;
@@ -14,7 +14,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
-public class MatchStandardVocabulary implements DiffAlgorithm {
+public class MatchStandardVocabulary implements AlignmentAlgorithm {
     private static final Set<IRI> STANDARD_OWL_IRIS;
     static {
         STANDARD_OWL_IRIS = new HashSet<IRI>();

@@ -4,60 +4,60 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.protege.owl.diff.align.DiffListener;
+import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.UnmatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DiffListenerCollection {
-    private Collection<DiffListener> listeners = new HashSet<DiffListener>();
+    private Collection<AlignmentListener> listeners = new HashSet<AlignmentListener>();
     
-    public void addDiffListener(DiffListener listener) {
+    public void addDiffListener(AlignmentListener listener) {
         listeners.add(listener);
     }
     
-    public void removeDiffListener(DiffListener listener) {
+    public void removeDiffListener(AlignmentListener listener) {
         listeners.remove(listener);
     }
 
 
     protected void fireAddMatchingEntities(Map<OWLEntity, OWLEntity> newMatches) {
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addMatchingEntities(newMatches);
         }
     }
 
     protected void fireAddMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches){
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addMatchingAnonymousIndividuals(newMatches);
         }
     }
     protected void fireAddMatch(OWLEntity source, OWLEntity target){
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addMatch(source, target);
         }
     }
     protected void fireAddMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target){
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addMatch(source, target);
         }
     }
     
     protected void fireUnmatchedAxiomMoved(UnmatchedAxiom unmatched) {
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.unmatchedAxiomMoved(unmatched);
         }
     }
     
     protected void fireAddUnmatcheableAxiom(OWLAxiom axiom) {
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addUnmatcheableAxiom(axiom);
         }
     }
 
     protected void fireAddMatchedAxiom(OWLAxiom axiom) {
-        for (DiffListener listener : listeners) {
+        for (AlignmentListener listener : listeners) {
             listener.addMatchedAxiom(axiom);
         }
     }

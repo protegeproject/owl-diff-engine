@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.protege.owl.diff.align.DiffListener;
+import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.UnmatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 
-public class CountEntityMatchesListener implements DiffListener {
+public class CountEntityMatchesListener implements AlignmentListener {
     private List<Set<OWLEntity>> entityMatches = new ArrayList<Set<OWLEntity>>();
     
     public List<Set<OWLEntity>> getEntityMatches() {

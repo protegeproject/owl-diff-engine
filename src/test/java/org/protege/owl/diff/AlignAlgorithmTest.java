@@ -9,7 +9,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
@@ -45,7 +45,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
+        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
@@ -60,7 +60,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
+        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 1);
@@ -75,7 +75,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new DiffAlgorithm[] { new MatchByCode(), new MatchById() });
+        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchById() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 0);
@@ -94,13 +94,13 @@ public class AlignAlgorithmTest extends TestCase {
         OwlDiffMap diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
         CountEntityMatchesListener listener = new CountEntityMatchesListener();
         diffMap.addDiffListener(listener);
-        List<DiffAlgorithm> algorithms = new ArrayList<DiffAlgorithm>();
+        List<AlignmentAlgorithm> algorithms = new ArrayList<AlignmentAlgorithm>();
         algorithms.add(new MatchByCode());
         algorithms.add(new MatchStandardVocabulary());
         algorithms.add(new SuperSubClassPinch());
         Collections.sort(algorithms, new DiffAlgorithmComparator());
         for (int i =0 ;i < 2; i++) {
-        	for (DiffAlgorithm algorithm : algorithms) {
+        	for (AlignmentAlgorithm algorithm : algorithms) {
         		algorithm.initialise(diffMap, parameters);
         		algorithm.run();
         	}

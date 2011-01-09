@@ -1,9 +1,9 @@
 package org.protege.owl.diff.present.algorithms;
 
-import org.protege.owl.diff.present.AnalyzerAlgorithm;
+import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.present.util.AnalyzerAlgorithmComparator;
 
-public abstract class AbstractAnalyzerAlgorithm implements AnalyzerAlgorithm {
+public abstract class AbstractAnalyzerAlgorithm implements PresentationAlgorithm {
 	private int priority = AnalyzerAlgorithmComparator.DEFAULT_PRIORITY;
 
 	@Override

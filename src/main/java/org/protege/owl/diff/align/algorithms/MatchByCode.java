@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-public class MatchByCode implements DiffAlgorithm {
+public class MatchByCode implements AlignmentAlgorithm {
     private Logger logger = Logger.getLogger(MatchByCode.class);
     
     private boolean disabled = false;

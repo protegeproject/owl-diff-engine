@@ -6,7 +6,7 @@ import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public interface DiffListener {
+public interface AlignmentListener {
 
     void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches);
     void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches);

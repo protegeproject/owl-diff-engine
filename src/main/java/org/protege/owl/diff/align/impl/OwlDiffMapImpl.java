@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.align.DiffAlgorithm;
-import org.protege.owl.diff.align.DiffListener;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.util.DiffListenerAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -25,7 +25,7 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     
     private int           matchedEntitiesSinceAnnounce = 0;
     private int           matchedAxiomsSinceAnnounce = 0;
-    private DiffAlgorithm lastAnnouncedDiffAlgorithm;
+    private AlignmentAlgorithm lastAnnouncedDiffAlgorithm;
     private long          lastAnnounceTime = -1;
     
     /*
@@ -35,7 +35,7 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     
     
     
-    private DiffListener trackingListener = new DiffListenerAdapter() {
+    private AlignmentListener trackingListener = new DiffListenerAdapter() {
 
         public void addMatch(OWLEntity source, OWLEntity target) {
             matchedEntitiesSinceAnnounce++;
@@ -101,7 +101,7 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
      * Tracking
      */
     
-    public void announce(DiffAlgorithm da) {
+    public void announce(AlignmentAlgorithm da) {
         logger.info(SEPARATOR_STRING + da.getAlgorithmName() + SEPARATOR_STRING);
         
         lastAnnouncedDiffAlgorithm = da;

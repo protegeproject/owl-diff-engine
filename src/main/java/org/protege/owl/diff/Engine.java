@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
 import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
-import org.protege.owl.diff.present.AnalyzerAlgorithm;
+import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
@@ -28,10 +28,10 @@ public class Engine {
     private Properties parameters;
     
     private OwlDiffMap diffMap;
-    private List<DiffAlgorithm> diffAlgorithms = new ArrayList<DiffAlgorithm>();
+    private List<AlignmentAlgorithm> diffAlgorithms = new ArrayList<AlignmentAlgorithm>();
 
     private Changes changes;
-    private List<AnalyzerAlgorithm> changeAlgorithms = new ArrayList<AnalyzerAlgorithm>();
+    private List<PresentationAlgorithm> changeAlgorithms = new ArrayList<PresentationAlgorithm>();
     
     public Engine(OWLDataFactory factory, 
                   OWLOntology ontology1, 
@@ -53,7 +53,7 @@ public class Engine {
         boolean finished = false;
         do {
             progress  = false;
-            for (DiffAlgorithm da : diffAlgorithms) {
+            for (AlignmentAlgorithm da : diffAlgorithms) {
                 int entitiesCount = diffMap.getUnmatchedSourceEntities().size();
                 int individualsCount = diffMap.getUnmatchedSourceAnonymousIndividuals().size();
                 if (entitiesCount == 0 && individualsCount == 0) {
@@ -81,13 +81,13 @@ public class Engine {
     
     private void phase1Init() {
     	diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
-    	for (DiffAlgorithm algorithm : diffAlgorithms) {
+    	for (AlignmentAlgorithm algorithm : diffAlgorithms) {
     		algorithm.initialise(diffMap, parameters);
     	}
     }
     
     private void phase1Cleanup() {
-        for (DiffAlgorithm algorithm : diffAlgorithms) {
+        for (AlignmentAlgorithm algorithm : diffAlgorithms) {
             try {
                 algorithm.reset();
             }
@@ -104,9 +104,9 @@ public class Engine {
         return diffMap;
     }
     
-    public void setDiffAlgorithms(DiffAlgorithm... algorithms) {
+    public void setDiffAlgorithms(AlignmentAlgorithm... algorithms) {
         this.diffAlgorithms.clear();
-        for (DiffAlgorithm algorithm : algorithms) {
+        for (AlignmentAlgorithm algorithm : algorithms) {
         	this.diffAlgorithms.add(algorithm);
         }
         Collections.sort(diffAlgorithms, new DiffAlgorithmComparator());
@@ -114,14 +114,14 @@ public class Engine {
     
     public void phase2() {
     	phase2Init();
-    	for (AnalyzerAlgorithm algorithm : changeAlgorithms) {
+    	for (PresentationAlgorithm algorithm : changeAlgorithms) {
     		algorithm.apply();
     	}
     }
     
     public void phase2Init() {
     	changes = new Changes(diffMap, parameters);
-    	for (AnalyzerAlgorithm algorithm : changeAlgorithms) {
+    	for (PresentationAlgorithm algorithm : changeAlgorithms) {
     		algorithm.initialise(changes, parameters);
     	}
     }
@@ -130,9 +130,9 @@ public class Engine {
 		return changes;
 	}
     
-    public void setChangeAlgorithms(AnalyzerAlgorithm... algorithms) {
+    public void setChangeAlgorithms(PresentationAlgorithm... algorithms) {
 		changeAlgorithms.clear();
-		for (AnalyzerAlgorithm algorithm : algorithms) {
+		for (PresentationAlgorithm algorithm : algorithms) {
 			changeAlgorithms.add(algorithm);
 		}
 		Collections.sort(changeAlgorithms, new AnalyzerAlgorithmComparator());
