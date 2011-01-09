@@ -1,11 +1,11 @@
 package org.protege.owl.diff.align;
 
-import java.util.Properties;
+import org.protege.owl.diff.Engine;
 
 
 public interface AlignmentAlgorithm {
     
-    void initialise(OwlDiffMap diffMap, Properties parameters);
+    void initialise(Engine e);
     
     void run();
     

@@ -2,6 +2,7 @@ package org.protege.owl.diff.service;
 
 import java.util.Properties;
 
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -20,11 +21,11 @@ public class RetirementClassService {
     private OWLAnnotationProperty retirementStatusProperty;
     private String retirementStatusString;
     
-    public static RetirementClassService getRetirementClassService(OwlDiffMap diffMap, Properties parameters) {
-    	RetirementClassService rcs = diffMap.getService(RetirementClassService.class);
+    public static RetirementClassService getRetirementClassService(Engine e) {
+    	RetirementClassService rcs = e.getService(RetirementClassService.class);
     	if (rcs == null) {
-    		rcs = new RetirementClassService(diffMap, parameters);
-    		diffMap.addService(rcs);
+    		rcs = new RetirementClassService(e.getOwlDiffMap(), e.getParameters());
+    		e.addService(rcs);
     	}
     	return rcs;
     }

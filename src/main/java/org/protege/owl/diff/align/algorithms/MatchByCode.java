@@ -6,9 +6,10 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -28,13 +29,12 @@ public class MatchByCode implements AlignmentAlgorithm {
     private CodeToEntityMapper codeMapper;
 
     public int getPriority() {
-        return DiffAlgorithmComparator.MAX_PRIORITY;
+        return AlignmentAlgorithmComparator.MAX_PRIORITY;
     }
 
-    public void initialise(OwlDiffMap diffMap, Properties parameters) {
-    	
-        this.diffMap = diffMap;
-        codeMapper = CodeToEntityMapper.generateCodeToEntityMap(diffMap, parameters);
+    public void initialise(Engine e) {
+        this.diffMap = e.getOwlDiffMap();
+        codeMapper = CodeToEntityMapper.generateCodeToEntityMap(e);
         if (codeMapper.codeNotPresent()) {
         	disabled = true;
         }

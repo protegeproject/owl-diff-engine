@@ -3,12 +3,12 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
@@ -34,11 +34,11 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
     }
 
     public int getPriority() {
-        return DiffAlgorithmComparator.MAX_PRIORITY;
+        return AlignmentAlgorithmComparator.MAX_PRIORITY;
     }
 
-    public void initialise(OwlDiffMap diffMap, Properties parameters) {
-        diffs = diffMap;
+    public void initialise(Engine e) {
+        diffs = e.getOwlDiffMap();
     }
 
     public void run() {

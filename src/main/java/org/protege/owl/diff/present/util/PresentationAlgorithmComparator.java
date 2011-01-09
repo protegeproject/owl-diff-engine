@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.protege.owl.diff.present.PresentationAlgorithm;
 
-public class AnalyzerAlgorithmComparator implements Comparator<PresentationAlgorithm> {
+public class PresentationAlgorithmComparator implements Comparator<PresentationAlgorithm> {
     public static final int MIN_PRIORITY = 1;
     public static final int DEFAULT_PRIORITY = 5;
     public static final int MAX_PRIORITY = 10;

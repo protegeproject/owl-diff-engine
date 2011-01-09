@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -27,11 +28,11 @@ public class CodeToEntityMapper {
 	private OWLAnnotationProperty              codeProperty;
 	private Map<String, Collection<OWLEntity>> targetCodeToEntityMap;
 	
-	public static CodeToEntityMapper generateCodeToEntityMap(OwlDiffMap diffMap, Properties parameters) {
-		CodeToEntityMapper mapper = diffMap.getService(CodeToEntityMapper.class);
+	public static CodeToEntityMapper generateCodeToEntityMap(Engine e) {
+		CodeToEntityMapper mapper = e.getService(CodeToEntityMapper.class);
 		if (mapper == null) {
-			mapper = new CodeToEntityMapper(diffMap, parameters);
-			diffMap.addService(mapper);
+			mapper = new CodeToEntityMapper(e.getOwlDiffMap(), e.getParameters());
+			e.addService(mapper);
 		}
 		return mapper;
 	}

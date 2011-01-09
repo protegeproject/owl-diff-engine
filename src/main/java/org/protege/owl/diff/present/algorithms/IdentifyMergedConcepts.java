@@ -3,19 +3,19 @@ package org.protege.owl.diff.present.algorithms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.DiffDuplicator;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
+import org.protege.owl.diff.util.DiffDuplicator;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -47,18 +47,18 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 	}
 
 	@Override
-	public void initialise(Changes changes, Properties parameters) {
-		this.changes = changes;
+	public void initialise(Engine e) {
+		this.changes = e.getChanges();
 		OwlDiffMap diffMap = changes.getRawDiffMap();
-		mapper = CodeToEntityMapper.generateCodeToEntityMap(diffMap, parameters);
+		mapper = CodeToEntityMapper.generateCodeToEntityMap(e);
 		OWLDataFactory factory = diffMap.getOWLDataFactory();
-		String mergedIntoPropertyName = (String) parameters.get(MERGED_INTO_ANNOTATION_PROPERTY);
+		String mergedIntoPropertyName = (String) e.getParameters().get(MERGED_INTO_ANNOTATION_PROPERTY);
 		if (mergedIntoPropertyName == null) {
 			disabled = true;
 			return;
 		}
 		mergedIntoProperty = factory.getOWLAnnotationProperty(IRI.create(mergedIntoPropertyName));
-		retiredClassService = RetirementClassService.getRetirementClassService(diffMap, parameters);
+		retiredClassService = RetirementClassService.getRetirementClassService(e);
 		Map<IRI, IRI> mergedIntoMap = new HashMap<IRI, IRI>();
 		for (OWLAxiom axiom : diffMap.getTargetOntology().getReferencingAxioms(mergedIntoProperty)) {
 			if (isMergedIntoAxiom(axiom)) {

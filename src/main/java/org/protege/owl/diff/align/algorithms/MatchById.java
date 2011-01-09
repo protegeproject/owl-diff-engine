@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -28,8 +29,8 @@ public class MatchById implements AlignmentAlgorithm {
         return 9;
     }
 
-    public void initialise(OwlDiffMap diffMap, Properties parameters) {
-        this.diffMap = diffMap;
+    public void initialise(Engine e) {
+        this.diffMap = e.getOwlDiffMap();
     }
 
     public void run() {

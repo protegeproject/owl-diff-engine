@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentListener;
-import org.protege.owl.diff.align.util.DiffListenerAdapter;
+import org.protege.owl.diff.align.util.AlignmentListenerAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -28,14 +28,9 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
     private AlignmentAlgorithm lastAnnouncedDiffAlgorithm;
     private long          lastAnnounceTime = -1;
     
-    /*
-     * Services used by more than one plugin.
-     */
-    private Collection<Object> services = new ArrayList<Object>();
     
     
-    
-    private AlignmentListener trackingListener = new DiffListenerAdapter() {
+    private AlignmentListener trackingListener = new AlignmentListenerAdapter() {
 
         public void addMatch(OWLEntity source, OWLEntity target) {
             matchedEntitiesSinceAnnounce++;
@@ -76,24 +71,6 @@ public class OwlDiffMapImpl extends OwlDiffMapCore {
         return targetOntology;
     }
 
- 
-    /*
-     * Services
-     */
-    
-    public void addService(Object o) {
-    	services.add(o);
-    }
-    
-    @Override
-    public <X> X getService(Class<? extends X> implementing) {
-    	for (Object o : services) {
-    		if (implementing.isAssignableFrom(o.getClass())) {
-    			return implementing.cast(o);
-    		}
-    	}
-    	return null;
-    }
 
 
     

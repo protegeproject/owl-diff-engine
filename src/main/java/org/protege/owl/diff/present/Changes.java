@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.TreeSet;
 
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.GetAxiomSourceVisitor;
-import org.protege.owl.diff.present.util.AnalyzerAlgorithmComparator;
+import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
+import org.protege.owl.diff.util.GetAxiomSourceVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
@@ -22,11 +21,9 @@ public class Changes {
     private Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
 
     private OwlDiffMap diffMap;
-    private Properties parameters;
     
-    public Changes(OwlDiffMap diffMap, Properties parameters) {
+    public Changes(OwlDiffMap diffMap) {
         this.diffMap = diffMap;
-        this.parameters = parameters;
         initialiseDiffs();
     }
 

@@ -1,10 +1,10 @@
 package org.protege.owl.diff.present;
 
-import java.util.Properties;
+import org.protege.owl.diff.Engine;
 
 public interface PresentationAlgorithm {
     
-    void initialise(Changes analyzer, Properties parameters);
+    void initialise(Engine e);
 
     void apply();
     

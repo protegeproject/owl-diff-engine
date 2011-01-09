@@ -9,7 +9,7 @@ import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public class DiffListenerAdapter implements AlignmentListener {
+public class AlignmentListenerAdapter implements AlignmentListener {
 
     public void addMatch(OWLEntity source, OWLEntity target) {
 

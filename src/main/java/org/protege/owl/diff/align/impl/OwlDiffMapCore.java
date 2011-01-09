@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
-import org.protege.owl.diff.align.util.DiffDuplicator;
+import org.protege.owl.diff.util.DiffDuplicator;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;

@@ -1,4 +1,4 @@
-package org.protege.owl.diff.align.util;
+package org.protege.owl.diff.util;
 
 import java.util.Collection;
 import java.util.TreeSet;

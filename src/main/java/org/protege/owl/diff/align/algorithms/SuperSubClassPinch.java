@@ -3,17 +3,16 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
-import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
-import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
-import org.protege.owl.diff.align.util.DiffListenerAdapter;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -37,15 +36,15 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     }
 
     public int getPriority() {
-        return DiffAlgorithmComparator.DEFAULT_PRIORITY;
+        return AlignmentAlgorithmComparator.DEFAULT_PRIORITY;
     }
 
-    public void initialise(OwlDiffMap diffMap, Properties parameters) {
-        this.diffMap = diffMap;
+    public void initialise(Engine e) {
+        this.diffMap = e.getOwlDiffMap();
         requiredSubclasses = 1;
-        if (parameters.get(REQUIRED_SUBCLASSES_PROPERTY) != null) {
+        if (e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY) != null) {
             try {
-                requiredSubclasses = Integer.parseInt((String) parameters.get(REQUIRED_SUBCLASSES_PROPERTY));
+                requiredSubclasses = Integer.parseInt((String) e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY));
             }
             catch (NumberFormatException t) {
                 log.warn("Could not initialize required subclasses value", t);

@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
-import org.protege.owl.diff.present.util.AnalyzerAlgorithmComparator;
+import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.protege.owl.diff.service.RetirementClassService;
 
 public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
     public static final MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.MIN_SEQUENCE);
-    public static final int DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY = AnalyzerAlgorithmComparator.DEFAULT_PRIORITY + 2;
+    public static final int DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY = PresentationAlgorithmComparator.DEFAULT_PRIORITY + 2;
 
     private Changes changes;
     private RetirementClassService retiredClassService;
@@ -22,9 +23,9 @@ public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
     	setPriority(DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY);
     }
     
-    public void initialise(Changes changes, Properties parameters) {
-    	this.changes = changes;
-    	retiredClassService = RetirementClassService.getRetirementClassService(changes.getRawDiffMap(), parameters);
+    public void initialise(Engine e) {
+    	this.changes = e.getChanges();
+    	retiredClassService = RetirementClassService.getRetirementClassService(e);
     }	
     
     public void apply() {

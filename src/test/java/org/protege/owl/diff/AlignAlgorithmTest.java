@@ -16,7 +16,7 @@ import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
-import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -91,17 +91,19 @@ public class AlignAlgorithmTest extends TestCase {
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, 
                                "http://www.tigraworld.com/protege/ParentsAndChildren.owl#code");
         parameters.setProperty(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
-        OwlDiffMap diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
+        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        e.phase1(); // no algorithms are run here.
+        OwlDiffMap diffMap = e.getOwlDiffMap();
         CountEntityMatchesListener listener = new CountEntityMatchesListener();
         diffMap.addDiffListener(listener);
         List<AlignmentAlgorithm> algorithms = new ArrayList<AlignmentAlgorithm>();
         algorithms.add(new MatchByCode());
         algorithms.add(new MatchStandardVocabulary());
         algorithms.add(new SuperSubClassPinch());
-        Collections.sort(algorithms, new DiffAlgorithmComparator());
+        Collections.sort(algorithms, new AlignmentAlgorithmComparator());
         for (int i =0 ;i < 2; i++) {
         	for (AlignmentAlgorithm algorithm : algorithms) {
-        		algorithm.initialise(diffMap, parameters);
+        		algorithm.initialise(e);
         		algorithm.run();
         	}
         }

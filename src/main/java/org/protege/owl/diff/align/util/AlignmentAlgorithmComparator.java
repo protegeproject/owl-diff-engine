@@ -5,7 +5,7 @@ import java.util.Comparator;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 
 
-public class DiffAlgorithmComparator implements Comparator<AlignmentAlgorithm> {
+public class AlignmentAlgorithmComparator implements Comparator<AlignmentAlgorithm> {
     public static final int MIN_PRIORITY = 1;
     public static final int MAX_PRIORITY = 10;
     public static final int DEFAULT_PRIORITY = 5;

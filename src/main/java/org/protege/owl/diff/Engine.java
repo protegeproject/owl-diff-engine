@@ -10,12 +10,12 @@ import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
-import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
-import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
-import org.protege.owl.diff.present.util.AnalyzerAlgorithmComparator;
+import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -32,6 +32,9 @@ public class Engine {
 
     private Changes changes;
     private List<PresentationAlgorithm> changeAlgorithms = new ArrayList<PresentationAlgorithm>();
+    
+    private Collection<Object> services = new ArrayList<Object>();
+
     
     public Engine(OWLDataFactory factory, 
                   OWLOntology ontology1, 
@@ -82,7 +85,7 @@ public class Engine {
     private void phase1Init() {
     	diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
     	for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-    		algorithm.initialise(diffMap, parameters);
+    		algorithm.initialise(this);
     	}
     }
     
@@ -109,7 +112,7 @@ public class Engine {
         for (AlignmentAlgorithm algorithm : algorithms) {
         	this.diffAlgorithms.add(algorithm);
         }
-        Collections.sort(diffAlgorithms, new DiffAlgorithmComparator());
+        Collections.sort(diffAlgorithms, new AlignmentAlgorithmComparator());
     }
     
     public void phase2() {
@@ -119,10 +122,10 @@ public class Engine {
     	}
     }
     
-    public void phase2Init() {
-    	changes = new Changes(diffMap, parameters);
+    private void phase2Init() {
+    	changes = new Changes(diffMap);
     	for (PresentationAlgorithm algorithm : changeAlgorithms) {
-    		algorithm.initialise(changes, parameters);
+    		algorithm.initialise(this);
     	}
     }
     
@@ -135,8 +138,22 @@ public class Engine {
 		for (PresentationAlgorithm algorithm : algorithms) {
 			changeAlgorithms.add(algorithm);
 		}
-		Collections.sort(changeAlgorithms, new AnalyzerAlgorithmComparator());
+		Collections.sort(changeAlgorithms, new PresentationAlgorithmComparator());
 	}
+    
+    
+    public void addService(Object o) {
+    	services.add(o);
+    }
+    
+    public <X> X getService(Class<? extends X> implementing) {
+    	for (Object o : services) {
+    		if (implementing.isAssignableFrom(o.getClass())) {
+    			return implementing.cast(o);
+    		}
+    	}
+    	return null;
+    }
     
     public void display() {
         Collection<EntityBasedDiff> ediffs = changes.getEntityBasedDiffs();
@@ -146,4 +163,6 @@ public class Engine {
             }
         }
     }
+    
+    
 }

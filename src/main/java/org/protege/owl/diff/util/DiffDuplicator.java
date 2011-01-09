@@ -1,8 +1,9 @@
-package org.protege.owl.diff.align.util;
+package org.protege.owl.diff.util;
 
 import java.util.Map;
 
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.util.UnmappedEntityException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
