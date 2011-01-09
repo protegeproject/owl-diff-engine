@@ -46,11 +46,57 @@ public class Engine {
         this.parameters = parameters;
     }
     
-    public Properties getParameters() {
+    public OwlDiffMap getOwlDiffMap() {
+	    return diffMap;
+	}
+
+	public Changes getChanges() {
+		return changes;
+	}
+
+	public Properties getParameters() {
 		return parameters;
 	}
 
-    public void phase1() {
+    public void setAlignmentAlgorithms(AlignmentAlgorithm... algorithms) {
+	    this.diffAlgorithms.clear();
+	    for (AlignmentAlgorithm algorithm : algorithms) {
+	    	this.diffAlgorithms.add(algorithm);
+	    }
+	    Collections.sort(diffAlgorithms, new AlignmentAlgorithmComparator());
+	}
+
+	public void setPresentationAlgorithms(PresentationAlgorithm... algorithms) {
+		changeAlgorithms.clear();
+		for (PresentationAlgorithm algorithm : algorithms) {
+			changeAlgorithms.add(algorithm);
+		}
+		Collections.sort(changeAlgorithms, new PresentationAlgorithmComparator());
+	}
+
+	public void addService(Object o) {
+		services.add(o);
+	}
+
+	public <X> X getService(Class<? extends X> implementing) {
+		for (Object o : services) {
+			if (implementing.isAssignableFrom(o.getClass())) {
+				return implementing.cast(o);
+			}
+		}
+		return null;
+	}
+
+	public void display() {
+	    Collection<EntityBasedDiff> ediffs = changes.getEntityBasedDiffs();
+	    for (EntityBasedDiff ediff : ediffs) {
+	        if (ediff.getDiffType() != DiffType.EQUIVALENT) {
+	            logger.info(ediff.getDescription());
+	        }
+	    }
+	}
+
+	public void phase1() {
     	phase1Init();
         boolean progress;
         boolean finished = false;
@@ -83,39 +129,27 @@ public class Engine {
     }
     
     private void phase1Init() {
-    	diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
-    	for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-    		algorithm.initialise(this);
-    	}
-    }
-    
-    private void phase1Cleanup() {
-        for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-            try {
-                algorithm.reset();
-            }
-            catch (Error t) {
-                logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
-            }
-            catch (Exception t) {
-                logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
-            }
-        }
-    }
+		diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
+		for (AlignmentAlgorithm algorithm : diffAlgorithms) {
+			algorithm.initialise(this);
+		}
+	}
 
-    public OwlDiffMap getOwlDiffMap() {
-        return diffMap;
-    }
-    
-    public void setDiffAlgorithms(AlignmentAlgorithm... algorithms) {
-        this.diffAlgorithms.clear();
-        for (AlignmentAlgorithm algorithm : algorithms) {
-        	this.diffAlgorithms.add(algorithm);
-        }
-        Collections.sort(diffAlgorithms, new AlignmentAlgorithmComparator());
-    }
-    
-    public void phase2() {
+	private void phase1Cleanup() {
+	    for (AlignmentAlgorithm algorithm : diffAlgorithms) {
+	        try {
+	            algorithm.reset();
+	        }
+	        catch (Error t) {
+	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
+	        }
+	        catch (Exception t) {
+	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
+	        }
+	    }
+	}
+
+	public void phase2() {
     	phase2Init();
     	for (PresentationAlgorithm algorithm : changeAlgorithms) {
     		algorithm.apply();
@@ -127,41 +161,6 @@ public class Engine {
     	for (PresentationAlgorithm algorithm : changeAlgorithms) {
     		algorithm.initialise(this);
     	}
-    }
-    
-    public Changes getChanges() {
-		return changes;
-	}
-    
-    public void setChangeAlgorithms(PresentationAlgorithm... algorithms) {
-		changeAlgorithms.clear();
-		for (PresentationAlgorithm algorithm : algorithms) {
-			changeAlgorithms.add(algorithm);
-		}
-		Collections.sort(changeAlgorithms, new PresentationAlgorithmComparator());
-	}
-    
-    
-    public void addService(Object o) {
-    	services.add(o);
-    }
-    
-    public <X> X getService(Class<? extends X> implementing) {
-    	for (Object o : services) {
-    		if (implementing.isAssignableFrom(o.getClass())) {
-    			return implementing.cast(o);
-    		}
-    	}
-    	return null;
-    }
-    
-    public void display() {
-        Collection<EntityBasedDiff> ediffs = changes.getEntityBasedDiffs();
-        for (EntityBasedDiff ediff : ediffs) {
-            if (ediff.getDiffType() != DiffType.EQUIVALENT) {
-                logger.info(ediff.getDescription());
-            }
-        }
     }
     
     

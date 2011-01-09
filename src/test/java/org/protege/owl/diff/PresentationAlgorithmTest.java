@@ -45,8 +45,8 @@ public class PresentationAlgorithmTest extends TestCase {
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
     	Engine e = new Engine(factory, ontology1, ontology2, p);
-    	e.setDiffAlgorithms(new MatchByCode(), new MatchById());
-    	e.setChangeAlgorithms(new IdentifyMergedConcepts());
+    	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
+    	e.setPresentationAlgorithms(new IdentifyMergedConcepts());
     	e.phase1();
     	e.phase2();
     	Changes changes = e.getChanges();
@@ -92,8 +92,8 @@ public class PresentationAlgorithmTest extends TestCase {
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
     	Engine e = new Engine(factory, ontology1, ontology2, p);
-    	e.setDiffAlgorithms(new MatchByCode(), new MatchById());
-    	e.setChangeAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
+    	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
+    	e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
     	e.phase1();
     	e.phase2();
     	Changes changes = e.getChanges();

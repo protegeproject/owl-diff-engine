@@ -59,8 +59,8 @@ public class OpenAndCompare {
         watch.measure();
         logger.info("Running diff");
         Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
-        e.setDiffAlgorithms(new MatchByCode(), new MatchById());
-        e.setChangeAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
+        e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
+        e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
         e.phase1();
         watch.measure();
         logger.info("Calculating presentation");

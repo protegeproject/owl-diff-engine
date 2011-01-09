@@ -45,7 +45,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
+        e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
@@ -60,7 +60,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
+        e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 1);
@@ -75,7 +75,7 @@ public class AlignAlgorithmTest extends TestCase {
         Properties parameters = new Properties();
         parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
         Engine e = new Engine(factory, ontology1, ontology2, parameters);
-        e.setDiffAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchById() });
+        e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchById() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertTrue(diffs.getUnmatchedSourceEntities().size() == 0);
