@@ -4,8 +4,8 @@
 
 		<test name="JUnit-Test-Example" junit="true">
 		    <classes>
-				<class name="org.protege.owl.diff.RawAlgorithmTest" />
-				<class name="org.protege.owl.diff.ChangesAlgorithmTest"/>
+				<class name="org.protege.owl.diff.AlignAlgorithmTest" />
+				<class name="org.protege.owl.diff.PresentationAlgorithmTest"/>
 			</classes>
 		</test>
         <!--

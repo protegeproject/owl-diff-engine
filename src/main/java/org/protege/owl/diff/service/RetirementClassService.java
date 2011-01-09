@@ -2,7 +2,7 @@ package org.protege.owl.diff.service;
 
 import java.util.Properties;
 
-import org.protege.owl.diff.raw.OwlDiffMap;
+import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;

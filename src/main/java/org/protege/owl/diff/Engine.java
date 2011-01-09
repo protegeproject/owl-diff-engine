@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.analyzer.AnalyzerAlgorithm;
-import org.protege.owl.diff.analyzer.Changes;
-import org.protege.owl.diff.analyzer.EntityBasedDiff;
-import org.protege.owl.diff.analyzer.EntityBasedDiff.DiffType;
-import org.protege.owl.diff.analyzer.util.AnalyzerAlgorithmComparator;
-import org.protege.owl.diff.raw.DiffAlgorithm;
-import org.protege.owl.diff.raw.OwlDiffMap;
-import org.protege.owl.diff.raw.impl.OwlDiffMapImpl;
-import org.protege.owl.diff.raw.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.align.DiffAlgorithm;
+import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
+import org.protege.owl.diff.align.util.DiffAlgorithmComparator;
+import org.protege.owl.diff.present.AnalyzerAlgorithm;
+import org.protege.owl.diff.present.Changes;
+import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
+import org.protege.owl.diff.present.util.AnalyzerAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 

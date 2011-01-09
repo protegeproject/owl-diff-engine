@@ -1,11 +1,7 @@
-package org.protege.owl.diff;
+package org.protege.owl.diff.align.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.protege.owl.diff.align.DiffListener;
 import org.protege.owl.diff.align.UnmatchedAxiom;
@@ -13,20 +9,16 @@ import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-
-public class CountEntityMatchesListener implements DiffListener {
-    private List<Set<OWLEntity>> entityMatches = new ArrayList<Set<OWLEntity>>();
-    
-    public List<Set<OWLEntity>> getEntityMatches() {
-        return Collections.unmodifiableList(entityMatches);
-    }
+public class DiffListenerAdapter implements DiffListener {
 
     public void addMatch(OWLEntity source, OWLEntity target) {
-        entityMatches.add(Collections.singleton(source));
+
     }
 
     public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches) {
-        entityMatches.add(new HashSet<OWLEntity>(newMatches.keySet()));
+        for (Entry<OWLEntity, OWLEntity> entry : newMatches.entrySet()) {
+            addMatch(entry.getKey(), entry.getValue());
+        }
     }
 
     public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {
@@ -34,11 +26,13 @@ public class CountEntityMatchesListener implements DiffListener {
     }
 
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
-
+        for (Entry<OWLAnonymousIndividual, OWLAnonymousIndividual> entry : newMatches.entrySet()) {
+            addMatch(entry.getKey(), entry.getValue());
+        }
     }
     
     public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
-
+ 
     }
 
     public void addMatchedAxiom(OWLAxiom axiom) {
