@@ -4,10 +4,10 @@ Bundle-Name: OWL Diff Library
 Bundle-SymbolicName: org.protege.owl.diff
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Protege Team
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.0.0"
+Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.1.0"
 Import-Package: org.apache.log4j
-Export-Package: org.protege.owl.diff.align,
+Export-Package: org.protege.owl.diff,
+ org.protege.owl.diff.align,
  org.protege.owl.diff.align.algorithms,
  org.protege.owl.diff.align.util,
  org.protege.owl.diff.present,
