@@ -9,9 +9,9 @@ import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
-import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
@@ -19,7 +19,10 @@ import org.protege.owl.diff.service.RetirementClassService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -62,7 +65,6 @@ public class PresentationAlgorithmTest extends TestCase {
     		MatchDescription description = match.getDescription();
     		if (description.equals(IdentifyMergedConcepts.MERGE)) {
     			mergeCount++;
-    			assertTrue(keptEntityDiffs.getAxiomMatches().contains(match));
     		}
     		else if (description.equals(IdentifyMergedConcepts.RETIRED_DUE_TO_MERGE)) {
     			retiredCount++;
@@ -111,7 +113,6 @@ public class PresentationAlgorithmTest extends TestCase {
     		MatchDescription description = match.getDescription();
     		if (description.equals(IdentifyMergedConcepts.MERGE)) {
     			mergeCount++;
-    			assertTrue(keptEntityDiffs.getAxiomMatches().contains(match));
     		}
     		else if (description.equals(IdentifyMergedConcepts.RETIRED_DUE_TO_MERGE)) {
     			retiredCount++;
@@ -173,4 +174,103 @@ public class PresentationAlgorithmTest extends TestCase {
     	assertTrue(deletedDueToRetirementCount == 1);
     	e.display();
 	}
+    
+    /**
+     * This test is one of three tests to ensures that the mechanism that gets the entities  
+     * an axiom is "about" properly depends on the source/target ontology.
+     * 
+     * @throws OWLOntologyCreationException
+     */
+    public void testAddAnnotation() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/AddAnnotation.owl";
+    	loadOntologies("AddAnnotation");
+    	Properties p = new Properties();
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.phase1();
+    	e.phase2();
+    	Changes changes = e.getChanges();
+    	OWLClass newEntity = e.getOWLDataFactory().getOWLClass(IRI.create(ns + "#B"));
+    	EntityBasedDiff diff = changes.getTargetDiffMap().get(newEntity);
+    	int addedAnnotationCount = 0;
+    	for (MatchedAxiom match : diff.getAxiomMatches()) {
+    		if (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) && match.getTargetAxiom() instanceof OWLAnnotationAssertionAxiom) {
+    			addedAnnotationCount++;
+    		}
+    	}
+    	assertTrue(addedAnnotationCount == 1);
+    }
+    
+    /**
+     * This test is one of three tests to ensures that the mechanism that gets the entities  
+     * an axiom is "about" properly depends on the source/target ontology.
+     * 
+     * @throws OWLOntologyCreationException
+     */
+    public void testRemoveAnnotation() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/RemoveAnnotation.owl";
+    	loadOntologies("RemoveAnnotation");
+    	Properties p = new Properties();
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.phase1();
+    	e.phase2();
+    	Changes changes = e.getChanges();
+    	OWLClass newEntity = e.getOWLDataFactory().getOWLClass(IRI.create(ns + "#A"));
+    	EntityBasedDiff diff = changes.getSourceDiffMap().get(newEntity);
+    	int deletedAnnotationCount = 0;
+    	MatchedAxiom deletedAnnotation = null;
+    	for (MatchedAxiom match : diff.getAxiomMatches()) {
+    		if (match.getDescription().equals(MatchedAxiom.AXIOM_DELETED) && match.getSourceAxiom() instanceof OWLAnnotationAssertionAxiom) {
+    			deletedAnnotationCount++;
+    		}
+    	}
+    	assertTrue(deletedAnnotationCount == 1);
+    }
+    
+    /**
+     * This test is one of three tests to ensures that the mechanism that gets the entities  
+     * an axiom is "about" properly depends on the source/target ontology.
+     * 
+     * @throws OWLOntologyCreationException
+     */
+    public void testSourceCalculationInAddRemove() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/SourceCalculation.owl";
+    	OWLDataFactory factory = OWLManager.getOWLDataFactory();
+    	OWLAnnotationProperty label = factory.getRDFSLabel();
+    	OWLLiteral literal = factory.getOWLLiteral("hello world", "en");
+    	
+    	OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
+    	OWLOntology ontology1 = manager1.createOntology(IRI.create(ns));
+    	OWLClass a = factory.getOWLClass(IRI.create(ns + "#A"));
+    	manager1.addAxiom(ontology1, factory.getOWLDeclarationAxiom(a));
+    	
+    	OWLOntologyManager manager2 = OWLManager.createOWLOntologyManager();
+    	OWLOntology ontology2 = manager2.createOntology(IRI.create(ns));
+    	OWLClass b = factory.getOWLClass(IRI.create(ns + "#B"));
+    	manager2.addAxiom(ontology2, factory.getOWLDeclarationAxiom(b));
+    	
+    	Engine e = new Engine(factory, ontology1, ontology2, new Properties());
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.phase1();
+    	e.phase2();
+    	
+    	Changes changes = e.getChanges();
+    	
+    	EntityBasedDiff aDiff = changes.getSourceDiffMap().get(a);
+    	OWLAnnotationAssertionAxiom aAnnot = factory.getOWLAnnotationAssertionAxiom(a.getIRI(), factory.getOWLAnnotation(label, literal));
+    	MatchedAxiom aMatch = new MatchedAxiom(aAnnot, null, MatchedAxiom.AXIOM_DELETED);
+    	changes.addMatch(aMatch);
+    	assertTrue(aDiff.getAxiomMatches().contains(aMatch));
+    	changes.removeMatch(aMatch);
+    	assertTrue(!aDiff.getAxiomMatches().contains(aMatch));
+    	
+    	EntityBasedDiff bDiff = changes.getTargetDiffMap().get(b);
+    	OWLAnnotationAssertionAxiom bAnnot = factory.getOWLAnnotationAssertionAxiom(b.getIRI(), factory.getOWLAnnotation(label, literal));
+    	MatchedAxiom bMatch = new MatchedAxiom(null, bAnnot, MatchedAxiom.AXIOM_ADDED);
+    	changes.addMatch(bMatch);
+    	assertTrue(bDiff.getAxiomMatches().contains(bMatch));
+    	changes.removeMatch(bMatch);
+    	assertTrue(!bDiff.getAxiomMatches().contains(bMatch));    	
+    }
 }
