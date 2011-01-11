@@ -55,15 +55,15 @@ public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
         for (MatchedAxiom match : retiringMatches) {
             MatchedAxiom newRetired = new MatchedAxiom(null, match.getTargetAxiom(), RETIRED);
             newRetired.setFinal(true);
-            diff.removeMatch(match);
-            diff.addMatch(newRetired);
+            changes.removeMatch(match);
+            changes.addMatch(newRetired);
         }
         if (!retiringMatches.isEmpty()) {
         	for (MatchedAxiom deletedAxiomMatch : deletedAxiomMatches) {
         		MatchedAxiom deletedDueToRetire = new MatchedAxiom(deletedAxiomMatch.getSourceAxiom(), null, DELETED_DUE_TO_RETIRE);
         		deletedDueToRetire.setFinal(true);
-        		diff.removeMatch(deletedAxiomMatch);
-        		diff.addMatch(deletedDueToRetire);
+        		changes.removeMatch(deletedAxiomMatch);
+        		changes.addMatch(deletedDueToRetire);
         	}
         }
     }
