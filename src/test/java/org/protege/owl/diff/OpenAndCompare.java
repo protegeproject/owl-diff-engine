@@ -24,7 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class OpenAndCompare {
     private static Logger logger = Logger.getLogger(OpenAndCompare.class);
 
-    private final static File root     = new File("/home/tredmond/Shared/ontologies/NCI/2010-11-29-cbapp-qa2");
+    private final static File root     = new File("/Users/tredmond/Shared/ontologies/NCI/2010-11-29-cbapp-qa2");
     private final static File baseline = new File(root, "Thesaurus-101129-10.11e.owl");
     private final static File altered  = new File(root, "Thesaurus-changed-file.owl");
 
@@ -42,9 +42,13 @@ public class OpenAndCompare {
         Properties p = new Properties();
         p.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
         p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Into");
-        p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status");
+        p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status");
         p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
         p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_");
+        p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT");
+        p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ASSOCIATION");
+        p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 2, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD");
+        p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 3, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE");
         
         StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompare.class));
         OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
