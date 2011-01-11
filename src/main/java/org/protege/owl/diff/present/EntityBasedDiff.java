@@ -1,6 +1,7 @@
 package org.protege.owl.diff.present;
 
 import java.util.Collection;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -15,7 +16,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     private OWLEntity sourceEntity;
     private OWLEntity targetEntity;
-    private Collection<MatchedAxiom> axiomMatches = new TreeSet<MatchedAxiom>();
+    private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<MatchedAxiom>();
     
     public OWLEntity getSourceEntity() {
         return sourceEntity;
@@ -55,11 +56,11 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         return axiomMatches;
     }
     
-    public void addMatch(MatchedAxiom match) {
+    /* package */ void addMatch(MatchedAxiom match) {
         axiomMatches.add(match);
     }
     
-    public void removeMatch(MatchedAxiom match) {
+    /* package */ void removeMatch(MatchedAxiom match) {
         axiomMatches.remove(match);
     }
     
@@ -79,7 +80,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
             buffer.append(renderObject(targetEntity));
             break;
         case RENAMED:
-            buffer.append("Id changed");
+            buffer.append("Renamed ");
             buffer.append(renderObject(sourceEntity));
             buffer.append(" -> ");
             buffer.append(renderObject(targetEntity));
@@ -144,5 +145,10 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         else {
             return 0;
         }
+    }
+    
+    @Override
+    public String toString() {
+    	return "[Diff: " + getDescription() + "]";
     }
 }
