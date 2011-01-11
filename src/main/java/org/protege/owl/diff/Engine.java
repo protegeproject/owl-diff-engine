@@ -46,6 +46,10 @@ public class Engine {
         this.parameters = parameters;
     }
     
+    public OWLDataFactory getOWLDataFactory() {
+    	return factory;
+    }
+    
     public OwlDiffMap getOwlDiffMap() {
 	    return diffMap;
 	}
