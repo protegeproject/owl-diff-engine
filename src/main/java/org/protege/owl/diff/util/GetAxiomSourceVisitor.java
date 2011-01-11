@@ -3,6 +3,7 @@ package org.protege.owl.diff.util;
 import java.util.Collection;
 import java.util.TreeSet;
 
+import org.protege.owl.diff.present.AxiomDescribesEntitiesDetector;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
@@ -54,7 +55,7 @@ import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.SWRLRule;
 
-public class GetAxiomSourceVisitor implements OWLAxiomVisitor {
+public class GetAxiomSourceVisitor implements OWLAxiomVisitor, AxiomDescribesEntitiesDetector {
     private Collection<OWLEntity> sources = new TreeSet<OWLEntity>();
     private OWLOntology  ontology;
     private OWLDataFactory factory;
