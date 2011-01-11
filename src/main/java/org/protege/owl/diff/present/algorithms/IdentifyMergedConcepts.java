@@ -23,6 +23,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 
 public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
@@ -115,9 +116,8 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 	    if (mergeDecl != null) {
 	    	MatchedAxiom newMergeDecl = new MatchedAxiom(null, mergeDecl.getTargetAxiom(), MERGE);
 	    	newMergeDecl.setFinal(true);
-	        retiringEntityDiff.removeMatch(mergeDecl);
-	        retiringEntityDiff.addMatch(newMergeDecl);
-	        keptEntityDiff.addMatch(newMergeDecl);
+	        changes.removeMatch(mergeDecl);
+	        changes.addMatch(newMergeDecl);
 	    }
 	}
 
@@ -134,8 +134,8 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 	    for (MatchedAxiom match : retiringMatches) {
 	        MatchedAxiom newRetired = new MatchedAxiom(null, match.getTargetAxiom(), RETIRED_DUE_TO_MERGE);
 	        newRetired.setFinal(true);
-	        diff.removeMatch(match);
-	        diff.addMatch(newRetired);
+	        changes.removeMatch(match);
+	        changes.addMatch(newRetired);
 	    }
 	}
 
@@ -144,17 +144,19 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 			return;
 		}
 		OWLEntity retiringEntity = retiringEntityDiff.getSourceEntity();
-		for (OWLAxiom axiom : changes.getRawDiffMap().getSourceOntology().getReferencingAxioms(retiringEntity)) {
+		OWLOntology sourceOntology = changes.getRawDiffMap().getSourceOntology();
+		OWLOntology targetOntology = changes.getRawDiffMap().getTargetOntology();
+		for (OWLAxiom axiom : sourceOntology.getReferencingAxioms(retiringEntity)) {
 			OWLAxiom targetAxiom = mergeDuplicator.duplicateObject(sourceToTarget.duplicateObject(axiom));
 			MatchedAxiom axiomAdded = new MatchedAxiom(null, targetAxiom, MatchedAxiom.AXIOM_ADDED);
 			MatchedAxiom axiomRemoved = new MatchedAxiom(axiom, null, MatchedAxiom.AXIOM_DELETED);
-			if (keptEntityDiff.getAxiomMatches().contains(axiomAdded)) {
-				MatchedAxiom axiomMerged = new MatchedAxiom(axiom, targetAxiom, MERGE_AXIOM);
-				keptEntityDiff.removeMatch(axiomAdded);
-				keptEntityDiff.addMatch(axiomMerged);
-				if (retiringEntityDiff.getAxiomMatches().contains(axiomRemoved)) {
-					retiringEntityDiff.removeMatch(axiomRemoved);
-					retiringEntityDiff.addMatch(axiomMerged);
+			MatchedAxiom axiomMerged = new MatchedAxiom(axiom, targetAxiom, MERGE_AXIOM);
+			
+			if (changes.containsMatch(axiomAdded)) {			
+				changes.removeMatch(axiomAdded);
+				changes.addMatch(axiomMerged);
+				if (changes.containsMatch(axiomRemoved)) {
+					changes.removeMatch(axiomRemoved);
 				}
 			}
 		}
