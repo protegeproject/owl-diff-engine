@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.protege.owl.diff.util.GetAxiomSourceVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -19,11 +18,15 @@ public class Changes {
     private TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> sourceDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
+    private AxiomDescribesEntitiesDetector sourceEntitiesDetector;
+    private AxiomDescribesEntitiesDetector targetEntitiesDetector;
 
     private OwlDiffMap diffMap;
     
     public Changes(OwlDiffMap diffMap) {
         this.diffMap = diffMap;
+        sourceEntitiesDetector = new GetAxiomSourceVisitor(diffMap.getSourceOntology(), diffMap.getOWLDataFactory());
+        targetEntitiesDetector = new GetAxiomSourceVisitor(diffMap.getTargetOntology(), diffMap.getOWLDataFactory());
         initialiseDiffs();
     }
 
@@ -50,6 +53,97 @@ public class Changes {
     public Collection<OWLAxiom> getUnmatchedTargetAxiomsWithNoSubject() {
         return unmatchedTargetAxiomsWithNoSubject;
     }
+    
+    public boolean containsMatch(MatchedAxiom match) {
+    	if (match.getSourceAxiom() != null) {
+    		Collection<OWLEntity> subjects = sourceEntitiesDetector.getSources(match.getSourceAxiom());
+    		if (!subjects.isEmpty()) {
+    			OWLEntity entity = subjects.iterator().next();
+    			EntityBasedDiff entityDiff = sourceDiffMap.get(entity);
+    			return entityDiff != null && entityDiff.getAxiomMatches().contains(match);
+    		}
+    	}
+    	if (match.getTargetAxiom() != null) {
+    		Collection<OWLEntity> subjects = sourceEntitiesDetector.getSources(match.getTargetAxiom());
+    		if (!subjects.isEmpty()) {
+    			OWLEntity entity = subjects.iterator().next();
+    			EntityBasedDiff entityDiff = targetDiffMap.get(entity);
+    			return entityDiff != null && entityDiff.getAxiomMatches().contains(match);
+    		}
+    	}
+    	return (match.getDescription().equals(MatchedAxiom.AXIOM_DELETED) && unmatchedSourceAxiomsWithNoSubject.contains(match.getSourceAxiom())) 
+    	          || (match.getDescription().equals(MatchedAxiom.AXIOM_ADDED) && unmatchedTargetAxiomsWithNoSubject.contains(match.getTargetAxiom()));
+    }
+    
+    public void addMatch(MatchedAxiom match) {
+    	if (match.getSourceAxiom() != null) {
+    		OWLAxiom axiom = match.getSourceAxiom();
+    		Collection<OWLEntity> subjects = sourceEntitiesDetector.getSources(axiom);
+    		for (OWLEntity e : subjects) {
+    			EntityBasedDiff diff = sourceDiffMap.get(e);
+    			if (diff == null) {
+    				diff = new EntityBasedDiff();
+    				diff.setSourceEntity(e);
+    				diff.setTargetEntity(e);
+    				sourceDiffMap.put(e, diff);
+    				targetDiffMap.put(e, diff);
+    				entityBasedDiffs.add(diff);
+    			}
+    			diff.addMatch(match);
+    		}
+    		if (subjects.isEmpty()) {
+    			unmatchedSourceAxiomsWithNoSubject.add(axiom);
+    		}
+    	}
+    	if (match.getTargetAxiom() != null) {
+    		OWLAxiom axiom = match.getTargetAxiom();
+    		Collection<OWLEntity> subjects = targetEntitiesDetector.getSources(axiom);
+    		for (OWLEntity e : subjects) {
+    			EntityBasedDiff diff = targetDiffMap.get(e);
+    			if (diff == null) {
+    				diff = new EntityBasedDiff();
+    				diff.setSourceEntity(e);
+    				diff.setTargetEntity(e);
+    				sourceDiffMap.put(e, diff);
+    				targetDiffMap.put(e, diff);
+    				entityBasedDiffs.add(diff);
+    			}
+    			diff.addMatch(match);
+    		}
+    		if (subjects.isEmpty()) {
+    			unmatchedTargetAxiomsWithNoSubject.add(axiom);
+    		}
+    	}
+    }
+    
+    public void removeMatch(MatchedAxiom match) {
+    	if (match.getSourceAxiom() != null) {
+    		OWLAxiom axiom = match.getSourceAxiom();
+    		Collection<OWLEntity> subjects = sourceEntitiesDetector.getSources(axiom);
+    		for (OWLEntity e : subjects) {
+    			EntityBasedDiff diff = sourceDiffMap.get(e);
+    			if (diff != null) {
+    				diff.removeMatch(match);
+    			}
+    		}
+    		if (subjects.isEmpty()) {
+    			unmatchedSourceAxiomsWithNoSubject.remove(axiom);
+    		}
+    	}
+    	if (match.getTargetAxiom() != null) {
+    		OWLAxiom axiom = match.getTargetAxiom();
+    		Collection<OWLEntity> subjects = targetEntitiesDetector.getSources(axiom);
+    		for (OWLEntity e : subjects) {
+    			EntityBasedDiff diff = targetDiffMap.get(e);
+    			if (diff != null) {
+    				diff.removeMatch(match);
+    			}
+    		}
+    		if (subjects.isEmpty()) {
+    			unmatchedTargetAxiomsWithNoSubject.remove(axiom);
+    		}
+    	}
+    }
 
     private void initialiseDiffs() {
         for (OWLEntity source : diffMap.getUnmatchedSourceEntities()) {
@@ -61,12 +155,14 @@ public class Changes {
         for (Entry<OWLEntity, OWLEntity> entry : diffMap.getEntityMap().entrySet()) {
             OWLEntity source = entry.getKey();
             OWLEntity target = entry.getValue();
-            EntityBasedDiff d = new EntityBasedDiff();
-            d.setSourceEntity(source);
-            d.setTargetEntity(target);
-            sourceDiffMap.put(source, d);
-            targetDiffMap.put(target, d);
-            entityBasedDiffs.add(d);
+            if (!source.equals(target)) {
+            	EntityBasedDiff d = new EntityBasedDiff();
+            	d.setSourceEntity(source);
+            	d.setTargetEntity(target);
+            	sourceDiffMap.put(source, d);
+            	targetDiffMap.put(target, d);
+            	entityBasedDiffs.add(d);
+            }
         }
         for (OWLEntity target : diffMap.getUnmatchedTargetEntities()) {
             EntityBasedDiff d = new EntityBasedDiff();
@@ -75,22 +171,10 @@ public class Changes {
             entityBasedDiffs.add(d);
         }
         for (OWLAxiom axiom : diffMap.getUnmatchedSourceAxioms()) {
-            Collection<OWLEntity> subjects = new GetAxiomSourceVisitor(diffMap.getSourceOntology(), diffMap.getOWLDataFactory()).getSources(axiom);
-            for (OWLEntity e : subjects) {
-                sourceDiffMap.get(e).addMatch(new MatchedAxiom(axiom, null, MatchedAxiom.AXIOM_DELETED));
-            }
-            if (subjects.isEmpty()) {
-                unmatchedSourceAxiomsWithNoSubject.add(axiom);
-            }
+        	addMatch(new MatchedAxiom(axiom, null, MatchedAxiom.AXIOM_DELETED));
         }
         for (OWLAxiom axiom : diffMap.getUnmatchedTargetAxioms()) {
-            Collection<OWLEntity> subjects = new GetAxiomSourceVisitor(diffMap.getTargetOntology(), diffMap.getOWLDataFactory()).getSources(axiom);
-            for (OWLEntity e : subjects) {
-                targetDiffMap.get(e).addMatch(new MatchedAxiom(null, axiom, MatchedAxiom.AXIOM_ADDED));
-            }
-            if (subjects.isEmpty()) {
-                unmatchedTargetAxiomsWithNoSubject.add(axiom);
-            }
+        	addMatch(new MatchedAxiom(null, axiom, MatchedAxiom.AXIOM_ADDED));
         }
     }
 }
