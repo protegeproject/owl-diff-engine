@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
