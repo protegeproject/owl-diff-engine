@@ -88,12 +88,14 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testMergeWithVacuousRetire() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/Merge.owl";
     	loadOntologies("Merge");
+    	
     	Properties p = new Properties();
     	p.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
     	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
+    	
     	Engine e = new Engine(factory, ontology1, ontology2, p);
     	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
     	e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
@@ -131,10 +133,14 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testRetire() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/SimpleRetire.owl";
     	loadOntologies("SimpleRetire");
+    	
     	Properties p = new Properties();
     	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retire");
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Concept_Status");
+    	p.setProperty(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, ns + "#OLD_PARENT");
+    	p.setProperty(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, ns + "#OLD_CONTEXT");
+    	
     	Engine e = new Engine(factory, ontology1, ontology2, p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyRetiredConcepts());
@@ -142,6 +148,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	e.phase2();
     	int retiredSubClassCount = 0;
     	int retiredAnnotationCount = 0;
+    	int deletedDueToRetirementCount = 0;
     	for (EntityBasedDiff diff : e.getChanges().getEntityBasedDiffs()) {
     		if (diff.getDiffType().equals(DiffType.EQUIVALENT)) {
     			continue;
@@ -156,13 +163,14 @@ public class PresentationAlgorithmTest extends TestCase {
     					retiredAnnotationCount++;
     				}
     			}
-    			else {
-    				fail();
+    			else if (match.getDescription().equals(IdentifyRetiredConcepts.DELETED_DUE_TO_RETIRE)) {
+    				deletedDueToRetirementCount++;
     			}
     		}
     	}
-    	assertTrue(retiredAnnotationCount == 1);
+    	assertTrue(retiredAnnotationCount == 4);
     	assertTrue(retiredSubClassCount == 1);
+    	assertTrue(deletedDueToRetirementCount == 1);
     	e.display();
 	}
 }
