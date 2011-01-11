@@ -9,6 +9,10 @@ Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
 Ontology(<http://protege.org/ontologies/SimpleRetire.owl>
 
 Declaration(Class(<http://protege.org/ontologies/SimpleRetire.owl#A>))
+SubClassOf(<http://protege.org/ontologies/SimpleRetire.owl#A> <http://protege.org/ontologies/SimpleRetire.owl#B>)
+Declaration(Class(<http://protege.org/ontologies/SimpleRetire.owl#B>))
 Declaration(Class(<http://protege.org/ontologies/SimpleRetire.owl#Retired>))
 Declaration(AnnotationProperty(<http://protege.org/ontologies/SimpleRetire.owl#Concept_Status>))
+Declaration(AnnotationProperty(<http://protege.org/ontologies/SimpleRetire.owl#OLD_CONTEXT>))
+Declaration(AnnotationProperty(<http://protege.org/ontologies/SimpleRetire.owl#OLD_PARENT>))
 )
