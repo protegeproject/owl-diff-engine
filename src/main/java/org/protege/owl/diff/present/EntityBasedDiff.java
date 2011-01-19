@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.util.SimpleIRIShortFormProvider;
 
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 
@@ -87,6 +90,9 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
             break;
         case MODIFIED:
             buffer.append("Modified ");
+            if (!sourceEntity.getIRI().equals(targetEntity.getIRI())) {
+            	buffer.append("and Renamed ");
+            }
             buffer.append(renderObject(sourceEntity));
             buffer.append(" -> ");
             buffer.append(renderObject(targetEntity));
@@ -118,7 +124,17 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     }
     
     protected String renderObject(OWLObject o) {
-        return new ManchesterOWLSyntaxOWLObjectRendererImpl().render(o);
+    	if (o instanceof OWLAnnotationAssertionAxiom && ((OWLAnnotationAssertionAxiom) o).getSubject() instanceof IRI) {
+    	    SimpleIRIShortFormProvider iriShortFormProvider = new SimpleIRIShortFormProvider();
+    		OWLAnnotationAssertionAxiom axiom = (OWLAnnotationAssertionAxiom) o;
+    		StringBuffer buffer = new StringBuffer(iriShortFormProvider.getShortForm((IRI) axiom.getSubject()));
+    		buffer.append(" ");
+    		buffer.append(new ManchesterOWLSyntaxOWLObjectRendererImpl().render(axiom.getAnnotation()));
+    		return buffer.toString();
+    	}
+    	else {
+    		return new ManchesterOWLSyntaxOWLObjectRendererImpl().render(o);
+    	}
     }
     
     public int compareTo(EntityBasedDiff o) {
