@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
@@ -15,7 +16,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 public class Changes {
     private Collection<OWLAxiom> unmatchedSourceAxiomsWithNoSubject = new HashSet<OWLAxiom>();
     private Collection<OWLAxiom> unmatchedTargetAxiomsWithNoSubject = new HashSet<OWLAxiom>();
-    private TreeSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
+    private SortedSet<EntityBasedDiff> entityBasedDiffs  = new TreeSet<EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> sourceDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
     private Map<OWLEntity, EntityBasedDiff> targetDiffMap = new HashMap<OWLEntity, EntityBasedDiff>();
     private AxiomDescribesEntitiesDetector sourceEntitiesDetector;
@@ -30,7 +31,7 @@ public class Changes {
         initialiseDiffs();
     }
 
-    public  Collection<EntityBasedDiff> getEntityBasedDiffs() {
+    public SortedSet<EntityBasedDiff> getEntityBasedDiffs() {
         return entityBasedDiffs;
     }
     
