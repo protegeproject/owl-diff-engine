@@ -67,7 +67,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         axiomMatches.remove(match);
     }
     
-    public String getDescription() {
+    public String getShortDescription() {
         StringBuffer buffer = new StringBuffer();
         switch (getDiffType()) {
         case CREATED:
@@ -100,6 +100,11 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         default:
             throw new UnsupportedOperationException("Programmer error");
         }
+        return buffer.toString();
+    }
+    
+    public String getDescription() {
+        StringBuffer buffer = new StringBuffer(getShortDescription());
         buffer.append("\n");
         for (MatchedAxiom match : axiomMatches) {
             buffer.append(match.getDescription().getDescription());
@@ -165,6 +170,6 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     @Override
     public String toString() {
-    	return "[Diff: " + getDescription() + "]";
+    	return "[Diff: " + getShortDescription() + "]";
     }
 }
