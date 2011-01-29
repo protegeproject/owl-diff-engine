@@ -42,6 +42,9 @@ public class CodeToEntityMapper {
 		this.diffMap = diffMap;
 		OWLOntology ontology = diffMap.getSourceOntology();
 		String codeName = (String) parameters.get(CODE_ANNOTATION_PROPERTY);
+		if (codeName == null) {
+			return;
+		}
         IRI codeIri = IRI.create((String) codeName);
         codeProperty = diffMap.getOWLDataFactory().getOWLAnnotationProperty(codeIri);
         if (!diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeIri)) {
@@ -54,7 +57,8 @@ public class CodeToEntityMapper {
 	}
 	
 	public boolean codeNotPresent() {
-		return !diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeProperty.getIRI()) 
+		return codeProperty == null 
+		    || !diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeProperty.getIRI()) 
 			|| !diffMap.getTargetOntology().containsAnnotationPropertyInSignature(codeProperty.getIRI());
 	}
 	
