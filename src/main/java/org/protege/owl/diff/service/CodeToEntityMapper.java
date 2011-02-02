@@ -40,7 +40,6 @@ public class CodeToEntityMapper {
 	
 	private CodeToEntityMapper(OwlDiffMap diffMap, Properties parameters) {
 		this.diffMap = diffMap;
-		OWLOntology ontology = diffMap.getSourceOntology();
 		String codeName = (String) parameters.get(CODE_ANNOTATION_PROPERTY);
 		if (codeName == null) {
 			return;

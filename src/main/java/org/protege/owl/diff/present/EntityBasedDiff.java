@@ -55,7 +55,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         }
     }
 
-    public Collection<MatchedAxiom> getAxiomMatches() {
+    public SortedSet<MatchedAxiom> getAxiomMatches() {
         return axiomMatches;
     }
     
