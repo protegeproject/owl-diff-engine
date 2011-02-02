@@ -12,5 +12,7 @@ Export-Package: org.protege.owl.diff,
  org.protege.owl.diff.align.util,
  org.protege.owl.diff.present,
  org.protege.owl.diff.present.algorithms,
- org.protege.owl.diff.present.util
+ org.protege.owl.diff.present.util,
+ org.protege.owl.diff.service,
+ org.protege.owl.diff.util
 No-Plugin-XML: true
