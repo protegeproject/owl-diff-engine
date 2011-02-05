@@ -1,0 +1,26 @@
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+
+
+Ontology(<http://protege.org/ontologies/MatchClasses.owl>
+
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#A>))
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#B>))
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#C00>))
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C00> <http://protege.org/ontologies/MatchClasses.owl#A>)
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C00> ObjectSomeValuesFrom(<http://protege.org/ontologies/MatchClasses.owl#p> <http://protege.org/ontologies/MatchClasses.owl#A>))
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#C01>))
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C01> <http://protege.org/ontologies/MatchClasses.owl#B>)
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C01> ObjectSomeValuesFrom(<http://protege.org/ontologies/MatchClasses.owl#p> <http://protege.org/ontologies/MatchClasses.owl#A>))
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#C10>))
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C10> <http://protege.org/ontologies/MatchClasses.owl#A>)
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C10> ObjectSomeValuesFrom(<http://protege.org/ontologies/MatchClasses.owl#p> <http://protege.org/ontologies/MatchClasses.owl#B>))
+Declaration(Class(<http://protege.org/ontologies/MatchClasses.owl#C11>))
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C11> <http://protege.org/ontologies/MatchClasses.owl#B>)
+SubClassOf(<http://protege.org/ontologies/MatchClasses.owl#C11> ObjectSomeValuesFrom(<http://protege.org/ontologies/MatchClasses.owl#p> <http://protege.org/ontologies/MatchClasses.owl#B>))
+Declaration(ObjectProperty(<http://protege.org/ontologies/MatchClasses.owl#p>))
+Declaration(ObjectProperty(<http://protege.org/ontologies/MatchClasses.owl#q>))
+)
