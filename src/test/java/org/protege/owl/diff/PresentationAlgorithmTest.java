@@ -1,6 +1,7 @@
 package org.protege.owl.diff;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -12,6 +13,7 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
@@ -22,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -272,5 +275,32 @@ public class PresentationAlgorithmTest extends TestCase {
     	assertTrue(bDiff.getAxiomMatches().contains(bMatch));
     	changes.removeMatch(bMatch);
     	assertTrue(!bDiff.getAxiomMatches().contains(bMatch));    	
+    }
+    
+    public void testMatchLoneSuperClasses() throws OWLOntologyCreationException {
+    	String ns = "http://protege.org/ontologies/MatchClasses.owl";
+    	loadOntologies("MatchSuperClasses");
+    	Properties p = new Properties();
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.setPresentationAlgorithms(new IdentifyChangedSuperclass());
+    	e.phase1();
+    	e.phase2();
+    	Changes changes = e.getChanges();
+    	assertEquals(3, changes.getEntityBasedDiffs().size());
+    	for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
+    		for (MatchedAxiom match : diff.getAxiomMatches()) {
+    			assertEquals(IdentifyChangedSuperclass.CHANGED_SUPERCLASS, match.getDescription());
+    		}
+    	}
+    	Map<OWLEntity, EntityBasedDiff> sourceDiffMap = changes.getSourceDiffMap();
+    	EntityBasedDiff c00Diff = sourceDiffMap.get(factory.getOWLClass(IRI.create(ns + "#C00")));
+    	assertNull(c00Diff);
+    	EntityBasedDiff c10Diff = sourceDiffMap.get(factory.getOWLClass(IRI.create(ns + "#C10")));
+    	assertEquals(1, c10Diff.getAxiomMatches().size());
+    	EntityBasedDiff c01Diff = sourceDiffMap.get(factory.getOWLClass(IRI.create(ns + "#C01")));
+    	assertEquals(1, c01Diff.getAxiomMatches().size());
+    	EntityBasedDiff c11Diff = sourceDiffMap.get(factory.getOWLClass(IRI.create(ns + "#C11")));
+    	assertEquals(2, c11Diff.getAxiomMatches().size());
     }
 }
