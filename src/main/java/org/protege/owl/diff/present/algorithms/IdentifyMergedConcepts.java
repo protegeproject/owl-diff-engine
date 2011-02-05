@@ -46,7 +46,6 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 		setPriority(IdentifyRetiredConcepts.DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY + 1);
 	}
 
-	@Override
 	public void initialise(Engine e) {
 		this.changes = e.getChanges();
 		OwlDiffMap diffMap = changes.getRawDiffMap();
@@ -78,7 +77,6 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public void apply() {
 		if (disabled) {
 			return;
