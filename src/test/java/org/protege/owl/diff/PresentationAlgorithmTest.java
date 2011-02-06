@@ -13,6 +13,7 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
@@ -302,5 +303,20 @@ public class PresentationAlgorithmTest extends TestCase {
     	assertEquals(1, c01Diff.getAxiomMatches().size());
     	EntityBasedDiff c11Diff = sourceDiffMap.get(factory.getOWLClass(IRI.create(ns + "#C11")));
     	assertEquals(2, c11Diff.getAxiomMatches().size());
+    }
+    
+    public void testChangedDefinition() throws OWLOntologyCreationException {
+    	loadOntologies("ChangedDefinition");
+    	Properties p = new Properties();
+    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	e.setAlignmentAlgorithms(new MatchById());
+    	e.setPresentationAlgorithms(new IdentifyChangedDefinition());
+    	e.phase1();
+    	e.phase2();
+    	Changes changes = e.getChanges();
+    	assertEquals(1, changes.getEntityBasedDiffs().size());
+    	EntityBasedDiff ediff = changes.getEntityBasedDiffs().iterator().next();
+    	assertEquals(1, ediff.getAxiomMatches().size());
+    	assertEquals(IdentifyChangedDefinition.CHANGED_DEFINITION, ediff.getAxiomMatches().iterator().next().getDescription());
     }
 }
