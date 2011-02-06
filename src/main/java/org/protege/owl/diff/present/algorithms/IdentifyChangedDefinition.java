@@ -6,10 +6,9 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class IdentifyChangedDefinition extends AbstractAnalyzerAlgorithm {
-	public static final MatchDescription CHANGED_DEFINITION = new MatchDescription("Superclass changed");
+	public static final MatchDescription CHANGED_DEFINITION = new MatchDescription("Definition changed");
 	
 	private Changes changes;
 
