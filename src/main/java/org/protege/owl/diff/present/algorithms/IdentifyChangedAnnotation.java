@@ -22,7 +22,6 @@ public class IdentifyChangedAnnotation extends AbstractAnalyzerAlgorithm {
 		changes = e.getChanges();
 	}
 
-	@Override
 	public void apply() {
 		for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
 			match(diff);
