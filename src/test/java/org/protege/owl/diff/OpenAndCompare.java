@@ -1,17 +1,13 @@
 package org.protege.owl.diff;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
-import org.protege.owl.diff.present.Changes;
-import org.protege.owl.diff.present.EntityBasedDiff;
-import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
+import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
@@ -24,9 +20,9 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class OpenAndCompare {
     private static Logger logger = Logger.getLogger(OpenAndCompare.class);
 
-    private final static File root     = new File("/Users/tredmond/Shared/ontologies/NCI/2010-11-29-cbapp-qa2");
-    private final static File baseline = new File(root, "Thesaurus-101129-10.11e.owl");
-    private final static File altered  = new File(root, "Thesaurus-changed-file.owl");
+    private final static File root     = new File("/home/tredmond/Shared/ontologies/NCI/2010-11-29-cbapp-qa2");
+    private final static File baseline = new File(root, "Thesaurus-101129-10.11e-saved.owl");
+    private final static File altered  = new File(root, "Thesaurus-changed-file-saved.owl");
 
     // private static File f1 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-09.12d.owl");
     // private static File f2 = new File("/home/tredmond/Shared/ontologies/NCI/Thesaurus-10.04f.owl");
@@ -64,7 +60,7 @@ public class OpenAndCompare {
         logger.info("Running diff");
         Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
         e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
-        e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
+        e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
         e.phase1();
         watch.measure();
         logger.info("Calculating presentation");
