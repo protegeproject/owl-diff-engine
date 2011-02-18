@@ -2,7 +2,6 @@ package org.protege.owl.diff.present.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.present.Changes;
@@ -13,9 +12,9 @@ import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.protege.owl.diff.service.RetirementClassService;
 
 public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
-    public static final MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.MIN_SEQUENCE);
-    public static final MatchDescription DELETED_DUE_TO_RETIRE = new MatchDescription("Deleted Axiom Due to Retire Operation", MatchDescription.MIN_SEQUENCE + 1);
-    public static final int DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY = PresentationAlgorithmComparator.DEFAULT_PRIORITY + 2;
+    public static final MatchDescription RETIRED = new MatchDescription("Retired", MatchDescription.PRIMARY_MATCH_PRIORITY);
+    public static final MatchDescription DELETED_DUE_TO_RETIRE = new MatchDescription("Deleted Axiom Due to Retire Operation", MatchDescription.SECONDARY_MATCH_PRIORITY);
+    public static final int DEFAULT_IDENTIFY_RETIRED_CONCEPTS_PRIORITY = PresentationAlgorithmComparator.DEFAULT_ALGORITHM_PRIORITY + 2;
 
     private Changes changes;
     private RetirementClassService retiredClassService;
