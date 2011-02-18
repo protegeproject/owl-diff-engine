@@ -1,15 +1,16 @@
 package org.protege.owl.diff.present;
 
 public class MatchDescription implements Comparable<MatchDescription> {
-    public final static int MAX_SEQUENCE = 10;
-    public final static int DEFAULT_SEQUENCE = 5;
-    public final static int MIN_SEQUENCE = 0;
+	public final static int NON_CRITICAL_PRIORITY    = 10;
+    public final static int DEFAULT_MATCH_PRIORITY   =  5;
+    public final static int PRIMARY_MATCH_PRIORITY   =  0;
+    public final static int SECONDARY_MATCH_PRIORITY =  PRIMARY_MATCH_PRIORITY + 2;
     
     private String description;
     private int sequence;
     
     public MatchDescription(String description) {
-        this(description, DEFAULT_SEQUENCE);
+        this(description, DEFAULT_MATCH_PRIORITY);
     }
     
     public MatchDescription(String description, int sequence) {
