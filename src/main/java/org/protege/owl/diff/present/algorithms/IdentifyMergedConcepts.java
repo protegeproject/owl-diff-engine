@@ -27,9 +27,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 
 public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
-	public static final MatchDescription MERGE = new MatchDescription("Merge Operation", MatchDescription.MIN_SEQUENCE);
-	public static final MatchDescription MERGE_AXIOM = new MatchDescription("Axiom modified by merge", MatchDescription.MIN_SEQUENCE + 1);
-	public static final MatchDescription RETIRED_DUE_TO_MERGE = new MatchDescription("Retired Due to Merge", MatchDescription.MIN_SEQUENCE);
+	public static final MatchDescription MERGE = new MatchDescription("Merge Operation", MatchDescription.PRIMARY_MATCH_PRIORITY);
+	public static final MatchDescription MERGE_AXIOM = new MatchDescription("Axiom modified by merge", MatchDescription.SECONDARY_MATCH_PRIORITY);
+	public static final MatchDescription RETIRED_DUE_TO_MERGE = new MatchDescription("Retired Due to Merge", MatchDescription.SECONDARY_MATCH_PRIORITY);
 
 	public static final String MERGED_INTO_ANNOTATION_PROPERTY = "merged.into.annotation";
 	
