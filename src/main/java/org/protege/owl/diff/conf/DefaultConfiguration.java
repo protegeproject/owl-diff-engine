@@ -4,6 +4,7 @@ import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
+import org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
@@ -14,7 +15,7 @@ import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 public class DefaultConfiguration extends Configuration {
 
 	public DefaultConfiguration() {
-		addAlignmentAlgorithm(MatchByCode.class);
+		/* addAlignmentAlgorithm(MatchByCode.class); */
 		addAlignmentAlgorithm(MatchById.class);
 		addAlignmentAlgorithm(MatchStandardVocabulary.class);
 		addAlignmentAlgorithm(SuperSubClassPinch.class);
@@ -23,6 +24,7 @@ public class DefaultConfiguration extends Configuration {
 		addPresentationAlgorithm(IdentifyChangedDefinition.class);
 		addPresentationAlgorithm(IdentifyChangedSuperclass.class);
 		addPresentationAlgorithm(IdentifyRenameOperation.class);
+		addPresentationAlgorithm(IdentifyAxiomAnnotationChanged.class);
 		
 		put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, OWLRDFVocabulary.RDFS_LABEL.getIRI().toString());
 	}
