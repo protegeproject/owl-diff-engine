@@ -1,7 +1,7 @@
 package org.protege.owl.diff.service;
 
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.diff.Engine;
@@ -37,18 +37,18 @@ public final class RetirementClassService {
     	return rcs;
     }
     
-    private RetirementClassService(OwlDiffMap diffMap, Properties parameters) {
+    private RetirementClassService(OwlDiffMap diffMap, Map<String, String> parameters) {
     	factory = diffMap.getOWLDataFactory();
-    	retirementClassPrefix = (String) parameters.get(RETIREMENT_CLASS_PROPERTY);
-    	String retirementStatusPropertyName = (String) parameters.get(RETIREMENT_STATUS_PROPERTY);
-    	retirementStatusString = (String) parameters.getProperty(RETIREMENT_STATUS_STRING);
+    	retirementClassPrefix = parameters.get(RETIREMENT_CLASS_PROPERTY);
+    	String retirementStatusPropertyName =  parameters.get(RETIREMENT_STATUS_PROPERTY);
+    	retirementStatusString = parameters.get(RETIREMENT_STATUS_STRING);
     	if (retirementStatusPropertyName != null && retirementStatusString != null) {
     		retirementStatusProperty = diffMap.getOWLDataFactory().getOWLAnnotationProperty(IRI.create(retirementStatusPropertyName));
     	}
     	retirementMetaProperties = new HashSet<OWLAnnotationProperty>();
     	int i = 0;
     	while (true) {
-    		String retirementMetaProperty = (String) parameters.getProperty(RETIREMENT_META_PROPERTIES + (i++));
+    		String retirementMetaProperty = parameters.get(RETIREMENT_META_PROPERTIES + (i++));
     		if (retirementMetaProperty == null) {
     			break;
     		}

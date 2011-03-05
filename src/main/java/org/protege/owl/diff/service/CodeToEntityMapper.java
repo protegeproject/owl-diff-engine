@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -38,9 +37,9 @@ public class CodeToEntityMapper {
 	}
 
 	
-	private CodeToEntityMapper(OwlDiffMap diffMap, Properties parameters) {
+	private CodeToEntityMapper(OwlDiffMap diffMap, Map<String, String> parameters) {
 		this.diffMap = diffMap;
-		String codeName = (String) parameters.get(CODE_ANNOTATION_PROPERTY);
+		String codeName = parameters.get(CODE_ANNOTATION_PROPERTY);
 		if (codeName == null) {
 			return;
 		}
