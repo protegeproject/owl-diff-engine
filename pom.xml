@@ -6,8 +6,8 @@
 	<artifactId>org.protege.owl.diff</artifactId>
 	<packaging>bundle</packaging>
 	<name>OWL Difference Engine</name>
-	<version>1.0.0.SNAPSHOT</version>
-    <!-- <version>1.0.0.2011_02_17_2145</version> -->
+	<!-- <version>1.0.0.SNAPSHOT</version> -->
+    <version>1.0.0.2011_03_05_0724</version>
 	<properties>
 		<maven.compiler.source>1.5</maven.compiler.source>
 		<maven.compiler.target>1.5</maven.compiler.target>
