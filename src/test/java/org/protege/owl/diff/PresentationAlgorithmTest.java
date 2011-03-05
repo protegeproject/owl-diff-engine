@@ -1,6 +1,7 @@
 package org.protege.owl.diff;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -48,13 +49,14 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testMerge() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/Merge.owl";
     	loadOntologies("Merge");
-    	Properties p = new Properties();
-    	p.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
-    	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
-    	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Map<String, String> p = new HashMap<String, String>();
+    	p.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
+    	p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+    	p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
     	e.setPresentationAlgorithms(new IdentifyMergedConcepts());
     	e.phase1();
@@ -95,14 +97,15 @@ public class PresentationAlgorithmTest extends TestCase {
     	String ns = "http://protege.org/ontologies/Merge.owl";
     	loadOntologies("Merge");
     	
-    	Properties p = new Properties();
-    	p.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
-    	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
-    	p.setProperty(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
+    	Map<String, String> p = new HashMap<String, String>();
+    	p.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ns + "#code");
+    	p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retired");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+    	p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
     	
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
     	e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
     	e.phase1();
@@ -139,14 +142,15 @@ public class PresentationAlgorithmTest extends TestCase {
     	String ns = "http://protege.org/ontologies/SimpleRetire.owl";
     	loadOntologies("SimpleRetire");
     	
-    	Properties p = new Properties();
-    	p.setProperty(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retire");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
-    	p.setProperty(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Concept_Status");
-    	p.setProperty(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, ns + "#OLD_PARENT");
-    	p.setProperty(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, ns + "#OLD_CONTEXT");
+    	Map<String, String> p = new HashMap<String, String>();
+    	p.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, ns + "#Retire");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+    	p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Concept_Status");
+    	p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, ns + "#OLD_PARENT");
+    	p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, ns + "#OLD_CONTEXT");
     	
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyRetiredConcepts());
     	e.phase1();
@@ -188,8 +192,9 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testAddAnnotation() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/AddAnnotation.owl";
     	loadOntologies("AddAnnotation");
-    	Properties p = new Properties();
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Map<String, String> p = new HashMap<String, String>();
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
     	e.phase2();
@@ -214,8 +219,9 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testRemoveAnnotation() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/RemoveAnnotation.owl";
     	loadOntologies("RemoveAnnotation");
-    	Properties p = new Properties();
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Map<String, String> p = new HashMap<String, String>();
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
     	e.phase2();
@@ -254,7 +260,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	OWLClass b = factory.getOWLClass(IRI.create(ns + "#B"));
     	manager2.addAxiom(ontology2, factory.getOWLDeclarationAxiom(b));
     	
-    	Engine e = new Engine(factory, ontology1, ontology2, new Properties());
+    	Engine e = new Engine(factory, ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
     	e.phase2();
@@ -281,8 +287,9 @@ public class PresentationAlgorithmTest extends TestCase {
     public void testMatchLoneSuperClasses() throws OWLOntologyCreationException {
     	String ns = "http://protege.org/ontologies/MatchClasses.owl";
     	loadOntologies("MatchSuperClasses");
-    	Properties p = new Properties();
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Map<String, String> p = new HashMap<String, String>();
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyChangedSuperclass());
     	e.phase1();
@@ -307,8 +314,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testChangedDefinition() throws OWLOntologyCreationException {
     	loadOntologies("ChangedDefinition");
-    	Properties p = new Properties();
-    	Engine e = new Engine(factory, ontology1, ontology2, p);
+    	Engine e = new Engine(factory, ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyChangedDefinition());
     	e.phase1();

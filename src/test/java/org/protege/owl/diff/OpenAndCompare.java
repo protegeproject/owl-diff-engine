@@ -1,7 +1,8 @@
 package org.protege.owl.diff;
 
 import java.io.File;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
@@ -35,7 +36,7 @@ public class OpenAndCompare {
      * @throws OWLOntologyCreationException 
      */
     public static void main(String[] args) throws OWLOntologyCreationException {
-        Properties p = new Properties();
+        Map<String, String> p = new HashMap<String, String>();
         p.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
         p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Into");
         p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status");
@@ -58,7 +59,8 @@ public class OpenAndCompare {
         OWLOntology ontology2 = manager2.loadOntologyFromOntologyDocument(altered);
         watch.measure();
         logger.info("Running diff");
-        Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2, p);
+        Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2);
+        e.setParameters(p);
         e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
         e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
         e.phase1();

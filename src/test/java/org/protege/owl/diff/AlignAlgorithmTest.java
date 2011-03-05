@@ -3,7 +3,9 @@ package org.protege.owl.diff;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -15,7 +17,6 @@ import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
-import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -42,9 +43,10 @@ public class AlignAlgorithmTest extends TestCase {
     public void testPureCodes() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("UseCode");
-        Properties parameters = new Properties();
-        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -57,9 +59,10 @@ public class AlignAlgorithmTest extends TestCase {
     public void testPureCodesInsufficient() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
-        Properties parameters = new Properties();
-        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -72,9 +75,10 @@ public class AlignAlgorithmTest extends TestCase {
     public void testPureCodesAndName() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("UseCodeAndName");
-        Properties parameters = new Properties();
-        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchById() });
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -87,11 +91,12 @@ public class AlignAlgorithmTest extends TestCase {
     public void testParentsAndChildren() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("ParentsAndChildren");
-        Properties parameters = new Properties();
-        parameters.setProperty(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, 
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, 
                                "http://www.tigraworld.com/protege/ParentsAndChildren.owl#code");
-        parameters.setProperty(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
-        Engine e = new Engine(factory, ontology1, ontology2, parameters);
+        parameters.put(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setParameters(parameters);
         e.phase1(); // no algorithms are run here.
         OwlDiffMap diffMap = e.getOwlDiffMap();
         CountEntityMatchesListener listener = new CountEntityMatchesListener();
