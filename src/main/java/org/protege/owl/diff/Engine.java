@@ -3,7 +3,9 @@ package org.protege.owl.diff;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -25,7 +27,7 @@ public class Engine {
     private OWLDataFactory factory;
     private OWLOntology ontology1;
     private OWLOntology ontology2;
-    private Properties parameters;
+    private Map<String, String> parameters;
     
     private OwlDiffMap diffMap;
     private List<AlignmentAlgorithm> diffAlgorithms = new ArrayList<AlignmentAlgorithm>();
@@ -38,12 +40,11 @@ public class Engine {
     
     public Engine(OWLDataFactory factory, 
                   OWLOntology ontology1, 
-                  OWLOntology ontology2,
-                  Properties parameters) {
+                  OWLOntology ontology2) {
     	this.factory = factory;
     	this.ontology1 = ontology1;
     	this.ontology2 = ontology2;
-        this.parameters = parameters;
+        this.parameters = new HashMap<String, String>();
     }
     
     public OWLDataFactory getOWLDataFactory() {
@@ -58,8 +59,12 @@ public class Engine {
 		return changes;
 	}
 
-	public Properties getParameters() {
+	public Map<String, String> getParameters() {
 		return parameters;
+	}
+	
+	public void setParameters(Map<String, String> parameters) {
+		this.parameters = parameters;
 	}
 
     public void setAlignmentAlgorithms(AlignmentAlgorithm... algorithms) {
