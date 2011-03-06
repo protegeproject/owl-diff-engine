@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -15,11 +14,14 @@ import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
+import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -124,5 +126,70 @@ public class AlignAlgorithmTest extends TestCase {
         assertTrue(matches.get(2).iterator().next().getIRI().getFragment().equals("BL"));
         assertTrue(matches.get(3).size() == 1);
         assertTrue(matches.get(3).iterator().next().getIRI().getFragment().equals("EL"));
+    }
+    
+    public void testLoneUnmatchedSibling01() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("LoneUnmatchedSibling01");
+        String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
+        assertTrue(diffs.getUnmatchedTargetEntities().isEmpty());
+        OWLClass loneSourceSibling = factory.getOWLClass(IRI.create(ns + "#UnmatchedSiblingLeft"));
+        OWLClass loneTargetSibling = factory.getOWLClass(IRI.create(ns + "#UnmatchedSiblingRight"));
+        assertEquals(loneTargetSibling, diffs.getEntityMap().get(loneSourceSibling));
+    }
+    
+    public void testLoneUnmatchedSibling02() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("LoneUnmatchedSibling02");
+        String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new SuperSubClassPinch(), new MatchLoneSiblings());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
+        assertTrue(diffs.getUnmatchedTargetEntities().isEmpty());
+        OWLClass loneSourceSibling = factory.getOWLClass(IRI.create(ns + "#TertiaryLeft"));
+        OWLClass loneTargetSibling = factory.getOWLClass(IRI.create(ns + "#TertiaryRight"));
+        assertEquals(loneTargetSibling, diffs.getEntityMap().get(loneSourceSibling));
+    }
+    
+    public void testLoneUnmatchedSibling03() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("LoneUnmatchedSibling02");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertEquals(diffs.getUnmatchedSourceEntities().size(), 2);
+    }
+    
+    public void testLoneUnmatchedSibling04() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("LoneUnmatchedSibling03");
+        String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new SuperSubClassPinch(), new MatchLoneSiblings());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertEquals(2, diffs.getUnmatchedSourceEntities().size());
+        assertEquals(2, diffs.getUnmatchedTargetEntities().size());
+        OWLClass loneSourceSibling = factory.getOWLClass(IRI.create(ns + "#TertiaryLeft"));
+        OWLClass loneTargetSibling = factory.getOWLClass(IRI.create(ns + "#TertiaryRight"));
+        assertEquals(loneTargetSibling, diffs.getEntityMap().get(loneSourceSibling));
+    }
+    
+    public void testLoneUnmatchedSibling05() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("LoneUnmatchedSibling03");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertEquals(4, diffs.getUnmatchedSourceEntities().size());
     }
 }
