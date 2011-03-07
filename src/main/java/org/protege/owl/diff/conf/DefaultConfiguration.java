@@ -2,6 +2,7 @@ package org.protege.owl.diff.conf;
 
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
+import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged;
@@ -19,6 +20,7 @@ public class DefaultConfiguration extends Configuration {
 		addAlignmentAlgorithm(MatchById.class);
 		addAlignmentAlgorithm(MatchStandardVocabulary.class);
 		addAlignmentAlgorithm(SuperSubClassPinch.class);
+		addAlignmentAlgorithm(MatchLoneSiblings.class);
 		
 		addPresentationAlgorithm(IdentifyChangedAnnotation.class);
 		addPresentationAlgorithm(IdentifyChangedDefinition.class);

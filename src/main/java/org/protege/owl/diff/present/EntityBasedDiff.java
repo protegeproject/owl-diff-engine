@@ -145,20 +145,23 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     public int compareTo(EntityBasedDiff o) {
         int ret;
 
+        if (sourceEntity == null && o.sourceEntity == null && targetEntity == null && o.targetEntity == null) {
+        	return 0;
+        }
         if (sourceEntity != null && o.sourceEntity == null) {
             return +1;
         }
         else if (sourceEntity == null && o.sourceEntity != null) {
             return -1;
         }
-        else if (sourceEntity != null && (ret = sourceEntity.compareTo(o.sourceEntity)) != 0) {
-            return ret;
-        }
         else if (targetEntity != null && o.targetEntity == null) {
             return +1;
         }
         else if (targetEntity == null && o.targetEntity != null) {
             return -1;
+        }
+        else if (sourceEntity != null && (ret = sourceEntity.compareTo(o.sourceEntity)) != 0) {
+            return ret;
         }
         else if (targetEntity != null) {
             return targetEntity.compareTo(o.targetEntity);
