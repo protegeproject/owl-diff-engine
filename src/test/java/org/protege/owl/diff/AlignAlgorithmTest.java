@@ -14,6 +14,7 @@ import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
+import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
@@ -191,5 +192,18 @@ public class AlignAlgorithmTest extends TestCase {
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
         assertEquals(4, diffs.getUnmatchedSourceEntities().size());
+    }
+    
+    public void testMatchingIdFragments() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("MatchingIdFragments");
+        Engine e = new Engine(factory, ontology1, ontology2);
+        e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchByIdFragment());
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertEquals(2, diffs.getUnmatchedSourceEntities().size());
+        for (OWLEntity entity : diffs.getUnmatchedSourceEntities()) {
+        	assertTrue(entity.getIRI().toString().endsWith("RefactoredNotMatcheable"));
+        }
     }
 }
