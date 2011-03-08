@@ -35,8 +35,11 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         return "Super-Sub class pinch algorithm";
     }
 
+    /*
+     * Reliable but it is a bit slow.
+     */
     public int getPriority() {
-        return AlignmentAlgorithmComparator.DEFAULT_PRIORITY;
+        return AlignmentAlgorithmComparator.MIN_PRIORITY + 2;
     }
 
     public void initialise(Engine e) {
