@@ -2,11 +2,11 @@ package org.protege.owl.diff.align.algorithms;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -26,7 +26,7 @@ public class MatchById implements AlignmentAlgorithm {
     }
 
     public int getPriority() {
-        return 9;
+        return AlignmentAlgorithmComparator.MAX_PRIORITY - 1;
     }
 
     public void initialise(Engine e) {
