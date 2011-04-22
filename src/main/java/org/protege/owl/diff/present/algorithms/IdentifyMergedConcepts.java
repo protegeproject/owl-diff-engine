@@ -15,6 +15,7 @@ import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
 import org.protege.owl.diff.util.DiffDuplicator;
+import org.semanticweb.owlapi.model.EntityType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -85,7 +86,10 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 		OWLDataFactory factory = diffMap.getOWLDataFactory();
 		for (Entry<OWLEntity, IRI> entry : mergedFromMap.entrySet()) {
 			OWLEntity keptEntity = entry.getKey();
-			OWLEntity retiringEntity = factory.getOWLEntity(keptEntity.getEntityType(), entry.getValue());
+			/*
+			 * The cast to entity type is not required in java 6.  Thanks for the help apple!
+			 */
+			OWLEntity retiringEntity = factory.getOWLEntity((EntityType) keptEntity.getEntityType(), entry.getValue());
 			EntityBasedDiff keptEntityDiff = changes.getTargetDiffMap().get(keptEntity);
 			EntityBasedDiff retiringEntityDiff = changes.getTargetDiffMap().get(retiringEntity);
 			if (retiringEntityDiff != null) {
