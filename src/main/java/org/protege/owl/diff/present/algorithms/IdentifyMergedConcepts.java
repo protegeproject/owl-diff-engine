@@ -66,7 +66,7 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 				IRI retiringEntity = (IRI) annotationAssertion.getSubject();
 				String code = ((OWLLiteral) annotationAssertion.getAnnotation().getValue()).getLiteral();
 				Collection<OWLEntity> keptEntities = mapper.getTargetEntities(code);
-				if (keptEntities != null && !keptEntities.isEmpty()) {
+				if (retiringEntity != null && keptEntities != null && !keptEntities.isEmpty()) {
 					OWLEntity keptEntity = keptEntities.iterator().next();
 					mergedIntoMap.put(retiringEntity, keptEntity.getIRI());
 					mergedFromMap.put(keptEntity, retiringEntity);
