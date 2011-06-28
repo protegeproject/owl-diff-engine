@@ -16,6 +16,8 @@ public interface AlignmentAlgorithm {
      */
     int getPriority();
     
+    AlignmentAggressiveness getAggressiveness();
+    
     String getAlgorithmName();
 
 }
