@@ -2,6 +2,7 @@ package org.protege.owl.diff.align.algorithms;
 
 import java.util.Set;
 
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLClass;
 
@@ -9,7 +10,8 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 	
 	protected void checkSiblings(Set<OWLClass> unmatchedSourceSiblings, Set<OWLClass> unmatchedTargetSiblings) {
 		if (unmatchedSourceSiblings.size() == 1 && unmatchedTargetSiblings.size() == 1) {
-			getOwlDiffMap().addMatch(unmatchedSourceSiblings.iterator().next(), unmatchedTargetSiblings.iterator().next());
+			getOwlDiffMap().addMatch(unmatchedSourceSiblings.iterator().next(), unmatchedTargetSiblings.iterator().next(),
+					                 "Aligned source and target entities because they were the only unmatching children of matching parents.");
 		}
 	}
 
@@ -19,6 +21,10 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 	public int getPriority() {
 		return AlignmentAlgorithmComparator.MIN_PRIORITY + 2;
 	}
+	
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.AGGRESSIVE_SEARCH;
+    }
 
 	public String getAlgorithmName() {
 		return "Match Lone Siblings";

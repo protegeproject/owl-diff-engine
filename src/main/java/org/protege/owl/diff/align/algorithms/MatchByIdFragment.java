@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
@@ -63,7 +64,7 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 			if (targetEntities != null) {
 				OWLEntity matchingTarget = findMatch(sourceEntity, targetEntities);
 				if (matchingTarget != null) {
-					diffs.addMatch(sourceEntity, matchingTarget);
+					diffs.addMatch(sourceEntity, matchingTarget, "Aligned source and target entities because they have a common IRI fragment.");
 				}
 			}
 		}
@@ -97,6 +98,9 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 		return AlignmentAlgorithmComparator.MIN_PRIORITY;
 	}
 
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.PRETTY_CERTAIN;
+    }
 	
 	public String getAlgorithmName() {
 		return "Match Entities by IRI fragment";

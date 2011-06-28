@@ -1,5 +1,6 @@
 package org.protege.owl.diff.align.algorithms;
 
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
@@ -20,5 +21,9 @@ public class MatchSiblingsWithSimilarIds extends AbstractApproximateSiblingMatch
 	public String getAlgorithmName() {
 		return "Match Siblings with approximately similar ids";
 	}
+	
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.PRETTY_CERTAIN;
+    }
 
 }

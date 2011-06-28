@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
@@ -36,6 +37,10 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
     public int getPriority() {
         return AlignmentAlgorithmComparator.MAX_PRIORITY;
     }
+    
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.IGNORE_REFACTOR;
+    }
 
     public void initialise(Engine e) {
         diffs = e.getOwlDiffMap();
@@ -51,7 +56,7 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
                         matches.put(entity, entity);
                     }
                 }
-                diffs.addMatchingEntities(matches);
+                diffs.addMatchingEntities(matches, "Aligned common standard vocabulary elements.");
             }
             finally {
                 diffs.summarize();

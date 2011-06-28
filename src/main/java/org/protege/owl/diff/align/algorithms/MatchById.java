@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
@@ -27,6 +28,10 @@ public class MatchById implements AlignmentAlgorithm {
 
     public int getPriority() {
         return AlignmentAlgorithmComparator.MAX_PRIORITY - 1;
+    }
+    
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.IGNORE_REFACTOR;
     }
 
     public void initialise(Engine e) {
@@ -70,7 +75,7 @@ public class MatchById implements AlignmentAlgorithm {
                         matchingMap.put(unmatchedSourceEntity, unmatchedSourceEntity);
                     }
                 }
-                diffMap.addMatchingEntities(matchingMap);
+                diffMap.addMatchingEntities(matchingMap, "Source and targe entities aligned because they have the same IRI.");
             }
             finally {
                 diffMap.summarize();

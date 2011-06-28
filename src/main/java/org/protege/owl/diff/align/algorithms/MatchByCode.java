@@ -3,10 +3,10 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
@@ -30,6 +30,10 @@ public class MatchByCode implements AlignmentAlgorithm {
 
     public int getPriority() {
         return AlignmentAlgorithmComparator.MAX_PRIORITY;
+    }
+    
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.IGNORE_REFACTOR;
     }
 
     public void initialise(Engine e) {
@@ -87,7 +91,7 @@ public class MatchByCode implements AlignmentAlgorithm {
             return false;
         }
         else {
-            diffMap.addMatchingEntities(matchMap);
+            diffMap.addMatchingEntities(matchMap, "Enties with a common code value are matched.");
             return true;
         }
     }

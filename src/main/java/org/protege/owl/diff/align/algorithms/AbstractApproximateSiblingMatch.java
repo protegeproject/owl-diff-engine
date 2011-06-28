@@ -23,7 +23,7 @@ public abstract class AbstractApproximateSiblingMatch extends AbstractSiblingMat
 				checkMatch(newMatches, unmatchedSourceSibling, unmatchedTargetSibling);
 			}
 		}
-		getOwlDiffMap().addMatchingEntities(newMatches);
+		getOwlDiffMap().addMatchingEntities(newMatches, "Entities matched up because their parents matched and they have similar names.");
 	}
 	
 	private void checkMatch(Map<OWLEntity, OWLEntity> newMatches, OWLClass unmatchedSourceSibling, OWLClass unmatchedTargetSibling) {

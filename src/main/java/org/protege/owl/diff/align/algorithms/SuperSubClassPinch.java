@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
@@ -41,6 +41,10 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     public int getPriority() {
         return AlignmentAlgorithmComparator.MIN_PRIORITY + 2;
     }
+    
+    public AlignmentAggressiveness getAggressiveness() {
+    	return AlignmentAggressiveness.MODERATE;
+    }
 
     public void initialise(Engine e) {
         this.diffMap = e.getOwlDiffMap();
@@ -70,7 +74,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             newMatches.clear();
             findCandidateUnmatchedAxioms();
             searchForMatches();
-            diffMap.addMatchingEntities(newMatches);
+            diffMap.addMatchingEntities(newMatches, "Aligned source and target entities that have a matching parent and child.");
         }
         finally {
             diffMap.summarize();
