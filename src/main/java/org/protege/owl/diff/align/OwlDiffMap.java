@@ -16,7 +16,9 @@ public interface OwlDiffMap {
     OWLOntology getTargetOntology();
 
     Map<OWLEntity, OWLEntity>   getEntityMap();
+    String getExplanation(OWLEntity sourceEntity);
     Map<OWLAnonymousIndividual, OWLAnonymousIndividual> getAnonymousIndividualMap();
+    String getExplanation(OWLAnonymousIndividual sourceIndividual);
 
     Set<OWLEntity>              getUnmatchedSourceEntities();
     Set<OWLAnonymousIndividual> getUnmatchedSourceAnonymousIndividuals();
@@ -27,10 +29,10 @@ public interface OwlDiffMap {
     Set<OWLAnonymousIndividual> getUnmatchedTargetAnonymousIndividuals();
     Set<OWLAxiom>               getUnmatchedTargetAxioms();
 
-    void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches);
-    void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches);
-    void addMatch(OWLEntity source, OWLEntity target);
-    void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target);
+    void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, String explanation);
+    void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation);
+    void addMatch(OWLEntity source, OWLEntity target, String explanation);
+    void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation);
 
     void addDiffListener(AlignmentListener listener);
     void removeDiffListener(AlignmentListener listener);
