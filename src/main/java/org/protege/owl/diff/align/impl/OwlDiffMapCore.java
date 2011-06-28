@@ -35,6 +35,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     private Set<OWLAnonymousIndividual>                         unmatchedTargetAnonIndividuals;
     
     
+    private Map<OWLObject, String>      explanationMap = new HashMap<OWLObject, String>();
+
+    
     /*
      * Axioms
      */
@@ -68,8 +71,16 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         return Collections.unmodifiableMap(entityMap);
     }
     
+    public String getExplanation(OWLEntity sourceEntity) {
+    	return explanationMap.get(sourceEntity);
+    }
+    
     public Map<OWLAnonymousIndividual, OWLAnonymousIndividual> getAnonymousIndividualMap() {
         return Collections.unmodifiableMap(anonymousIndividualMap);
+    }
+    
+    public String getExplanation(OWLAnonymousIndividual sourceIndividual) {
+    	return explanationMap.get(sourceIndividual);
     }
 
     public Set<OWLEntity> getUnmatchedSourceEntities() {
@@ -103,38 +114,42 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     /*
      * Match Processing methods
      */
-    public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches) {
+    public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, String explanation) {
         unmatchedSourceEntities.removeAll(newMatches.keySet());
         unmatchedTargetEntities.removeAll(newMatches.values());
         entityMap.putAll(newMatches);
         for (OWLEntity newEntity : newMatches.keySet()) {
             updateUnmatchedAxiomsForNewMatch(newEntity);
+            explanationMap.put(newEntity, explanation);
         }
         fireAddMatchingEntities(newMatches);
     }
     
-    public void addMatch(OWLEntity source, OWLEntity target) {
+    public void addMatch(OWLEntity source, OWLEntity target, String explanation) {
         unmatchedSourceEntities.remove(source);
         unmatchedTargetEntities.remove(target);
         entityMap.put(source, target);
+        explanationMap.put(source, explanation);
         updateUnmatchedAxiomsForNewMatch(source);
         fireAddMatch(source, target);
     }
     
-    public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
+    public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation) {
         unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
         unmatchedTargetAnonIndividuals.removeAll(newMatches.values());
         anonymousIndividualMap.putAll(newMatches);
         for (OWLAnonymousIndividual newMatchingIndividual : newMatches.keySet()) {
             updateUnmatchedAxiomsForNewMatch(newMatchingIndividual);
+            explanationMap.put(newMatchingIndividual, explanation);
         }
         fireAddMatchingAnonymousIndividuals(newMatches);
     }
     
-    public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {
+    public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation) {
         unmatchedSourceAnonIndividuals.remove(source);
         unmatchedTargetAnonIndividuals.remove(target);
         anonymousIndividualMap.put(source, target);
+        explanationMap.put(source, explanation);
         updateUnmatchedAxiomsForNewMatch(source);
         fireAddMatch(source, target);
     }
