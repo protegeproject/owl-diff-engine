@@ -25,7 +25,7 @@ public class IdentifyRetiredConcepts extends AbstractAnalyzerAlgorithm {
     
     public void initialise(Engine e) {
     	this.changes = e.getChanges();
-    	retiredClassService = RetirementClassService.getRetirementClassService(e);
+    	retiredClassService = RetirementClassService.get(e);
     }	
     
     public void apply() {
