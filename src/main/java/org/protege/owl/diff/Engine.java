@@ -106,6 +106,19 @@ public class Engine {
 
 	public void phase1() {
     	phase1Init();
+    	phase1Run();
+        phase1Cleanup();
+    }
+    
+    private void phase1Init() {
+    	services.clear();
+		diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
+		for (AlignmentAlgorithm algorithm : diffAlgorithms) {
+			algorithm.initialise(this);
+		}
+	}
+    
+    private void phase1Run() {
         boolean progress;
         boolean finished = false;
         do {
@@ -132,16 +145,7 @@ public class Engine {
             }
         }
         while (progress && !finished);
-        
-        phase1Cleanup();
     }
-    
-    private void phase1Init() {
-		diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
-		for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-			algorithm.initialise(this);
-		}
-	}
 
 	private void phase1Cleanup() {
 	    for (AlignmentAlgorithm algorithm : diffAlgorithms) {
@@ -159,9 +163,7 @@ public class Engine {
 
 	public void phase2() {
     	phase2Init();
-    	for (PresentationAlgorithm algorithm : changeAlgorithms) {
-    		algorithm.apply();
-    	}
+    	phase2Run();
     }
     
     private void phase2Init() {
@@ -171,5 +173,9 @@ public class Engine {
     	}
     }
     
-    
+    private void phase2Run() {
+    	for (PresentationAlgorithm algorithm : changeAlgorithms) {
+    		algorithm.apply();
+    	}
+    }
 }
