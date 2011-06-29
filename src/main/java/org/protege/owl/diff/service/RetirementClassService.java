@@ -28,7 +28,7 @@ public final class RetirementClassService {
     
     private OWLDataFactory factory;
     
-    public static RetirementClassService getRetirementClassService(Engine e) {
+    public static RetirementClassService get(Engine e) {
     	RetirementClassService rcs = e.getService(RetirementClassService.class);
     	if (rcs == null) {
     		rcs = new RetirementClassService(e.getOwlDiffMap(), e.getParameters());
