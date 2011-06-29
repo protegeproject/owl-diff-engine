@@ -27,7 +27,7 @@ public class CodeToEntityMapper {
 	private OWLAnnotationProperty              codeProperty;
 	private Map<String, Collection<OWLEntity>> targetCodeToEntityMap;
 	
-	public static CodeToEntityMapper generateCodeToEntityMap(Engine e) {
+	public static CodeToEntityMapper get(Engine e) {
 		CodeToEntityMapper mapper = e.getService(CodeToEntityMapper.class);
 		if (mapper == null) {
 			mapper = new CodeToEntityMapper(e.getOwlDiffMap(), e.getParameters());
