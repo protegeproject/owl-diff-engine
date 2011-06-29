@@ -38,7 +38,7 @@ public class MatchByCode implements AlignmentAlgorithm {
 
     public void initialise(Engine e) {
         this.diffMap = e.getOwlDiffMap();
-        codeMapper = CodeToEntityMapper.generateCodeToEntityMap(e);
+        codeMapper = CodeToEntityMapper.get(e);
         if (codeMapper.codeNotPresent()) {
         	disabled = true;
         }
