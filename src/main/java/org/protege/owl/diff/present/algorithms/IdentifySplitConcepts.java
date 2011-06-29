@@ -47,7 +47,7 @@ public class IdentifySplitConcepts extends AbstractAnalyzerAlgorithm {
 	public void initialise(Engine e) {
 		this.changes = e.getChanges();
 		this.diffMap = changes.getRawDiffMap();
-		this.mapper = CodeToEntityMapper.generateCodeToEntityMap(e);
+		this.mapper = CodeToEntityMapper.get(e);
 		OWLDataFactory factory = diffMap.getOWLDataFactory();
 		String splitFromPropertyName = (String) e.getParameters().get(SPLIT_FROM_ANNOTATION_PROPERTY);
 		if (splitFromPropertyName == null) {
