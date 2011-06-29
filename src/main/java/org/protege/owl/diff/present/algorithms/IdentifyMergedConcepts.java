@@ -50,7 +50,7 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 	public void initialise(Engine e) {
 		this.changes = e.getChanges();
 		OwlDiffMap diffMap = changes.getRawDiffMap();
-		mapper = CodeToEntityMapper.generateCodeToEntityMap(e);
+		mapper = CodeToEntityMapper.get(e);
 		OWLDataFactory factory = diffMap.getOWLDataFactory();
 		String mergedIntoPropertyName = (String) e.getParameters().get(MERGED_INTO_ANNOTATION_PROPERTY);
 		if (mergedIntoPropertyName == null) {
@@ -58,7 +58,7 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 			return;
 		}
 		mergedIntoProperty = factory.getOWLAnnotationProperty(IRI.create(mergedIntoPropertyName));
-		retiredClassService = RetirementClassService.getRetirementClassService(e);
+		retiredClassService = RetirementClassService.get(e);
 		Map<IRI, IRI> mergedIntoMap = new HashMap<IRI, IRI>();
 		for (OWLAxiom axiom : diffMap.getTargetOntology().getReferencingAxioms(mergedIntoProperty)) {
 			if (isMergedIntoAxiom(axiom)) {
