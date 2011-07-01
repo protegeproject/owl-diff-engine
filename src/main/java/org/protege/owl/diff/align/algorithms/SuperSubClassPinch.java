@@ -12,7 +12,7 @@ import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -39,7 +39,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
      * Reliable but it is a bit slow.
      */
     public int getPriority() {
-        return AlignmentAlgorithmComparator.MIN_PRIORITY + 2;
+        return PrioritizedComparator.MIN_PRIORITY + 2;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
@@ -181,7 +181,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     private boolean isCandidiateUnmatchedAxiom(UnmatchedAxiom unmatched) {
         if (unmatched.getAxiom() instanceof OWLSubClassOfAxiom &&
                 !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous() &&
-                !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous()) {
+                !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSuperClass().isAnonymous()) {
             unmatched.trim(diffMap);
             return unmatched.getReferencedUnmatchedEntities().size() == 1;
         }
