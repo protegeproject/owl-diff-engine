@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
@@ -71,8 +71,12 @@ public class Engine {
 	    for (AlignmentAlgorithm algorithm : algorithms) {
 	    	this.diffAlgorithms.add(algorithm);
 	    }
-	    Collections.sort(diffAlgorithms, new AlignmentAlgorithmComparator());
+	    Collections.sort(diffAlgorithms, new PrioritizedComparator());
 	}
+    
+    public Collection<AlignmentAlgorithm> getAlignmentAlgorithms() {
+    	return Collections.unmodifiableList(diffAlgorithms);
+    }
 
 	public void setPresentationAlgorithms(PresentationAlgorithm... algorithms) {
 		changeAlgorithms.clear();
@@ -80,6 +84,10 @@ public class Engine {
 			changeAlgorithms.add(algorithm);
 		}
 		Collections.sort(changeAlgorithms, new PresentationAlgorithmComparator());
+	}
+	
+	public Collection<PresentationAlgorithm> getPresentationAlgorithms() {
+		return Collections.unmodifiableList(changeAlgorithms);
 	}
 
 	public void addService(Object o) {
