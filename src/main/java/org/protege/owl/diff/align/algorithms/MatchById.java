@@ -7,7 +7,8 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
+import org.protege.owl.diff.service.DeprecationDeferralService;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -18,16 +19,18 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-public class MatchById implements AlignmentAlgorithm {    
+public class MatchById implements AlignmentAlgorithm {
+	public static final String EXPLANATION = "Source and targe entities aligned because they have the same IRI.";
     private boolean disabled = false;
     private OwlDiffMap diffMap;
+    private DeprecationDeferralService dds;
 
     public String getAlgorithmName() {
         return "Match By Id";
     }
 
     public int getPriority() {
-        return AlignmentAlgorithmComparator.MAX_PRIORITY - 1;
+        return PrioritizedComparator.MAX_PRIORITY - 1;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
@@ -36,6 +39,7 @@ public class MatchById implements AlignmentAlgorithm {
 
     public void initialise(Engine e) {
         this.diffMap = e.getOwlDiffMap();
+        dds = DeprecationDeferralService.get(e);
     }
 
     public void run() {
@@ -72,10 +76,15 @@ public class MatchById implements AlignmentAlgorithm {
                         }
                     });
                     if (found) {
-                        matchingMap.put(unmatchedSourceEntity, unmatchedSourceEntity);
+                    	if (dds.checkDeprecation(unmatchedSourceEntity, unmatchedSourceEntity)) {
+                    		dds.addMatch(unmatchedSourceEntity, unmatchedSourceEntity, EXPLANATION);
+                    	}
+                    	else {
+                    		matchingMap.put(unmatchedSourceEntity, unmatchedSourceEntity);
+                    	}
                     }
                 }
-                diffMap.addMatchingEntities(matchingMap, "Source and targe entities aligned because they have the same IRI.");
+                diffMap.addMatchingEntities(matchingMap, EXPLANATION);
             }
             finally {
                 diffMap.summarize();
