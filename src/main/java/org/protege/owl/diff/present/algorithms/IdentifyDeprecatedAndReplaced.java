@@ -43,6 +43,7 @@ public class IdentifyDeprecatedAndReplaced extends AbstractAnalyzerAlgorithm {
 		if (diff.getDiffType() == DiffType.CREATED 
 				&& diffMap.getSourceOntology().containsEntityInSignature(created)
 				&& dds.checkDeprecation(created, created)) {
+			diff.setDiffTypeDescription("Deprecated and replaced");
 			OWLAxiom declaration = factory.getOWLDeclarationAxiom(created);
 			OWLAxiom deprecated  = factory.getOWLAnnotationAssertionAxiom(created.getIRI(), factory.getOWLAnnotation(factory.getOWLDeprecated(), factory.getOWLLiteral(true)));
 			MatchedAxiom declarationMatch = null;
