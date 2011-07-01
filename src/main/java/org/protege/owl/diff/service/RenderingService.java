@@ -75,35 +75,23 @@ public class RenderingService {
 	
 	public String renderDiff(EntityBasedDiff diff) {
 		StringBuffer diffDescription = new StringBuffer();
+		diffDescription.append(diff.getDiffTypeDescription());
+		diffDescription.append(' ');
 		switch (diff.getDiffType()) {
 		case CREATED:
-			renderCreated(diffDescription, diff.getTargetEntity());
+			diffDescription.append(renderTargetObject(diff.getTargetEntity()));
 			break;
 		case DELETED:
-			diffDescription.append("Deleted ");
 			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
 			break;
 		case EQUIVALENT:
 			break;
 		case MODIFIED:
 		case RENAMED:
-			diffDescription.append("Modified ");
 			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
 			break;
 		}
 		return diffDescription.toString();
-	}
-	
-	private void renderCreated(StringBuffer diffDescription, OWLEntity created) {
-		OWLOntology sourceOntology = e.getOwlDiffMap().getSourceOntology();
-		if (sourceOntology.containsEntityInSignature(created) && dds.checkDeprecation(created, created)) {
-			diffDescription.append("Deprecated and Replaced ");
-			diffDescription.append(renderTargetObject(created));
-		}
-		else {
-			diffDescription.append("Created ");
-			diffDescription.append(renderTargetObject(created));
-		}
 	}
 
 	private String render(OWLObject o, DifferencePosition position) {
