@@ -6,13 +6,10 @@ import java.io.Writer;
 
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
-import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.util.IRIShortFormProvider;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 
@@ -20,8 +17,6 @@ import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxObjec
 
 public class RenderingService {
 	private OWLDataFactory factory;
-	private Engine e;
-	private DeprecationDeferralService dds;
 	
 	private WriterDelegate sourceWriter = new WriterDelegate();
 	private ManchesterOWLSyntaxObjectRenderer sourceRenderer;
@@ -39,9 +34,7 @@ public class RenderingService {
 	}
 	
 	private RenderingService(Engine e) {
-		this.e = e;
 		this.factory = e.getOWLDataFactory();
-		this.dds = DeprecationDeferralService.get(e);
 	}
 	
 	public void setSourceShortFormProvider(ShortFormProvider sourceShortFormProvider) {
