@@ -3,7 +3,7 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.Set;
 
 import org.protege.owl.diff.align.AlignmentAggressiveness;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLClass;
 
 public class MatchLoneSiblings extends AbstractSiblingMatch {
@@ -19,7 +19,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 	 * This is somewhat expensive to run early but I think I trust the results.
 	 */
 	public int getPriority() {
-		return AlignmentAlgorithmComparator.MIN_PRIORITY + 2;
+		return PrioritizedComparator.MIN_PRIORITY + 2;
 	}
 	
     public AlignmentAggressiveness getAggressiveness() {
