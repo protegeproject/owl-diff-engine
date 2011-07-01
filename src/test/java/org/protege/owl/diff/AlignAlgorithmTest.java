@@ -18,7 +18,7 @@ import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -108,7 +108,7 @@ public class AlignAlgorithmTest extends TestCase {
         algorithms.add(new MatchByCode());
         algorithms.add(new MatchStandardVocabulary());
         algorithms.add(new SuperSubClassPinch());
-        Collections.sort(algorithms, new AlignmentAlgorithmComparator());
+        Collections.sort(algorithms, new PrioritizedComparator());
         for (int i =0 ;i < 2; i++) {
         	for (AlignmentAlgorithm algorithm : algorithms) {
         		algorithm.initialise(e);
