@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.align.util.CompareNames;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -12,7 +13,7 @@ public abstract class AbstractApproximateSiblingMatch extends AbstractSiblingMat
 
 	
 	public abstract String getAlgorithmName();
-	public abstract String getBrowserText(OWLClass cls, boolean isSourceOntology);
+	public abstract String getBrowserText(OWLClass cls, DifferencePosition position);
 
 	
 	protected void checkSiblings(Set<OWLClass> unmatchedSourceSiblings,
@@ -27,8 +28,8 @@ public abstract class AbstractApproximateSiblingMatch extends AbstractSiblingMat
 	}
 	
 	private void checkMatch(Map<OWLEntity, OWLEntity> newMatches, OWLClass unmatchedSourceSibling, OWLClass unmatchedTargetSibling) {
-		String sourceName = getBrowserText(unmatchedSourceSibling, true);
-		String targetName = getBrowserText(unmatchedTargetSibling, false);
+		String sourceName = getBrowserText(unmatchedSourceSibling, DifferencePosition.SOURCE);
+		String targetName = getBrowserText(unmatchedTargetSibling, DifferencePosition.TARGET);
 		if (CompareNames.closeEnough(sourceName, targetName)) {
 			newMatches.put(unmatchedSourceSibling, unmatchedTargetSibling);
 		}
