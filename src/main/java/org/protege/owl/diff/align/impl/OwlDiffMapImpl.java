@@ -1,13 +1,12 @@
 package org.protege.owl.diff.align.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.util.AlignmentListenerAdapter;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
