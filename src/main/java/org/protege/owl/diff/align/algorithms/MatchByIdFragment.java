@@ -9,7 +9,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.EntityType;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.util.ShortFormProvider;
@@ -63,7 +63,8 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 			Collection<OWLEntity> targetEntities = targetEntitiesByShortForm.get(shortForm);
 			if (targetEntities != null) {
 				OWLEntity matchingTarget = findMatch(sourceEntity, targetEntities);
-				if (matchingTarget != null) {
+				// don't use the match if the iri is the same - match by id does this with deprecation support
+				if (matchingTarget != null && !sourceEntity.getIRI().equals(matchingTarget.getIRI())) {
 					diffs.addMatch(sourceEntity, matchingTarget, "Aligned source and target entities because they have a common IRI fragment.");
 				}
 			}
@@ -95,11 +96,11 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 	 * I don't entirely trust this guy to get the right answer and he is slow.
 	 */
 	public int getPriority() {
-		return AlignmentAlgorithmComparator.MIN_PRIORITY;
+		return PrioritizedComparator.MIN_PRIORITY;
 	}
 
     public AlignmentAggressiveness getAggressiveness() {
-    	return AlignmentAggressiveness.PRETTY_CERTAIN;
+    	return AlignmentAggressiveness.CONSERVATIVE;
     }
 	
 	public String getAlgorithmName() {
