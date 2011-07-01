@@ -1,6 +1,5 @@
 package org.protege.owl.diff.present;
 
-import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,12 +13,23 @@ import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLOb
 
 public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     public enum DiffType {
-        EQUIVALENT, CREATED, DELETED, RENAMED, MODIFIED;
+        EQUIVALENT("Unchanged"), CREATED("Created"), DELETED("Deleted"), RENAMED("Renamed"), MODIFIED("Modified");
+        
+        private String description;
+        
+        private DiffType(String description) {
+        	this.description = description;
+        }
+        
+        public String getDescription() {
+			return description;
+		}
     }
     
     private OWLEntity sourceEntity;
     private OWLEntity targetEntity;
     private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<MatchedAxiom>();
+    private String diffTypeDescription;
     
     public OWLEntity getSourceEntity() {
         return sourceEntity;
@@ -54,6 +64,14 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
             return DiffType.EQUIVALENT;
         }
     }
+    
+    public String getDiffTypeDescription() {
+		return diffTypeDescription == null ? getDiffType().getDescription() : diffTypeDescription;
+	}
+    
+    public void setDiffTypeDescription(String diffTypeDescription) {
+		this.diffTypeDescription = diffTypeDescription;
+	}
 
     public SortedSet<MatchedAxiom> getAxiomMatches() {
         return axiomMatches;
@@ -69,27 +87,24 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     public String getShortDescription() {
         StringBuffer buffer = new StringBuffer();
+        buffer.append(getDiffTypeDescription());
+        buffer.append(" ");
         switch (getDiffType()) {
         case CREATED:
-            buffer.append("Created ");
             buffer.append(renderObject(targetEntity));
             break;
         case DELETED:
-            buffer.append("Deleted ");
             buffer.append(renderObject(sourceEntity));
             break;
         case EQUIVALENT:
-            buffer.append("Unchanged ");
             buffer.append(renderObject(targetEntity));
             break;
         case RENAMED:
-            buffer.append("Renamed ");
             buffer.append(renderObject(sourceEntity));
             buffer.append(" -> ");
             buffer.append(renderObject(targetEntity));
             break;
         case MODIFIED:
-            buffer.append("Modified ");
             if (!sourceEntity.getIRI().equals(targetEntity.getIRI())) {
             	buffer.append("and Renamed ");
             }
