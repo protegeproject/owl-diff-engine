@@ -9,7 +9,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
@@ -35,7 +35,7 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
     }
 
     public int getPriority() {
-        return AlignmentAlgorithmComparator.MAX_PRIORITY;
+        return PrioritizedComparator.MAX_PRIORITY;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
