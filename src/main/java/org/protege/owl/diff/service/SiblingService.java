@@ -3,6 +3,7 @@ package org.protege.owl.diff.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -46,9 +47,9 @@ public class SiblingService {
 	}
 	
 	
-	public Set<OWLClass> getSubClasses(OWLClass c, boolean isSourceOntology) {
+	public Set<OWLClass> getSubClasses(OWLClass c, DifferencePosition position) {
 		Set<OWLClass> subClasses = new HashSet<OWLClass>();
-		for (OWLClassExpression ce : c.getSubClasses(getOntology(isSourceOntology))) {
+		for (OWLClassExpression ce : c.getSubClasses(position.getOntology(diffs))) {
 			if (!ce.isAnonymous()) {
 				subClasses.add(ce.asOWLClass());
 			}
@@ -56,7 +57,4 @@ public class SiblingService {
 		return subClasses;
 	}
 	
-	private OWLOntology getOntology(boolean isSourceOntology) {
-		return isSourceOntology ? diffs.getSourceOntology() : diffs.getTargetOntology();
-	}
 }
