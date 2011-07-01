@@ -1,0 +1,115 @@
+package org.protege.owl.diff.service;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.protege.owl.diff.DifferencePosition;
+import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.OWLOntology;
+
+public class DeprecationDeferralService {
+	private boolean initialized = false;
+	private boolean deprecationDeferralEnabled;
+	
+	private Engine engine;
+	
+	private Set<DeferredMatchBean> deferredMatches = new HashSet<DeferredMatchBean>();
+
+	public static DeprecationDeferralService get(Engine e) {
+		DeprecationDeferralService dds = e.getService(DeprecationDeferralService.class);
+		if (dds == null) {
+			dds = new DeprecationDeferralService(e);
+			e.addService(dds);
+		}
+		return dds;
+	}
+	
+	private DeprecationDeferralService(Engine e) {
+		engine = e;
+	}
+	
+	private void ensureInitialized() {
+		if (!initialized) {
+			deprecationDeferralEnabled = false;
+			for (AlignmentAlgorithm a : engine.getAlignmentAlgorithms()) {
+				if (a instanceof DeferDeprecationAlgorithm) {
+					deprecationDeferralEnabled = true;
+				}
+			}
+			initialized = true;
+		}
+	}
+	
+	public boolean checkDeprecation(OWLEntity sourceEntity, OWLEntity targetEntity) {
+		ensureInitialized();
+		return deprecationDeferralEnabled 
+		           && !isDeprecated(sourceEntity, DifferencePosition.SOURCE) 
+		           && isDeprecated(targetEntity, DifferencePosition.TARGET);
+	}
+	
+	public boolean isDeprecated(OWLEntity e, DifferencePosition position) {
+		OWLOntology ontology = position.getOntology(engine.getOwlDiffMap());
+		for (OWLOntology ont : ontology.getImportsClosure()) {
+			for (OWLAnnotation annotation : e.getAnnotations(ont, engine.getOWLDataFactory().getOWLDeprecated())) {
+				if (!(annotation.getValue() instanceof OWLLiteral)) {
+					continue;
+				}
+				OWLLiteral value = (OWLLiteral) annotation.getValue();
+				if (!value.isBoolean()) {
+					continue;
+				}
+				if (value.parseBoolean()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void addMatch(OWLEntity sourceEntity, OWLEntity targetEntity, String explanation) {
+		deferredMatches.add(new DeferredMatchBean(sourceEntity, targetEntity, explanation));
+	}
+
+	public Set<DeferredMatchBean> getDeferredMatches() {
+		try {
+			return deferredMatches;
+		}
+		finally {
+			deferredMatches = new HashSet<DeferredMatchBean>();
+		}
+	}
+	
+	/**
+	 * @author tredmond
+	 *
+	 */
+	public static class DeferredMatchBean {
+		private OWLEntity sourceEntity;
+		private OWLEntity targetEntity;
+		private String explanation;
+
+		public DeferredMatchBean(OWLEntity sourceEntity, OWLEntity targetEntity, String explanation) {
+			this.sourceEntity = sourceEntity;
+			this.targetEntity = targetEntity;
+			this.explanation = explanation;
+		}
+
+		public OWLEntity getSourceEntity() {
+			return sourceEntity;
+		}
+
+		public OWLEntity getTargetEntity() {
+			return targetEntity;
+		}
+
+		public String getExplanation() {
+			return explanation;
+		}
+		
+	}
+}
