@@ -1,17 +1,19 @@
 package org.protege.owl.diff.align.impl;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DiffListenerCollection {
-    private Collection<AlignmentListener> listeners = new HashSet<AlignmentListener>();
+    private List<AlignmentListener> listeners = new ArrayList<AlignmentListener>();
     
     public void addDiffListener(AlignmentListener listener) {
         listeners.add(listener);
