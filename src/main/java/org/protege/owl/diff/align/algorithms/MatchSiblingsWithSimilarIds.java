@@ -1,5 +1,6 @@
 package org.protege.owl.diff.align.algorithms;
 
+import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.util.ShortFormProvider;
@@ -13,7 +14,7 @@ public class MatchSiblingsWithSimilarIds extends AbstractApproximateSiblingMatch
 		shortFormProvider = new SimpleShortFormProvider();
 	}
 	
-	public String getBrowserText(OWLClass cls, boolean isSourceOntology) {
+	public String getBrowserText(OWLClass cls, DifferencePosition position) {
 		return shortFormProvider.getShortForm(cls);
 	}
 
@@ -23,7 +24,7 @@ public class MatchSiblingsWithSimilarIds extends AbstractApproximateSiblingMatch
 	}
 	
     public AlignmentAggressiveness getAggressiveness() {
-    	return AlignmentAggressiveness.PRETTY_CERTAIN;
+    	return AlignmentAggressiveness.CONSERVATIVE;
     }
 
 }
