@@ -9,7 +9,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.util.AlignmentAlgorithmComparator;
+import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -29,7 +29,7 @@ public class MatchByCode implements AlignmentAlgorithm {
     private CodeToEntityMapper codeMapper;
 
     public int getPriority() {
-        return AlignmentAlgorithmComparator.MAX_PRIORITY;
+        return PrioritizedComparator.MAX_PRIORITY;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
