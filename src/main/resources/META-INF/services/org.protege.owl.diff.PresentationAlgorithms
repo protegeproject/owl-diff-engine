@@ -1,0 +1,6 @@
+org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged
+org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation
+org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition
+org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass
+org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced
+org.protege.owl.diff.present.algorithms.IdentifyRenameOperation

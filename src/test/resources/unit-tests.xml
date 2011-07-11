@@ -6,6 +6,7 @@
 		    <classes>
 				<class name="org.protege.owl.diff.AlignAlgorithmTest" />
 				<class name="org.protege.owl.diff.PresentationAlgorithmTest"/>
+				<class name="org.protege.owl.diff.AutoConfigTest"/>
 			</classes>
 		</test>
         <!--
