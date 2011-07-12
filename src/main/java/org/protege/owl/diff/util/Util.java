@@ -9,11 +9,65 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.present.Changes;
+import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
+import org.semanticweb.owlapi.model.OWLEntity;
 
 public class Util {
 	public static final Logger LOGGER = Logger.getLogger(Util.class);
+	
+	public static String getStats(Engine e) {
+		int created = 0;
+		int deleted = 0;
+		int refactored = 0;
+		int otherwiseChanged = 0;
+		Changes changes = e.getChanges();
+		for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
+			OWLEntity sourceEntity = diff.getSourceEntity();
+			OWLEntity targetEntity = diff.getTargetEntity();
+			if (sourceEntity == null) {
+				created++;
+			}
+			else if (targetEntity == null) {
+				deleted++;
+			}
+			else if (!sourceEntity.equals(targetEntity)) {
+				refactored++;
+			}
+			else {
+				otherwiseChanged++;
+			}
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(created);
+		sb.append(" entities created, ");
+		sb.append(deleted);
+		sb.append(" entities deleted, ");
+		sb.append(refactored);
+		sb.append(" entities renamed, ");
+		sb.append(otherwiseChanged);
+		sb.append(" entities modified only.");
+		return sb.toString();
+	}
+	
+	private static boolean isDiffRefactorOnly(EntityBasedDiff diff) {
+		if (diff.getAxiomMatches().size() == 0) {
+			return true;
+		}
+		else if (diff.getAxiomMatches().size() != 1) {
+			return false;
+		}
+		MatchedAxiom match = diff.getAxiomMatches().iterator().next();
+		return match.getSourceAxiom() != null && match.getSourceAxiom() instanceof OWLDeclarationAxiom
+					&& match.getTargetAxiom() != null && match.getTargetAxiom() instanceof OWLDeclarationAxiom;
+	}
+	
 	
     public static List<Class<? extends AlignmentAlgorithm>> createDeclaredAlignmentAlgorithms(ClassLoader cl) throws IOException {
     	return createDeclaredAlignmentAlgorithms(wrapClassLoader(cl));
