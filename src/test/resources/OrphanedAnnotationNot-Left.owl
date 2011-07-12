@@ -1,0 +1,17 @@
+Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+Prefix(:=<http://protege.org/ontologies/OrphanedAnnotation.owl#>)
+Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+
+
+Ontology(<http://protege.org/ontologies/OrphanedAnnotation.owl>
+
+Declaration(Class(:A))
+Declaration(Class(:B))
+AnnotationAssertion(rdfs:comment :B "This annotation will not get lost!"^^xsd:string)
+SubClassOf(:B :A)
+Declaration(Class(:C))
+SubClassOf(:C :B)
+)
