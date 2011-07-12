@@ -123,7 +123,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         buffer.append("\n");
         for (MatchedAxiom match : axiomMatches) {
             buffer.append(match.getDescription().getDescription());
-            buffer.append(" ");
+            buffer.append(": ");
             if (match.getSourceAxiom() == null) {
                 buffer.append("\t");
                 buffer.append(renderObject(match.getTargetAxiom()));
