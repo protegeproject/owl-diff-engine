@@ -18,23 +18,15 @@ import org.protege.owl.diff.util.Util;
 public class AutoConfigTest extends TestCase {
 
 	public void testFindAlignmentAlgorithms() throws IOException {
-		List<AlignmentAlgorithm> algorithms = Util.createDeclaredAlignmentAlgorithms(getClass().getClassLoader());
-		List<Class<? extends AlignmentAlgorithm>> classes = new ArrayList<Class<? extends AlignmentAlgorithm>>();
-		for (AlignmentAlgorithm algorithm : algorithms) {
-			classes.add(algorithm.getClass());
-		}
-		assertTrue(classes.contains(MatchById.class));
-		assertTrue(classes.contains(MatchByCode.class));
+		List<Class<? extends AlignmentAlgorithm>> algorithms = Util.createDeclaredAlignmentAlgorithms(getClass().getClassLoader());
+		assertTrue(algorithms.contains(MatchById.class));
+		assertTrue(algorithms.contains(MatchByCode.class));
 	}
 	
 	public void testFindPresentationAlgorithms() throws IOException{
-		List<PresentationAlgorithm> algorithms = Util.createDeclaredPresentationAlgorithms(getClass().getClassLoader());
-		List<Class<? extends PresentationAlgorithm>> classes = new ArrayList<Class<? extends PresentationAlgorithm>>();
-		for (PresentationAlgorithm algorithm : algorithms) {
-			classes.add(algorithm.getClass());
-		}
-		assertTrue(classes.contains(IdentifyChangedAnnotation.class));
-		assertTrue(classes.contains(IdentifyChangedSuperclass.class));
-		assertTrue(classes.contains(IdentifyRenameOperation.class));
+		List<Class<? extends PresentationAlgorithm>> algorithms = Util.createDeclaredPresentationAlgorithms(getClass().getClassLoader());
+		assertTrue(algorithms.contains(IdentifyChangedAnnotation.class));
+		assertTrue(algorithms.contains(IdentifyChangedSuperclass.class));
+		assertTrue(algorithms.contains(IdentifyRenameOperation.class));
 	}
 }

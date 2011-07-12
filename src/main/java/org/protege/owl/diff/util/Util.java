@@ -15,27 +15,27 @@ import org.protege.owl.diff.present.PresentationAlgorithm;
 public class Util {
 	public static final Logger LOGGER = Logger.getLogger(Util.class);
 	
-    public static List<AlignmentAlgorithm> createDeclaredAlignmentAlgorithms(ClassLoader cl) throws IOException {
+    public static List<Class<? extends AlignmentAlgorithm>> createDeclaredAlignmentAlgorithms(ClassLoader cl) throws IOException {
     	return createDeclaredAlignmentAlgorithms(wrapClassLoader(cl));
     }
     
     /*
      * we wrap the class loader so that this utility works with OSGi bundles.  Horrible, eh?
      */
-    public static List<AlignmentAlgorithm> createDeclaredAlignmentAlgorithms(ClassLoaderWrapper cl) throws IOException {
+    public static List<Class<? extends AlignmentAlgorithm>> createDeclaredAlignmentAlgorithms(ClassLoaderWrapper cl) throws IOException {
     	return createDeclaredAlgorithms(cl, 
     			                        AlignmentAlgorithm.class, 
     								    "META-INF/services/org.protege.owl.diff.AlignmentAlgorithms");
     }
     
-    public static List<PresentationAlgorithm> createDeclaredPresentationAlgorithms(ClassLoader cl) throws IOException {
+    public static List<Class<? extends PresentationAlgorithm>> createDeclaredPresentationAlgorithms(ClassLoader cl) throws IOException {
     	return createDeclaredPresentationAlgorithms(wrapClassLoader(cl));
     }
     
     /*
      * we wrap the class loader so that this utility works with OSGi bundles.  Horrible, eh?
      */
-    public static List<PresentationAlgorithm> createDeclaredPresentationAlgorithms(ClassLoaderWrapper cl) throws IOException {
+    public static List<Class<? extends PresentationAlgorithm>> createDeclaredPresentationAlgorithms(ClassLoaderWrapper cl) throws IOException {
     	return createDeclaredAlgorithms(cl, 
     			                        PresentationAlgorithm.class, 
     			                        "META-INF/services/org.protege.owl.diff.PresentationAlgorithms");
@@ -54,18 +54,18 @@ public class Util {
     	};
     }
 	
-    private static <X> List<X> createDeclaredAlgorithms(ClassLoaderWrapper cl, Class<? extends X> toImplement, String resourceName) throws IOException {
-    	List<X> algorithms = new ArrayList<X>();
+    private static <X> List<Class<? extends X>> createDeclaredAlgorithms(ClassLoaderWrapper cl, Class<? extends X> toImplement, String resourceName) throws IOException {
+    	List<Class<? extends X>> algorithms = new ArrayList<Class<? extends X>>();
     	Enumeration<URL> resources = cl.getResources(resourceName);
-    	while (resources.hasMoreElements()) {
+    	while (resources != null && resources.hasMoreElements()) {
     		URL url = resources.nextElement();
     		algorithms.addAll(createDeclaredAlignmentAlgorithms(cl, url, toImplement));
     	}
     	return algorithms;
     }
     
-    private static <X> List<X> createDeclaredAlignmentAlgorithms(ClassLoaderWrapper cl, URL url, Class<? extends X> toImplement) throws IOException {    
-    	List<X> algorithms = new ArrayList<X>();
+    private static <X> List<Class<? extends X>> createDeclaredAlignmentAlgorithms(ClassLoaderWrapper cl, URL url, Class<? extends X> toImplement) throws IOException {    
+    	List<Class<? extends X>> algorithms = new ArrayList<Class<? extends X>>();
     	
     	BufferedReader factoryReader = new BufferedReader(new InputStreamReader(url.openStream()));
     	try {
@@ -82,7 +82,7 @@ public class Util {
     				name = name.trim();
     				Class<?> clazz = cl.loadClass(name);
     				if (toImplement.isAssignableFrom(clazz)) {
-    					algorithms.add(toImplement.cast(clazz.newInstance()));
+    					algorithms.add(clazz.asSubclass(toImplement));
     					success = true;
     				}
     			}
