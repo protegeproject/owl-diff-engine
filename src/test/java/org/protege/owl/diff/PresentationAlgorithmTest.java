@@ -3,20 +3,24 @@ package org.protege.owl.diff;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import junit.framework.TestCase;
 
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
+import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
+import org.protege.owl.diff.present.algorithms.IdentifyAnnotationRefactored;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
+import org.protege.owl.diff.present.algorithms.IdentifyOrphanedAnnotations;
+import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
@@ -24,6 +28,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -324,5 +329,114 @@ public class PresentationAlgorithmTest extends TestCase {
     	EntityBasedDiff ediff = changes.getEntityBasedDiffs().iterator().next();
     	assertEquals(1, ediff.getAxiomMatches().size());
     	assertEquals(IdentifyChangedDefinition.CHANGED_DEFINITION, ediff.getAxiomMatches().iterator().next().getDescription());
+    }
+    
+    public void testOrphanedAnnotationsBaseline() throws OWLOntologyCreationException {
+    	loadOntologies("OrphanedAnnotation");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
+    	e.setPresentationAlgorithms(new IdentifyRenameOperation());
+    	e.phase1();
+    	assertTrue(e.getOwlDiffMap().getUnmatchedSourceAxioms().isEmpty());
+    	assertTrue(e.getOwlDiffMap().getUnmatchedTargetAxioms().isEmpty());
+    	e.phase2();
+    	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
+    	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
+    	assertEquals(1, diff.getAxiomMatches().size());
+    	MatchedAxiom match = diff.getAxiomMatches().iterator().next();
+    	assertEquals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION, match.getDescription());
+    }
+    
+    public void testOrphanedAnnotations() throws OWLOntologyCreationException {
+    	loadOntologies("OrphanedAnnotation");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
+    	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyOrphanedAnnotations());
+    	e.phase1();
+    	assertTrue(e.getOwlDiffMap().getUnmatchedSourceAxioms().isEmpty());
+    	assertTrue(e.getOwlDiffMap().getUnmatchedTargetAxioms().isEmpty());
+    	e.phase2();
+    	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
+    	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
+    	assertEquals(2, diff.getAxiomMatches().size());
+    	int counter = 0;
+    	for (MatchedAxiom match : diff.getAxiomMatches()) {
+    		counter++;
+    		if (counter == 1) {
+    	    	assertEquals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION, match.getDescription());
+    		}
+    		else {
+    	    	assertEquals(IdentifyOrphanedAnnotations.ORPHANED_ANNOTATION, match.getDescription());
+    			assertTrue(match.getSourceAxiom().equals(match.getTargetAxiom()));
+    			assertTrue(match.getSourceAxiom() instanceof OWLAnnotationAssertionAxiom);
+    		}
+    	}
+    }
+    
+    public void testOrphanedAnnotationsWithPun() throws OWLOntologyCreationException {
+    	loadOntologies("OrphanedAnnotationWithPun");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
+    	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyOrphanedAnnotations());
+    	e.phase1();
+    	assertTrue(e.getOwlDiffMap().getUnmatchedSourceAxioms().isEmpty());
+    	assertTrue(e.getOwlDiffMap().getUnmatchedTargetAxioms().isEmpty());
+    	e.phase2();
+    	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
+    	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
+    	assertEquals(1, diff.getAxiomMatches().size());
+    	MatchedAxiom match = diff.getAxiomMatches().iterator().next();
+    	assertEquals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION, match.getDescription());
+    }
+    
+    public void testOrphanedAnnotationsNot() throws OWLOntologyCreationException {
+    	loadOntologies("OrphanedAnnotationNot");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
+    	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
+    	e.phase1();
+    	assertEquals(1, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
+    	assertTrue(e.getOwlDiffMap().getUnmatchedSourceAxioms().iterator().next() instanceof OWLAnnotationAssertionAxiom);
+    	assertEquals(1, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
+    	assertTrue(e.getOwlDiffMap().getUnmatchedTargetAxioms().iterator().next() instanceof OWLAnnotationAssertionAxiom);
+    	e.phase2();
+    	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
+    	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
+    	assertEquals(1, diff.getAxiomMatches().size());
+    }
+    
+    public void testAnnotationChanged() throws OWLOntologyCreationException {
+    	loadOntologies("AnnotationChanged");
+    	Engine e = new Engine(factory, ontology1, ontology2);
+    	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
+    	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
+    	e.phase1();
+    	assertEquals(2, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
+    	assertEquals(2, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
+    	for (OWLAxiom sourceAxiom : e.getOwlDiffMap().getUnmatchedSourceAxioms()) {
+    		assertTrue(sourceAxiom instanceof OWLAnnotationAssertionAxiom);
+    	}
+    	for (OWLAxiom targetAxiom : e.getOwlDiffMap().getUnmatchedTargetAxioms()) {
+    		assertTrue(targetAxiom instanceof OWLAnnotationAssertionAxiom);
+    	}
+    	e.phase2();
+    	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
+    	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
+    	assertEquals(2, diff.getAxiomMatches().size());
+    	int counter = 0;
+    	for (MatchedAxiom match : diff.getAxiomMatches()) {
+    		counter++;
+    		if (counter == 1) {
+    	    	assertEquals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION, match.getDescription());
+    		}
+    		else {
+    			OWLDataFactory factory = e.getOWLDataFactory();
+    	    	assertEquals(IdentifyChangedAnnotation.CHANGED_ANNOTATION, match.getDescription());
+    			assertTrue(match.getSourceAxiom() instanceof OWLAnnotationAssertionAxiom);
+    			assertTrue(match.getTargetAxiom() instanceof OWLAnnotationAssertionAxiom);
+    			OWLAnnotationAssertionAxiom sourceAxiom = (OWLAnnotationAssertionAxiom) match.getSourceAxiom();
+    			assertTrue(sourceAxiom.getAnnotation().getProperty().equals(factory.getRDFSLabel()));
+    		}
+    	}
     }
 }
