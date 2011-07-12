@@ -69,7 +69,7 @@ public class RenderingService {
 	public String renderDiff(EntityBasedDiff diff) {
 		StringBuffer diffDescription = new StringBuffer();
 		diffDescription.append(diff.getDiffTypeDescription());
-		diffDescription.append(' ');
+		diffDescription.append(": ");
 		switch (diff.getDiffType()) {
 		case CREATED:
 			diffDescription.append(renderTargetObject(diff.getTargetEntity()));
