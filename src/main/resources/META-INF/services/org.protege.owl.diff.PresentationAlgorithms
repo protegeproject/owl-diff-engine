@@ -1,6 +1,13 @@
+#
+# some of the algorithms in this library are NCI specific and will be moved
+# at some point.  They are not included here.
+#
+org.protege.owl.diff.present.algorithms.IdentifyAnnotationRefactored
 org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged
 org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation
 org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition
 org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass
 org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced
+org.protege.owl.diff.present.algorithms.IdentifyDeprecatedEntity
+org.protege.owl.diff.present.algorithms.IdentifyOrphanedAnnotations
 org.protege.owl.diff.present.algorithms.IdentifyRenameOperation
