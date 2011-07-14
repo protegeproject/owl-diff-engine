@@ -29,7 +29,7 @@ public class MatchByCode implements AlignmentAlgorithm {
     private CodeToEntityMapper codeMapper;
 
     public int getPriority() {
-        return PrioritizedComparator.MAX_PRIORITY;
+        return PrioritizedComparator.MAX_PRIORITY - 1;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
