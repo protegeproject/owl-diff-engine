@@ -3,6 +3,7 @@ package org.protege.owl.diff.present;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -13,7 +14,7 @@ import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLOb
 
 public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     public enum DiffType {
-        EQUIVALENT("Unchanged"), CREATED("Created"), DELETED("Deleted"), RENAMED("Renamed"), MODIFIED("Modified");
+        EQUIVALENT("Unchanged"), CREATED("Created"), DELETED("Deleted"), RENAMED("Renamed"), RENAMED_AND_MODIFIED("Renamed and Modified"), MODIFIED("Modified");
         
         private String description;
         
@@ -54,15 +55,26 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         else if (targetEntity == null) {
             return DiffType.DELETED;
         }
-        else if (!axiomMatches.isEmpty()) {
-            return DiffType.MODIFIED;
+        else if (isPureRename()) {
+        	return DiffType.RENAMED;
         }
         else if (!sourceEntity.equals(targetEntity)) {
-            return DiffType.RENAMED;
+            return DiffType.RENAMED_AND_MODIFIED;
+        }
+        else if (!axiomMatches.isEmpty()) {
+            return DiffType.MODIFIED;
         }
         else {
             return DiffType.EQUIVALENT;
         }
+    }
+    
+    private boolean isPureRename() {
+    	boolean pureRenameIdentified = 
+    		(axiomMatches.size() == 1 
+    			&& axiomMatches.iterator().next().getDescription()
+    					.equals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION));
+    	return !sourceEntity.equals(targetEntity) && (axiomMatches.isEmpty() || pureRenameIdentified);
     }
     
     public String getDiffTypeDescription() {
@@ -105,6 +117,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
             buffer.append(renderObject(targetEntity));
             break;
         case MODIFIED:
+        case RENAMED_AND_MODIFIED:
             if (!sourceEntity.getIRI().equals(targetEntity.getIRI())) {
             	buffer.append("and Renamed ");
             }
