@@ -19,7 +19,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 	 * This is somewhat expensive to run early but I think I trust the results.
 	 */
 	public int getPriority() {
-		return PrioritizedComparator.MIN_PRIORITY + 2;
+		return PrioritizedComparator.MIN_PRIORITY;
 	}
 	
     public AlignmentAggressiveness getAggressiveness() {
