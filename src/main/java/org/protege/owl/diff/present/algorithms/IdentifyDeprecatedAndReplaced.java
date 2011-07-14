@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class IdentifyDeprecatedAndReplaced extends AbstractAnalyzerAlgorithm {
+	public final static String DEPRECATED_AND_REPLACED_DIFF_TYPE = "Deprecated and replaced";
 	private OWLDataFactory factory;
 	private OwlDiffMap diffMap;
 	private Changes changes;
@@ -40,7 +41,7 @@ public class IdentifyDeprecatedAndReplaced extends AbstractAnalyzerAlgorithm {
 		if (diff.getDiffType() == DiffType.CREATED 
 				&& diffMap.getSourceOntology().containsEntityInSignature(created)
 				&& dds.checkDeprecation(created, created)) {
-			diff.setDiffTypeDescription("Deprecated and replaced");
+			diff.setDiffTypeDescription(DEPRECATED_AND_REPLACED_DIFF_TYPE);
 			OWLAxiom declaration = factory.getOWLDeclarationAxiom(created);
 			OWLAxiom deprecated  = factory.getOWLAnnotationAssertionAxiom(created.getIRI(), IdentifyDeprecatedEntity.DEPRECATE_ANNOTATION);
 			MatchedAxiom declarationMatch = null;
