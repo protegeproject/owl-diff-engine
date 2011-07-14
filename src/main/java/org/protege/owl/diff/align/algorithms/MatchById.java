@@ -30,7 +30,7 @@ public class MatchById implements AlignmentAlgorithm {
     }
 
     public int getPriority() {
-        return PrioritizedComparator.MAX_PRIORITY - 1;
+        return PrioritizedComparator.MAX_PRIORITY;
     }
     
     public AlignmentAggressiveness getAggressiveness() {
