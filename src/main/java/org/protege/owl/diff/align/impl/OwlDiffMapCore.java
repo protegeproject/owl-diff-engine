@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedAxiom;
@@ -113,6 +114,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
      * Match Processing methods
      */
     public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, String explanation) {
+    	clearBadMatches(newMatches);
         unmatchedSourceEntities.removeAll(newMatches.keySet());
         unmatchedTargetEntities.removeAll(newMatches.values());
         entityMap.putAll(newMatches);
@@ -124,6 +126,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     }
     
     public void addMatch(OWLEntity source, OWLEntity target, String explanation) {
+    	if (!goodMatch(source, target)) {
+    		return;
+    	}
         unmatchedSourceEntities.remove(source);
         unmatchedTargetEntities.remove(target);
         entityMap.put(source, target);
@@ -133,7 +138,8 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     }
     
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation) {
-        unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
+    	clearBadMatchesForAnonIndividuals(newMatches);
+    	unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
         unmatchedTargetAnonIndividuals.removeAll(newMatches.values());
         anonymousIndividualMap.putAll(newMatches);
         for (OWLAnonymousIndividual newMatchingIndividual : newMatches.keySet()) {
@@ -144,6 +150,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     }
     
     public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation) {
+    	if (!goodMatch(source, target)) {
+    		return;
+    	}
         unmatchedSourceAnonIndividuals.remove(source);
         unmatchedTargetAnonIndividuals.remove(target);
         anonymousIndividualMap.put(source, target);
@@ -154,6 +163,46 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     
     public boolean processingDone() {
         return unmatchedAxiomsMap.isEmpty();
+    }
+    
+    /*
+     * Matching entity/individual utilities...
+     */
+    
+    private void clearBadMatches(Map<OWLEntity, OWLEntity> newMatches) {
+    	Set<OWLEntity> sourceEntriesToRemove = new TreeSet<OWLEntity>();
+    	for (Map.Entry<OWLEntity, OWLEntity> entry : newMatches.entrySet()) {
+    		OWLEntity source = entry.getKey();
+    		OWLEntity target = entry.getValue();
+    		if (!goodMatch(source, target)) {
+    			sourceEntriesToRemove.add(source);
+    		}
+    	}
+    	for (OWLEntity source : sourceEntriesToRemove) {
+    		newMatches.remove(source);
+    	}
+    }
+    
+    private boolean goodMatch(OWLEntity source, OWLEntity target) {
+    	return unmatchedSourceEntities.contains(source) && unmatchedTargetEntities.contains(target);
+    }
+    
+    private void clearBadMatchesForAnonIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
+    	Set<OWLAnonymousIndividual> sourceEntriesToRemove = new TreeSet<OWLAnonymousIndividual>();
+    	for (Map.Entry<OWLAnonymousIndividual, OWLAnonymousIndividual> entry : newMatches.entrySet()) {
+    		OWLAnonymousIndividual source = entry.getKey();
+    		OWLAnonymousIndividual target = entry.getValue();
+    		if (!goodMatch(source, target)) {
+    			sourceEntriesToRemove.add(source);
+    		}
+    	}
+    	for (OWLAnonymousIndividual source : sourceEntriesToRemove) {
+    		newMatches.remove(source);
+    	}
+    }
+    
+    private boolean goodMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target) {
+    	return unmatchedSourceAnonIndividuals.contains(source) && unmatchedTargetAnonIndividuals.contains(target);
     }
     
     /*
