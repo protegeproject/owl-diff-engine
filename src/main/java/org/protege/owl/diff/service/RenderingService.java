@@ -81,6 +81,7 @@ public class RenderingService {
 			break;
 		case MODIFIED:
 		case RENAMED:
+		case RENAMED_AND_MODIFIED:
 			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
 			break;
 		}
