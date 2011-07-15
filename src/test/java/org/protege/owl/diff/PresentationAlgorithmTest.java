@@ -395,10 +395,8 @@ public class PresentationAlgorithmTest extends TestCase {
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
-    	assertEquals(1, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
-    	assertTrue(e.getOwlDiffMap().getUnmatchedSourceAxioms().iterator().next() instanceof OWLAnnotationAssertionAxiom);
-    	assertEquals(1, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
-    	assertTrue(e.getOwlDiffMap().getUnmatchedTargetAxioms().iterator().next() instanceof OWLAnnotationAssertionAxiom);
+    	assertEquals(0, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
+    	assertEquals(0, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
     	e.phase2();
     	assertEquals(1, e.getChanges().getEntityBasedDiffs().size());
     	EntityBasedDiff diff = e.getChanges().getEntityBasedDiffs().iterator().next();
@@ -411,8 +409,8 @@ public class PresentationAlgorithmTest extends TestCase {
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
-    	assertEquals(2, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
-    	assertEquals(2, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
+    	assertEquals(1, e.getOwlDiffMap().getUnmatchedSourceAxioms().size());
+    	assertEquals(1, e.getOwlDiffMap().getUnmatchedTargetAxioms().size());
     	for (OWLAxiom sourceAxiom : e.getOwlDiffMap().getUnmatchedSourceAxioms()) {
     		assertTrue(sourceAxiom instanceof OWLAnnotationAssertionAxiom);
     	}

@@ -13,7 +13,7 @@ public interface AlignmentListener {
     void addMatch(OWLEntity source, OWLEntity target);
     void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target);
     
-    void unmatchedAxiomMoved(UnmatchedAxiom unmatched);
+    void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched);
     void addUnmatcheableAxiom(OWLAxiom axiom);
     void addMatchedAxiom(OWLAxiom axiom);
     

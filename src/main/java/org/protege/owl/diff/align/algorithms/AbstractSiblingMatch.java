@@ -12,7 +12,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.SiblingService;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
@@ -29,7 +29,7 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 	
 	private AlignmentListener listener = new AlignmentListener() {
 		
-		public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+		public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
 		}
 		
 		public void addUnmatcheableAxiom(OWLAxiom axiom) {

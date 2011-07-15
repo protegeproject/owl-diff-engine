@@ -153,6 +153,7 @@ public class Engine {
             }
         }
         while (progress && !finished);
+        diffMap.finish();
     }
 
 	private void phase1Cleanup() {

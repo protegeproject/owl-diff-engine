@@ -23,7 +23,7 @@ public interface OwlDiffMap {
     Set<OWLEntity>              getUnmatchedSourceEntities();
     Set<OWLAnonymousIndividual> getUnmatchedSourceAnonymousIndividuals();
     Set<OWLAxiom>               getUnmatchedSourceAxioms();
-    Set<UnmatchedAxiom>         getPotentialMatchingSourceAxioms();
+    Set<UnmatchedSourceAxiom>   getPotentialMatchingSourceAxioms();
 
     Set<OWLEntity>              getUnmatchedTargetEntities();
     Set<OWLAnonymousIndividual> getUnmatchedTargetAnonymousIndividuals();
@@ -33,6 +33,8 @@ public interface OwlDiffMap {
     void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation);
     void addMatch(OWLEntity source, OWLEntity target, String explanation);
     void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation);
+    
+    void finish();
 
     void addDiffListener(AlignmentListener listener);
     void removeDiffListener(AlignmentListener listener);

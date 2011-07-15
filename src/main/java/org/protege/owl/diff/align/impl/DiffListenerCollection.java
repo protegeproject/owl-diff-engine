@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.diff.align.AlignmentListener;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -46,7 +46,7 @@ public class DiffListenerCollection {
         }
     }
     
-    protected void fireUnmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+    protected void fireUnmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
         for (AlignmentListener listener : listeners) {
             listener.unmatchedAxiomMoved(unmatched);
         }

@@ -8,8 +8,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.util.DiffDuplicator;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -40,10 +41,12 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     /*
      * Axioms
      */
-    private Map<OWLObject, Set<UnmatchedAxiom>> unmatchedAxiomsMap = new HashMap<OWLObject, Set<UnmatchedAxiom>>();
-    private Set<UnmatchedAxiom>                 potentialMatchingSourceAxioms  = new HashSet<UnmatchedAxiom>();
-    private Set<OWLAxiom>                       unmatchedSourceAxioms;
-    private Set<OWLAxiom>                       unmatchedTargetAxioms;
+    private Map<OWLObject, Set<UnmatchedSourceAxiom>> unmatchedSourceAxiomMap = new HashMap<OWLObject, Set<UnmatchedSourceAxiom>>();
+    private Set<UnmatchedSourceAxiom>                 potentialMatchingSourceAxioms  = new HashSet<UnmatchedSourceAxiom>();
+    private Set<OWLAxiom>                             unmatchedSourceAxioms;
+    private Set<OWLAxiom>                             unmatchedTargetAxioms;
+    
+    private Set<UnmatchedSourceAxiom>                 completedAnnnotationAssertionAxioms = new HashSet<UnmatchedSourceAxiom>();
     
     protected OwlDiffMapCore(OWLDataFactory factory,
                              OWLOntology sourceOntology, 
@@ -52,8 +55,8 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         unmatchedTargetAxioms = new HashSet<OWLAxiom>(targetOntology.getAxioms());
         
         for (OWLAxiom axiom : unmatchedSourceAxioms) {
-            UnmatchedAxiom unmatched = new UnmatchedAxiom(axiom);
-            insert(unmatched);
+            UnmatchedSourceAxiom unmatched = new UnmatchedSourceAxiom(axiom);
+            insert(unmatched, false);
             unmatchedSourceEntities.addAll(unmatched.getReferencedUnmatchedEntities());
             unmatchedSourceAnonIndividuals.addAll(unmatched.getReferencedUnmatchedAnonymousIndividuals());
         }
@@ -98,7 +101,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         return Collections.unmodifiableSet(unmatchedTargetAnonIndividuals);
     }
 
-    public Set<UnmatchedAxiom> getPotentialMatchingSourceAxioms() {
+    public Set<UnmatchedSourceAxiom> getPotentialMatchingSourceAxioms() {
         return Collections.unmodifiableSet(potentialMatchingSourceAxioms);
     }
 
@@ -161,8 +164,15 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         fireAddMatch(source, target);
     }
     
+    public void finish() {
+    	for (UnmatchedSourceAxiom unmatched : completedAnnnotationAssertionAxioms) {
+    		insert(unmatched, true);
+    	}
+    	// leave them in the set in case we try finish again...
+    }
+    
     public boolean processingDone() {
-        return unmatchedAxiomsMap.isEmpty();
+        return unmatchedSourceAxiomMap.isEmpty();
     }
     
     /*
@@ -210,18 +220,18 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
      */
 
     private void updateUnmatchedAxiomsForNewMatch(OWLObject source) {
-        Set<UnmatchedAxiom> unmatchedAxioms = unmatchedAxiomsMap.remove(source);
+        Set<UnmatchedSourceAxiom> unmatchedAxioms = unmatchedSourceAxiomMap.remove(source);
         if (unmatchedAxioms != null) {
             potentialMatchingSourceAxioms.removeAll(unmatchedAxioms);
-            for (UnmatchedAxiom unmatched : unmatchedAxioms) {
+            for (UnmatchedSourceAxiom unmatched : unmatchedAxioms) {
                 unmatched.trim(this);
-                insert(unmatched);
+                insert(unmatched, false);
                 fireUnmatchedAxiomMoved(unmatched);
             }
         }
     }
 
-    private void insert(UnmatchedAxiom unmatched) {
+    private void insert(UnmatchedSourceAxiom unmatched, boolean cleanup) {
         if (unmatched.getReferencedUnmatchedEntities().isEmpty() &&
                 unmatched.getReferencedUnmatchedAnonymousIndividuals().isEmpty()) {
             DiffDuplicator duplicator = new DiffDuplicator(this);
@@ -231,16 +241,19 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
                 unmatchedTargetAxioms.remove(potentialTargetAxiom);
                 fireAddMatchedAxiom(potentialTargetAxiom);
             }
+            else if (!cleanup && unmatched.getAxiom() instanceof OWLAnnotationAssertionAxiom) {
+            	completedAnnnotationAssertionAxioms.add(unmatched);
+            }
             else {
                 fireAddUnmatcheableAxiom(potentialTargetAxiom);
             }
         }
         else {
             OWLObject key = unmatched.getLeadingUnmatchedReference();
-            Set<UnmatchedAxiom> existingUnmatched = unmatchedAxiomsMap.get(key);
+            Set<UnmatchedSourceAxiom> existingUnmatched = unmatchedSourceAxiomMap.get(key);
             if (existingUnmatched == null) {
-                existingUnmatched = new HashSet<UnmatchedAxiom>();
-                unmatchedAxiomsMap.put(key, existingUnmatched);
+                existingUnmatched = new HashSet<UnmatchedSourceAxiom>();
+                unmatchedSourceAxiomMap.put(key, existingUnmatched);
             }
             existingUnmatched.add(unmatched);
             potentialMatchingSourceAxioms.add(unmatched);

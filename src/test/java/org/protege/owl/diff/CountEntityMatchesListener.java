@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.diff.align.AlignmentListener;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -38,7 +38,7 @@ public class CountEntityMatchesListener implements AlignmentListener {
 
     }
     
-    public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+    public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
 
     }
 

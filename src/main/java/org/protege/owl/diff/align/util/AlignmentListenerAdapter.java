@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.protege.owl.diff.align.AlignmentListener;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -31,7 +31,7 @@ public class AlignmentListenerAdapter implements AlignmentListener {
         }
     }
     
-    public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+    public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
  
     }
 

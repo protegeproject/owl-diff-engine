@@ -8,7 +8,7 @@ import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.DeprecationDeferralService;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
@@ -23,7 +23,7 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 	private boolean progress;
 	private AlignmentListener listener = new AlignmentListener() {
 		
-		public void unmatchedAxiomMoved(UnmatchedAxiom unmatched) {
+		public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
 			;
 		}
 		

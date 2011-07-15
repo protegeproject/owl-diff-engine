@@ -11,7 +11,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.align.UnmatchedAxiom;
+import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -27,8 +27,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     private boolean disabled = false;
     private int requiredSubclasses;
     
-    private Map<OWLClass, Set<UnmatchedAxiom>> superClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
-    private Map<OWLClass, Set<UnmatchedAxiom>> subClassOf = new HashMap<OWLClass, Set<UnmatchedAxiom>>();
+    private Map<OWLClass, Set<UnmatchedSourceAxiom>> superClassOf = new HashMap<OWLClass, Set<UnmatchedSourceAxiom>>();
+    private Map<OWLClass, Set<UnmatchedSourceAxiom>> subClassOf = new HashMap<OWLClass, Set<UnmatchedSourceAxiom>>();
     private Map<OWLEntity, OWLEntity> newMatches = new  HashMap<OWLEntity, OWLEntity>();
    
     public String getAlgorithmName() {
@@ -82,7 +82,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     }
     
     private void searchForMatches() {
-        for (Entry<OWLClass, Set<UnmatchedAxiom>> entry : superClassOf.entrySet()) {
+        for (Entry<OWLClass, Set<UnmatchedSourceAxiom>> entry : superClassOf.entrySet()) {
             OWLClass sourceClass = entry.getKey();
             if (log.isDebugEnabled()) {
                 log.debug("Can I match " + sourceClass + "?");
@@ -92,14 +92,14 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
                 continue;
             }
             Set<OWLClass>  desiredTargetSubClasses = new HashSet<OWLClass>();
-            for (UnmatchedAxiom subClassAxiom : subClassOf.get(sourceClass)) {
+            for (UnmatchedSourceAxiom subClassAxiom : subClassOf.get(sourceClass)) {
                 OWLClass sourceSubClass = ((OWLSubClassOfAxiom) subClassAxiom.getAxiom()).getSubClass().asOWLClass();
                 desiredTargetSubClasses.add((OWLClass) diffMap.getEntityMap().get(sourceSubClass));
             }
             if (log.isDebugEnabled()) {
                 log.debug("" + sourceClass + " subclasses map to "  + desiredTargetSubClasses);
             }
-            for (UnmatchedAxiom superClassAxiom : entry.getValue()) {
+            for (UnmatchedSourceAxiom superClassAxiom : entry.getValue()) {
                 if (superClassAxiom.getReferencedUnmatchedEntities().size() == 1) {
                     OWLClass sourceSuperClass = ((OWLSubClassOfAxiom) superClassAxiom.getAxiom()).getSuperClass().asOWLClass();
                     if (searchForMatches(sourceClass, sourceSuperClass, desiredTargetSubClasses)) {
@@ -148,12 +148,12 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     }
     
     private void findCandidateUnmatchedAxioms() {
-        for (UnmatchedAxiom unmatched : diffMap.getPotentialMatchingSourceAxioms()) {
+        for (UnmatchedSourceAxiom unmatched : diffMap.getPotentialMatchingSourceAxioms()) {
             addCandidateUnmatchedAxiom(unmatched);
         }
     }
     
-    private void addCandidateUnmatchedAxiom(UnmatchedAxiom unmatched) {
+    private void addCandidateUnmatchedAxiom(UnmatchedSourceAxiom unmatched) {
         if (log.isDebugEnabled()) {
             log.debug("Examining  axiom " + unmatched);
         }
@@ -178,7 +178,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         }
     }
 
-    private boolean isCandidiateUnmatchedAxiom(UnmatchedAxiom unmatched) {
+    private boolean isCandidiateUnmatchedAxiom(UnmatchedSourceAxiom unmatched) {
         if (unmatched.getAxiom() instanceof OWLSubClassOfAxiom &&
                 !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous() &&
                 !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSuperClass().isAnonymous()) {
