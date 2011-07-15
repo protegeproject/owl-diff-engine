@@ -12,12 +12,12 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.util.OWLEntityCollector;
 
-public class UnmatchedAxiom {    
+public class UnmatchedSourceAxiom {    
     private Set<OWLEntity> referencedUnmatchedEntities;
     private Collection<OWLAnonymousIndividual> referencedUnmatchedAnonymousIndividuals;
     private OWLAxiom axiom;
     
-    public UnmatchedAxiom(OWLAxiom axiom) {
+    public UnmatchedSourceAxiom(OWLAxiom axiom) {
         this.axiom = axiom;
         referencedUnmatchedEntities = new HashSet<OWLEntity>();
         referencedUnmatchedAnonymousIndividuals = new HashSet<OWLAnonymousIndividual>();
