@@ -73,6 +73,7 @@ public class DeprecationDeferralService {
 
 	public void addMatch(OWLEntity sourceEntity, OWLEntity targetEntity, String explanation) {
 		deferredMatches.add(new DeferredMatchBean(sourceEntity, targetEntity, explanation));
+		engine.getOwlDiffMap().setMatchBlocked(sourceEntity, targetEntity, true);
 	}
 
 	public Set<DeferredMatchBean> getDeferredMatches() {
