@@ -90,6 +90,7 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 		for (DeprecationDeferralService.DeferredMatchBean bean : dds.getDeferredMatches()) {
 			OWLEntity sourceEntity = bean.getSourceEntity();
 			OWLEntity targetEntity = bean.getTargetEntity();
+			diffMap.setMatchBlocked(sourceEntity, targetEntity, false);
 			if (diffMap.getUnmatchedSourceEntities().contains(sourceEntity) 
 					&& diffMap.getUnmatchedTargetEntities().contains(targetEntity)) {
 				diffMap.addMatch(sourceEntity, targetEntity, bean.getExplanation());
