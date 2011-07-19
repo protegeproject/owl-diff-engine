@@ -144,6 +144,7 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 	public void reset() {
 		alreadyRun = false;
 		examinedSourceParents.clear();
+		diffs.removeDiffListener(listener);
 	}
 
 	
