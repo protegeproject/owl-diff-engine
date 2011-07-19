@@ -34,8 +34,9 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     private Map<OWLEntity, OWLEntity> newMatches      = new  HashMap<OWLEntity, OWLEntity>();
     
     private AlignmentListener listener = new AlignmentListenerAdapter() {
+    	
+    	// the axiom moved listener doesn't actually work here...
 		
-		@Override
 		public void addMatch(OWLEntity source, OWLEntity target) {
 			superClassOf.remove(source);
 			subClassOf.remove(target);
