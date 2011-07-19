@@ -22,9 +22,10 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     /*
      * Entities
      */
-    private Map<OWLEntity, OWLEntity>   entityMap = new HashMap<OWLEntity, OWLEntity>();
-    private Set<OWLEntity>              unmatchedSourceEntities        = new HashSet<OWLEntity>(); 
-    private Set<OWLEntity>              unmatchedTargetEntities;
+    private Map<OWLEntity, OWLEntity>        entityMap                  = new HashMap<OWLEntity, OWLEntity>();
+    private Set<OWLEntity>                   unmatchedSourceEntities    = new HashSet<OWLEntity>(); 
+    private Set<OWLEntity>                   unmatchedTargetEntities;
+    private Map<OWLEntity, Set<OWLEntity>>   blockedEntityMatches       = new HashMap<OWLEntity, Set<OWLEntity>>();
     
     /*
      * Anonymous Individuals
@@ -140,6 +141,20 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         fireAddMatch(source, target);
     }
     
+    public void setMatchBlocked(OWLEntity source, OWLEntity target, boolean block) {
+    	Set<OWLEntity> blockedTargets = blockedEntityMatches.get(source);
+    	if (block) {
+    		if (blockedTargets == null) {
+    			blockedTargets = new TreeSet<OWLEntity>();
+    			blockedEntityMatches.put(source, blockedTargets);
+    		}
+    		blockedTargets.add(target);
+    	}
+    	else if (blockedTargets != null) {
+    		blockedTargets.remove(target);
+    	}
+    }
+    
     public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation) {
     	clearBadMatchesForAnonIndividuals(newMatches);
     	unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
@@ -194,7 +209,10 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     }
     
     private boolean goodMatch(OWLEntity source, OWLEntity target) {
-    	return unmatchedSourceEntities.contains(source) && unmatchedTargetEntities.contains(target);
+    	Set<OWLEntity> blockedTargets = blockedEntityMatches.get(source);
+    	boolean notBlocked = (blockedTargets == null || !blockedTargets.contains(target));
+    	boolean notMatched = unmatchedSourceEntities.contains(source) && unmatchedTargetEntities.contains(target);
+    	return notBlocked && notMatched;
     }
     
     private void clearBadMatchesForAnonIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches) {
