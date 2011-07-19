@@ -49,32 +49,7 @@ public class MatchById implements AlignmentAlgorithm {
                 Map<OWLEntity, OWLEntity> matchingMap = new HashMap<OWLEntity, OWLEntity>();
                 final OWLOntology targetOntology = diffMap.getTargetOntology();
                 for (OWLEntity unmatchedSourceEntity : diffMap.getUnmatchedSourceEntities()) {
-                    boolean found = unmatchedSourceEntity.accept(new OWLEntityVisitorEx<Boolean>() {
-
-                        public Boolean visit(OWLClass sourceEntity) {
-                            return targetOntology.containsClassInSignature(sourceEntity.getIRI());
-                        }
-
-                        public Boolean visit(OWLObjectProperty property) {
-                            return targetOntology.containsObjectPropertyInSignature(property.getIRI());
-                        }
-
-                        public Boolean visit(OWLDataProperty property) {
-                            return targetOntology.containsDataPropertyInSignature(property.getIRI());
-                        }
-
-                        public Boolean visit(OWLAnnotationProperty property) {
-                            return targetOntology.containsAnnotationPropertyInSignature(property.getIRI());
-                        }
-
-                        public Boolean visit(OWLNamedIndividual individual) {
-                            return targetOntology.containsIndividualInSignature(individual.getIRI());
-                        }
-
-                        public Boolean visit(OWLDatatype datatype) {
-                            return targetOntology.containsDatatypeInSignature(datatype.getIRI());
-                        }
-                    });
+                    boolean found = targetOntology.containsEntityInSignature(unmatchedSourceEntity);
                     if (found) {
                     	if (dds.checkDeprecation(unmatchedSourceEntity, unmatchedSourceEntity)) {
                     		dds.addMatch(unmatchedSourceEntity, unmatchedSourceEntity, EXPLANATION);
