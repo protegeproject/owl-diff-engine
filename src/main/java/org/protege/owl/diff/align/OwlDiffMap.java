@@ -34,6 +34,8 @@ public interface OwlDiffMap {
     void addMatch(OWLEntity source, OWLEntity target, String explanation);
     void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation);
     
+    void setMatchBlocked(OWLEntity source, OWLEntity target, boolean blocked);
+    
     void finish();
 
     void addDiffListener(AlignmentListener listener);
