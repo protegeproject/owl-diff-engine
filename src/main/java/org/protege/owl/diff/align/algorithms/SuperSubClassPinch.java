@@ -115,7 +115,9 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	        log.debug("Examining  axiom " + unmatched);
 	    }
 	    if (!isCandidiateUnmatchedAxiom(unmatched)) {
-	        log.debug("no good");
+	    	if (log.isDebugEnabled()) {
+	    		log.debug("no good");
+	    	}
 	        return;
 	    }
 	    OWLSubClassOfAxiom subClassOfAxiom = (OWLSubClassOfAxiom) unmatched.getAxiom();
@@ -199,15 +201,21 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
                 log.debug("\t" + targetSubclass);
             }
             if (desiredTargetSubClasses.contains(targetSubclass)) {
-                log.debug("\tgood subclass");
+            	if (log.isDebugEnabled()) {
+            		log.debug("\tgood subclass");
+            	}
                 if (++count >= requiredSubclasses) {
-                    log.debug("match added");
+                	if (log.isDebugEnabled()) {
+                		log.debug("match added");
+                	}
                     newMatches.put(sourceClass, potentialMatchingClass);
                     return true;
                 }
             }
             else {
-                log.debug("\tbad subclass");
+            	if (log.isDebugEnabled()) {
+            		log.debug("\tbad subclass");
+            	}
             }
         }
         return false;
