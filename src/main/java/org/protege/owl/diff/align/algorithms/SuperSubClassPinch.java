@@ -3,7 +3,6 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -30,15 +29,11 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     private boolean firstPass = true;
     private int requiredSubclasses;
     
-    private Map<OWLClass, Set<UnmatchedSourceAxiom>> superClassOf = new HashMap<OWLClass, Set<UnmatchedSourceAxiom>>();
-    private Map<OWLClass, Set<UnmatchedSourceAxiom>> subClassOf = new HashMap<OWLClass, Set<UnmatchedSourceAxiom>>();
-    private Map<OWLEntity, OWLEntity> newMatches = new  HashMap<OWLEntity, OWLEntity>();
+    private Map<OWLClass, Set<OWLClass>> superClassOf = new HashMap<OWLClass, Set<OWLClass>>();
+    private Map<OWLClass, Set<OWLClass>> subClassOf   = new HashMap<OWLClass, Set<OWLClass>>();
+    private Map<OWLEntity, OWLEntity> newMatches      = new  HashMap<OWLEntity, OWLEntity>();
     
     private AlignmentListener listener = new AlignmentListenerAdapter() {
-		
-		public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
-			addCandidateUnmatchedAxiom(unmatched);
-		}
 		
 		@Override
 		public void addMatch(OWLEntity source, OWLEntity target) {
@@ -90,11 +85,12 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         try {
             newMatches.clear();
             if (firstPass) {
-            	findCandidateUnmatchedAxioms();
+                diffMap.addDiffListener(listener);
+            	firstPass = false;
             }
+        	findCandidateUnmatchedAxioms();
             searchForMatches();
             diffMap.addMatchingEntities(newMatches, "Aligned source and target entities that have a matching parent and child.");
-            diffMap.addDiffListener(listener);
         }
         finally {
             diffMap.summarize();
@@ -106,6 +102,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
      */
     
     private void findCandidateUnmatchedAxioms() {
+    	subClassOf.clear();
+    	superClassOf.clear();
 	    for (UnmatchedSourceAxiom unmatched : diffMap.getPotentialMatchingSourceAxioms()) {
 	        addCandidateUnmatchedAxiom(unmatched);
 	    }
@@ -126,13 +124,13 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	        if (log.isDebugEnabled()) {
 	            log.debug("found super class of " + subClass);
 	        }
-	        addToMap(superClassOf, subClass, unmatched);
+	        addToMap(superClassOf, subClass, superClass);
 	    }
-	    else {
+	    if (diffMap.getUnmatchedSourceEntities().contains(superClass)) {
 	        if (log.isDebugEnabled()) {
 	            log.debug("found sub class of " + superClass);
 	        }
-	        addToMap(subClassOf, superClass, unmatched);
+	        addToMap(subClassOf, superClass, subClass);
 	    }
 	}
 
@@ -160,64 +158,46 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	 */
 
 	private void searchForMatches() {
-        for (Entry<OWLClass, Set<UnmatchedSourceAxiom>> entry : superClassOf.entrySet()) {
-            OWLClass sourceClass = entry.getKey();
-            Set<UnmatchedSourceAxiom> unmatchedSuperClassAxioms = entry.getValue();
-            if (log.isDebugEnabled()) {
-                log.debug("Can I match " + sourceClass + "?");
-            }
-            if (!diffMap.getUnmatchedSourceEntities().contains(sourceClass) || !subClassOf.containsKey(sourceClass)) {
-                log.debug("no good");
-                continue;
-            }
-            searchForMatches(sourceClass, unmatchedSuperClassAxioms, getPossibleTargetSubclasses(sourceClass));
+        for (OWLClass sourceClass : superClassOf.keySet()) {
+            searchForMatches(sourceClass, getTargetMappedClasses(sourceClass, superClassOf), getTargetMappedClasses(sourceClass, subClassOf));
         }
     }
-        
-    private void searchForMatches(OWLClass sourceClass, Set<UnmatchedSourceAxiom> unmatchedSuperClassAxioms, Set<OWLClass> possibleTargetSubclasses) {
-    	for (UnmatchedSourceAxiom superClassAxiom : unmatchedSuperClassAxioms) {
-    		if (superClassAxiom.getReferencedUnmatchedEntities().size() == 1) {
-    			OWLClass sourceSuperClass = ((OWLSubClassOfAxiom) superClassAxiom.getAxiom()).getSuperClass().asOWLClass();
-    			if (searchForMatches(sourceClass, sourceSuperClass, possibleTargetSubclasses)) {
-    				break;
+
+	private Set<OWLClass> getTargetMappedClasses(OWLClass sourceClass, Map<OWLClass, Set<OWLClass>> map) {
+		Set<OWLClass>  mappedTargetClasses = new HashSet<OWLClass>();
+		Set<OWLClass>  mappedSourceClasses = map.get(sourceClass);
+		if (mappedSourceClasses != null) {
+			for (OWLClass mappedSourceClass : mappedSourceClasses) {
+				OWLClass targetClass = (OWLClass) diffMap.getEntityMap().get(mappedSourceClass);
+				if (targetClass != null) {
+					mappedTargetClasses.add(targetClass);
+				}
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("" + sourceClass + " subclasses map to "  + mappedTargetClasses);
+		}
+		return mappedTargetClasses;
+	}
+
+	private void searchForMatches(OWLClass sourceClass, Set<OWLClass> possibleTargetSuperclasses, Set<OWLClass> possibleTargetSubclasses) {
+    	for (OWLClass possibleTargetSuperClass : possibleTargetSuperclasses) {
+    		for (OWLClassExpression possibleTargetClass : possibleTargetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
+    			if (!possibleTargetClass.isAnonymous() && searchForMatches(sourceClass, possibleTargetClass.asOWLClass(), possibleTargetSubclasses)){
+    				return;
     			}
     		}
     	}
     }
     
-    private boolean searchForMatches(OWLClass sourceClass, OWLClass sourceSuperClass, Set<OWLClass> desiredTargetSubClasses) {
-    	OWLClass targetSuperClass = (OWLClass) diffMap.getEntityMap().get(sourceSuperClass);
-        if (targetSuperClass != null) {
-        	if (log.isDebugEnabled()) {
-        		log.debug("Trying to match " + sourceClass + " using:");
-        		log.debug("\tSource superclass " + sourceSuperClass);
-        		log.debug("\tTarget superclass " + targetSuperClass);
-        	}
-            for (OWLClassExpression potentialTargetMatch  : targetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
-                if (!potentialTargetMatch.isAnonymous() &&
-                		diffMap.getUnmatchedTargetEntities().contains(potentialTargetMatch)) {
-                    OWLClass potentialMatchingClass = potentialTargetMatch.asOWLClass();
-                    if (log.isDebugEnabled()) {
-                    	log.debug("Potential match " + sourceClass + " --> " + potentialMatchingClass);
-                    	log.debug("Looking at the subclasses of the potential target match:");
-                    }
-                    if (searchForMatches(sourceClass, sourceSuperClass, potentialMatchingClass, desiredTargetSubClasses)) {
-                    	return true;
-                    }
-                    log.debug("didn't work out");
-                }
-            }
-        }
-        return false;
-    }
     
-    private boolean searchForMatches(OWLClass sourceClass, OWLClass sourceSuperClass, OWLClass potentialMatchingClass, Set<OWLClass> desiredTargetSubClasses) {
+    private boolean searchForMatches(OWLClass sourceClass, OWLClass potentialMatchingClass, Set<OWLClass> desiredTargetSubClasses) {
         int count = 0;
         for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
             if (log.isDebugEnabled()) {
                 log.debug("\t" + targetSubclass);
             }
-            if (!targetSubclass.isAnonymous() && desiredTargetSubClasses.contains(targetSubclass)) {
+            if (desiredTargetSubClasses.contains(targetSubclass)) {
                 log.debug("\tgood subclass");
                 if (++count >= requiredSubclasses) {
                     log.debug("match added");
@@ -230,21 +210,6 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             }
         }
         return false;
-    }
-    
-    private Set<OWLClass> getPossibleTargetSubclasses(OWLClass sourceClass) {
-    	Set<OWLClass>  possibleTargetSubclasses = new HashSet<OWLClass>();
-    	for (UnmatchedSourceAxiom subClassAxiom : subClassOf.get(sourceClass)) {
-    		OWLClass sourceSubClass = ((OWLSubClassOfAxiom) subClassAxiom.getAxiom()).getSubClass().asOWLClass();
-    		OWLClass possibleTargetSubclass = (OWLClass) diffMap.getEntityMap().get(sourceSubClass);
-    		if (possibleTargetSubclass != null) {
-    			possibleTargetSubclasses.add(possibleTargetSubclass);
-    		}
-    	}
-    	if (log.isDebugEnabled()) {
-    		log.debug("" + sourceClass + " subclasses map to "  + possibleTargetSubclasses);
-    	}
-    	return possibleTargetSubclasses;
     }
 
 }
