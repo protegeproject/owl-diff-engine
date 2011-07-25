@@ -12,4 +12,6 @@ public interface UnmatchedSourceAxiom {
 	public Collection<OWLAnonymousIndividual> getReferencedUnmatchedAnonymousIndividuals();
 	
 	public OWLAxiom getAxiom();
+	
+	public void trim(OwlDiffMap diffMap);
 }
