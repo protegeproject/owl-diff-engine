@@ -42,12 +42,12 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     /*
      * Axioms
      */
-    private Map<OWLObject, Set<UnmatchedSourceAxiom>> unmatchedSourceAxiomMap = new HashMap<OWLObject, Set<UnmatchedSourceAxiom>>();
-    private Set<UnmatchedSourceAxiom>                 potentialMatchingSourceAxioms  = new HashSet<UnmatchedSourceAxiom>();
-    private Set<OWLAxiom>                             unmatchedSourceAxioms;
-    private Set<OWLAxiom>                             unmatchedTargetAxioms;
+    private Map<OWLObject, Set<UnmatchedSourceAxiomImpl>> unmatchedSourceAxiomMap        = new HashMap<OWLObject, Set<UnmatchedSourceAxiomImpl>>();
+    private Set<UnmatchedSourceAxiom>                     potentialMatchingSourceAxioms  = new HashSet<UnmatchedSourceAxiom>();
+    private Set<OWLAxiom>                                 unmatchedSourceAxioms;
+    private Set<OWLAxiom>                                 unmatchedTargetAxioms;
     
-    private Set<UnmatchedSourceAxiom>                 completedAnnnotationAssertionAxioms = new HashSet<UnmatchedSourceAxiom>();
+    private Set<UnmatchedSourceAxiomImpl>             completedAnnnotationAssertionAxioms = new HashSet<UnmatchedSourceAxiomImpl>();
     
     protected OwlDiffMapCore(OWLDataFactory factory,
                              OWLOntology sourceOntology, 
@@ -56,7 +56,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         unmatchedTargetAxioms = new HashSet<OWLAxiom>(targetOntology.getAxioms());
         
         for (OWLAxiom axiom : unmatchedSourceAxioms) {
-            UnmatchedSourceAxiom unmatched = new UnmatchedSourceAxiom(axiom);
+            UnmatchedSourceAxiomImpl unmatched = new UnmatchedSourceAxiomImpl(axiom);
             insert(unmatched, false);
             unmatchedSourceEntities.addAll(unmatched.getReferencedUnmatchedEntities());
             unmatchedSourceAnonIndividuals.addAll(unmatched.getReferencedUnmatchedAnonymousIndividuals());
@@ -180,7 +180,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     }
     
     public void finish() {
-    	for (UnmatchedSourceAxiom unmatched : completedAnnnotationAssertionAxioms) {
+    	for (UnmatchedSourceAxiomImpl unmatched : completedAnnnotationAssertionAxioms) {
     		insert(unmatched, true);
     	}
     	// leave them in the set in case we try finish again...
@@ -238,10 +238,10 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
      */
 
     private void updateUnmatchedAxiomsForNewMatch(OWLObject source) {
-        Set<UnmatchedSourceAxiom> unmatchedAxioms = unmatchedSourceAxiomMap.remove(source);
+        Set<UnmatchedSourceAxiomImpl> unmatchedAxioms = unmatchedSourceAxiomMap.remove(source);
         if (unmatchedAxioms != null) {
             potentialMatchingSourceAxioms.removeAll(unmatchedAxioms);
-            for (UnmatchedSourceAxiom unmatched : unmatchedAxioms) {
+            for (UnmatchedSourceAxiomImpl unmatched : unmatchedAxioms) {
                 unmatched.trim(this);
                 insert(unmatched, false);
                 fireUnmatchedAxiomMoved(unmatched);
@@ -249,7 +249,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         }
     }
 
-    private void insert(UnmatchedSourceAxiom unmatched, boolean cleanup) {
+    private void insert(UnmatchedSourceAxiomImpl unmatched, boolean cleanup) {
         if (unmatched.getReferencedUnmatchedEntities().isEmpty() &&
                 unmatched.getReferencedUnmatchedAnonymousIndividuals().isEmpty()) {
             DiffDuplicator duplicator = new DiffDuplicator(this);
@@ -268,9 +268,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         }
         else {
             OWLObject key = unmatched.getLeadingUnmatchedReference();
-            Set<UnmatchedSourceAxiom> existingUnmatched = unmatchedSourceAxiomMap.get(key);
+            Set<UnmatchedSourceAxiomImpl> existingUnmatched = unmatchedSourceAxiomMap.get(key);
             if (existingUnmatched == null) {
-                existingUnmatched = new HashSet<UnmatchedSourceAxiom>();
+                existingUnmatched = new HashSet<UnmatchedSourceAxiomImpl>();
                 unmatchedSourceAxiomMap.put(key, existingUnmatched);
             }
             existingUnmatched.add(unmatched);

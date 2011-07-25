@@ -141,7 +141,6 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	    if (unmatched.getAxiom() instanceof OWLSubClassOfAxiom &&
 	            !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSubClass().isAnonymous() &&
 	            !((OWLSubClassOfAxiom) unmatched.getAxiom()).getSuperClass().isAnonymous()) {
-	        unmatched.trim(diffMap);
 	        return unmatched.getReferencedUnmatchedEntities().size() == 1;
 	    }
 	    return false;
