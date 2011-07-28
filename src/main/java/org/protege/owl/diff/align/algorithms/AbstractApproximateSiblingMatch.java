@@ -14,6 +14,7 @@ public abstract class AbstractApproximateSiblingMatch extends AbstractSiblingMat
 	
 	public abstract String getAlgorithmName();
 	public abstract String getBrowserText(OWLClass cls, DifferencePosition position);
+	protected abstract String getExplanation();
 
 	
 	protected void checkSiblings(Set<OWLClass> unmatchedSourceSiblings,
@@ -24,7 +25,7 @@ public abstract class AbstractApproximateSiblingMatch extends AbstractSiblingMat
 				checkMatch(newMatches, unmatchedSourceSibling, unmatchedTargetSibling);
 			}
 		}
-		getOwlDiffMap().addMatchingEntities(newMatches, "Entities matched up because their parents matched and they have similar names.");
+		getOwlDiffMap().addMatchingEntities(newMatches, getExplanation());
 	}
 	
 	private void checkMatch(Map<OWLEntity, OWLEntity> newMatches, OWLClass unmatchedSourceSibling, OWLClass unmatchedTargetSibling) {
