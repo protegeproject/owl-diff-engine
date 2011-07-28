@@ -1,6 +1,5 @@
 package org.protege.owl.diff.align.algorithms;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,17 +9,8 @@ import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
-import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RenderingService;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLEntityVisitorEx;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MatchByRendering implements AlignmentAlgorithm {
     private Logger logger = Logger.getLogger(MatchByRendering.class);
@@ -79,7 +69,7 @@ public class MatchByRendering implements AlignmentAlgorithm {
             return false;
         }
         else {
-            diffMap.addMatchingEntities(matchMap, "Enties with a common code value are matched.");
+            diffMap.addMatchingEntities(matchMap, "Enties with a common rendering are matched.");
             return true;
         }
     }
