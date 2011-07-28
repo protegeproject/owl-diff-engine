@@ -1,10 +1,9 @@
 #
 # DeferDeprecationAlgorithm should be handled separately and explicitly.
 #
-org.protege.owl.diff.align.algorithms.MatchByCode
 org.protege.owl.diff.align.algorithms.MatchById
 org.protege.owl.diff.align.algorithms.MatchByIdFragment
 org.protege.owl.diff.align.algorithms.MatchLoneSiblings
-org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarIds
+org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarBrowserText
 org.protege.owl.diff.align.algorithms.MatchStandardVocabulary
 org.protege.owl.diff.align.algorithms.SuperSubClassPinch
