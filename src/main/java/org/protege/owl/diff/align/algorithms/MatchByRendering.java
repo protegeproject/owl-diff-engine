@@ -34,7 +34,7 @@ public class MatchByRendering implements AlignmentAlgorithm {
     }
     
     public AlignmentAggressiveness getAggressiveness() {
-    	return AlignmentAggressiveness.IGNORE_REFACTOR;
+    	return AlignmentAggressiveness.MODERATE;
     }
 
     public void initialise(Engine e) {
@@ -71,7 +71,7 @@ public class MatchByRendering implements AlignmentAlgorithm {
             }
             OWLEntity potentialTargetEntity = renderer.getTargetEntityByRendering(rendering);
 
-            if (isMatch(sourceEntity, potentialTargetEntity)) {
+            if (potentialTargetEntity != null && isMatch(sourceEntity, potentialTargetEntity)) {
                 matchMap.put(sourceEntity, potentialTargetEntity);
             }
         }
@@ -93,7 +93,7 @@ public class MatchByRendering implements AlignmentAlgorithm {
 
     
     public String getAlgorithmName() {
-        return "Match By Code";
+        return "Match By Rendering";
     }
 
 }
