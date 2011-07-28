@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
+import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
@@ -20,7 +21,7 @@ public class AutoConfigTest extends TestCase {
 	public void testFindAlignmentAlgorithms() throws IOException {
 		List<Class<? extends AlignmentAlgorithm>> algorithms = Util.createDeclaredAlignmentAlgorithms(getClass().getClassLoader());
 		assertTrue(algorithms.contains(MatchById.class));
-		assertTrue(algorithms.contains(MatchByCode.class));
+		assertTrue(algorithms.contains(MatchLoneSiblings.class));
 	}
 	
 	public void testFindPresentationAlgorithms() throws IOException{
