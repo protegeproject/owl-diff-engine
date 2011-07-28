@@ -3,26 +3,49 @@ package org.protege.owl.diff.service;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologySetProvider;
+import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
 import org.semanticweb.owlapi.util.IRIShortFormProvider;
+import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxObjectRenderer;
 
 public class RenderingService {
+    public static final String NO_LANGUAGE_SET = "";
+    
 	private OWLDataFactory factory;
+	
+	private Engine engine;
+	
 	
 	private WriterDelegate sourceWriter = new WriterDelegate();
 	private ManchesterOWLSyntaxObjectRenderer sourceRenderer;
 	
 	private WriterDelegate targetWriter = new WriterDelegate();
 	private ManchesterOWLSyntaxObjectRenderer targetRenderer;
+	
+	private Map<String, OWLEntity> targetNameToEntityMap;
 	
 	public static RenderingService get(Engine e) {
 		RenderingService renderer = e.getService(RenderingService.class);
@@ -33,7 +56,46 @@ public class RenderingService {
 		return renderer;
 	}
 	
+	/*
+	 * Pardon me - I am stealing this code from Protege 4.  Dependencies make it unclear how to share it.
+	 */
+	public static ShortFormProvider getDefaultShortFormProvider(OWLOntology ontology) {
+		List<OWLAnnotationProperty> annotationProperties = Collections.singletonList(OWLManager.getOWLDataFactory().getRDFSLabel());
+		List<String> langs = getDefaultLanguages();
+		return getShortFormProvider(ontology, annotationProperties, langs);
+	}
+	
+	public static ShortFormProvider getShortFormProvider(OWLOntology ontology, List<OWLAnnotationProperty> annotationProperties, List<String> langs) {
+		Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<OWLAnnotationProperty, List<String>>();
+		for (OWLAnnotationProperty annotationProperty : annotationProperties) {
+			preferredLanguageMap.put(annotationProperty, langs);
+		}
+		OWLOntologySetProvider ontologies = new OWLOntologyImportsClosureSetProvider(ontology.getOWLOntologyManager(), ontology);
+		return new AnnotationValueShortFormProvider(annotationProperties, preferredLanguageMap, ontologies);
+	}
+
+	/*
+	 * Pardon me - I am stealing this code from Protege 4.  Dependencies make it unclear how to share it.
+	 */
+	public static List<String> getDefaultLanguages() {
+		List<String> langs = new ArrayList<String>();
+		Locale locale = Locale.getDefault();
+		if (locale != null && locale.getLanguage() != null && !locale.getLanguage().equals("")) {
+			langs.add(locale.getLanguage());
+			if (locale.getCountry() != null && !locale.getCountry().equals("")) {
+				langs.add(locale.getLanguage() + "-" + locale.getCountry());
+			}
+		}
+		langs.add(NO_LANGUAGE_SET);
+		String en = Locale.ENGLISH.getLanguage();
+		if (!langs.contains(en)) {
+			langs.add(en);
+		}
+		return langs;
+	}
+
 	private RenderingService(Engine e) {
+		engine = e;
 		this.factory = e.getOWLDataFactory();
 	}
 	
@@ -59,10 +121,22 @@ public class RenderingService {
 	
 	
 	public String renderSourceObject(OWLObject o) {
+		if (engine.getOwlDiffMap() == null) {
+			return "";
+		}
+		if (sourceRenderer == null) {
+			setSourceShortFormProvider(getDefaultShortFormProvider(engine.getOwlDiffMap().getSourceOntology()));
+		}
 		return render(o, DifferencePosition.SOURCE);
 	}
 	
 	public String renderTargetObject(OWLObject o) {
+		if (engine.getOwlDiffMap() == null) {
+			return "";
+		}
+		if (targetRenderer == null) {
+			setTargetShortFormProvider(getDefaultShortFormProvider(engine.getOwlDiffMap().getTargetOntology()));			
+		}
 		return render(o, DifferencePosition.TARGET);
 	}
 	
@@ -117,7 +191,30 @@ public class RenderingService {
 		};
 	}
 	
-    private static class WriterDelegate extends Writer {
+	public OWLEntity getTargetEntityByRendering(String rendering) {
+		if (targetNameToEntityMap == null) {
+			targetNameToEntityMap = new HashMap<String, OWLEntity>();
+			Set<String> toRemove = new TreeSet<String>();
+			for (OWLEntity e : engine.getOwlDiffMap().getTargetOntology().getSignature()) {
+				String eRendering = renderTargetObject(e);
+				if (eRendering == null) {
+					continue;
+				}
+				if (targetNameToEntityMap.get(eRendering) != null) {
+					toRemove.add(eRendering);
+				}
+				else {
+					targetNameToEntityMap.put(eRendering, e);
+				}
+			}
+			for (String ambiguousRendering : toRemove) {
+				targetNameToEntityMap.remove(ambiguousRendering);
+			}
+		}
+		return targetNameToEntityMap.get(rendering);
+	}
+	
+	private static class WriterDelegate extends Writer {
 
         private StringWriter delegate;
 
