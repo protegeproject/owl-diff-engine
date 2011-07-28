@@ -3,6 +3,7 @@
 #
 org.protege.owl.diff.align.algorithms.MatchById
 org.protege.owl.diff.align.algorithms.MatchByIdFragment
+org.protege.owl.diff.align.algorithms.MatchByRendering
 org.protege.owl.diff.align.algorithms.MatchLoneSiblings
 org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarBrowserText
 org.protege.owl.diff.align.algorithms.MatchStandardVocabulary
