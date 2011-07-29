@@ -14,10 +14,20 @@ public class SimpleAlignmentExplanation implements AlignmentExplanation {
 	public String getExplanation() {
 		return explanation;
 	}
+	
+	@Override
+	public boolean hasDetailedExplanation(OWLObject sourceObject) {
+		return false;
+	}
 
 	@Override
 	public String getDetailedExplanation(OWLObject sourceObject) {
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return "<Why? " + explanation + ">";
 	}
 
 }
