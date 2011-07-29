@@ -96,7 +96,11 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 		}
 	}
 	
-	private SiblingService getSiblingService() {
+	protected Engine getEngine() {
+		return e;
+	}
+	
+	protected SiblingService getSiblingService() {
 		if (siblingService == null) {
 			siblingService = SiblingService.get(e);
 		}
