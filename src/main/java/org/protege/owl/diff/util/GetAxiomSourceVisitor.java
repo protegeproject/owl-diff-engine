@@ -280,15 +280,22 @@ public class GetAxiomSourceVisitor implements OWLAxiomVisitor, AxiomDescribesEnt
             if (ontology.containsClassInSignature(iri)) {
                 sources.add(factory.getOWLClass(iri));
             }
-            if (ontology.containsDataPropertyInSignature(iri)) {
-                sources.add(factory.getOWLDataProperty(iri));
+            if (ontology.containsDatatypeInSignature(iri)) {
+            	sources.add(factory.getOWLDatatype(iri));
             }
             if (ontology.containsObjectPropertyInSignature(iri)) {
                 sources.add(factory.getOWLObjectProperty(iri));
             }
+            if (ontology.containsDataPropertyInSignature(iri)) {
+                sources.add(factory.getOWLDataProperty(iri));
+            }
+            if (ontology.containsAnnotationPropertyInSignature(iri)) {
+            	sources.add(factory.getOWLAnnotationProperty(iri));
+            }
             if (ontology.containsIndividualInSignature(iri)) {
                 sources.add(factory.getOWLNamedIndividual(iri));
             }
+
         }
     }
 
