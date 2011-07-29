@@ -1,23 +1,30 @@
 package org.protege.owl.diff.align.algorithms;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
-import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
+import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.service.RenderingService;
+import org.protege.owl.diff.service.SiblingService;
+import org.protege.owl.diff.util.EntityComparator;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
 
 public class MatchLoneSiblings extends AbstractSiblingMatch {
-	private RenderingService renderer;
-	
+
 	@Override
 	public void initialise(Engine e) {
 		super.initialise(e);
-		renderer = RenderingService.get(e);
 	}
 	
 	protected void checkSiblings(OWLClass sourceParent, Set<OWLClass> unmatchedSourceSiblings, 
@@ -26,7 +33,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 			OWLClass sourceSibling = unmatchedSourceSiblings.iterator().next();
 			OWLClass targetSibling = unmatchedTargetSiblings.iterator().next();
 			getOwlDiffMap().addMatch(sourceSibling, targetSibling,
-					                 new Explanation(sourceSibling, sourceParent));
+					                 new Explanation(getEngine(), sourceSibling, sourceParent));
 		}
 	}
 
@@ -45,26 +52,41 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 		return "Match Lone Siblings";
 	}
 	
-	private class Explanation implements AlignmentExplanation {
+	private static class Explanation extends SimpleAlignmentExplanation {
 		private OWLClass sourceClass;
 		private OWLClass sourceParent;
+		private Engine engine;
+		private OwlDiffMap diffMap;
+		private RenderingService renderer;
+		private SiblingService siblingService;
 		
-		public Explanation(OWLClass sourceClass, OWLClass sourceParent) {
+		public Explanation(Engine engine, OWLClass sourceClass, OWLClass sourceParent) {
+			super("Aligned source and target entities that have a matching parent and child.");
+			this.engine = engine;
+			diffMap = engine.getOwlDiffMap();
+			renderer = RenderingService.get(engine);
+			siblingService = SiblingService.get(engine);
 			this.sourceClass = sourceClass;
 			this.sourceParent = sourceParent;
 		}
 		
 		@Override
-		public String getExplanation() {
-			return "Aligned source and target entities that have a matching parent and child.";
+		public boolean hasDetailedExplanation(OWLObject sourceObject) {
+			return sourceObject.equals(sourceClass);
 		}
 		
 		@Override
 		public String getDetailedExplanation(OWLObject sourceObject) {
-			OwlDiffMap diffMap = getOwlDiffMap();
 			OWLClass targetClass = (OWLClass) diffMap.getEntityMap().get(sourceClass);
 			OWLClass targetParent = (OWLClass) diffMap.getEntityMap().get(sourceParent);
 			StringBuffer sb = new StringBuffer();
+			addMainExplanation(sb, sourceClass, targetParent, targetClass);
+			addSourceChildrenExplanation(sb, diffMap, sourceParent, (OWLClass) sourceObject);
+			addTargetChildrenExplanation(sb, diffMap, targetParent, targetClass);
+			return sb.toString();
+		}
+		
+		private void addMainExplanation(StringBuffer sb, OWLClass sourceObject, OWLClass targetParent, OWLClass targetClass) {
 			sb.append("I matched the source class, \n\t");
 			sb.append(renderer.renderSourceObject(sourceObject));
 			sb.append(",\nwith the target class\n\t");
@@ -73,9 +95,67 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 			sb.append(renderer.renderSourceObject(sourceParent));
 			sb.append(",\nbecause the target class is the only unmatched child of\n\t");
 			sb.append(renderer.renderTargetObject(targetParent));
-			sb.append(",\nand the two parents match.  More explanation will follow in a future version.");
-			return sb.toString();
+			sb.append(",\nand the two parents match.\n");
 		}
+		
+		private void addSourceChildrenExplanation(StringBuffer sb, OwlDiffMap diffMap, OWLClass sourceParent, OWLClass sourceObject) {
+			List<OWLClass> sourceSubclasses = new ArrayList<OWLClass>();
+			for (OWLClassExpression sourceSubclass : siblingService.getSubClasses(sourceParent, DifferencePosition.SOURCE)) {
+				if (!sourceSubclass.isAnonymous()) {
+					sourceSubclasses.add(sourceSubclass.asOWLClass());
+				}
+			}
+			sourceSubclasses.remove(sourceObject);
+			if (sourceSubclasses.isEmpty()) {
+				sb.append("The source parent has no other subclasses");
+			}
+			else {
+				Collections.sort(sourceSubclasses, new EntityComparator(renderer, DifferencePosition.SOURCE));
+				sb.append("The other children of the source parent map as follows:\n");
+				for (OWLClassExpression sourceSubclass : sourceSubclasses) {
+					sb.append("\t");
+					sb.append(renderer.renderSourceObject(sourceSubclass.asOWLClass()));
+					sb.append(" --> ");
+					sb.append(renderer.renderTargetObject((OWLClass) diffMap.getEntityMap().get(sourceSubclass)));
+					sb.append('\n');
+				}
+			}
+		}
+
+		private void addTargetChildrenExplanation(StringBuffer sb, OwlDiffMap diffMap, OWLClass targetParent, OWLClass targetClass) {
+			Changes changes = engine.getChanges();
+			if (changes == null) {
+				sb.append("Analysis of children of the target parent can't be done until\nphase 2 of the difference algorithm completes");
+				return;
+			}
+			List<OWLClass> targetSubclasses = new ArrayList<OWLClass>();
+			for (OWLClassExpression targetSubclass : siblingService.getSubClasses(targetParent, DifferencePosition.TARGET)) {
+				if (!targetSubclass.isAnonymous()) {
+					targetSubclasses.add(targetSubclass.asOWLClass());
+				}
+			}
+			targetSubclasses.remove(targetClass);
+			if (targetSubclasses.isEmpty()) {
+				sb.append("The target parent has no other subclasses");
+			}
+			else {
+				Collections.sort(targetSubclasses, new EntityComparator(renderer, DifferencePosition.TARGET));
+				sb.append("The other children of the target parent map as follows:\n");
+				for (OWLClassExpression targetSubclass : targetSubclasses) {
+					OWLClass sourceSubclass = (OWLClass) changes.getTargetDiffMap().get(targetSubclass).getSourceEntity();
+					if (sourceSubclass == null) {
+						sourceSubclass = targetSubclass.asOWLClass();
+					}
+					sb.append("\t");
+					sb.append(renderer.renderSourceObject(sourceSubclass.asOWLClass()));
+					sb.append(" --> ");
+					sb.append(renderer.renderTargetObject(targetSubclass));
+					sb.append('\n');
+				}
+			}
+		}
+		
 	}
+
 
 }
