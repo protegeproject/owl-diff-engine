@@ -8,6 +8,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -25,7 +26,7 @@ public class MatchSiblingsWithSimilarBrowserText extends AbstractApproximateSibl
 	public void initialise(Engine e) {
 		super.initialise(e);
 		renderer = RenderingService.get(e);
-		explanation = new Explain(e.getOwlDiffMap());
+		explanation = new Explain(e);
 	}
 	
 	public String getBrowserText(OWLClass cls, DifferencePosition position) {
@@ -64,17 +65,20 @@ public class MatchSiblingsWithSimilarBrowserText extends AbstractApproximateSibl
 		}
 	}
 	
-	private class Explain implements AlignmentExplanation {
+	private static class Explain extends SimpleAlignmentExplanation {
 		private OwlDiffMap diffMap;
+		private RenderingService renderer;
 		private Map<OWLClass, OWLClass> sourceSiblingToParentMap = new HashMap<OWLClass, OWLClass>();
 		
-		public Explain(OwlDiffMap diffMap) {
-			this.diffMap = diffMap;
+		public Explain(Engine e) {
+			super("Entities matched up because their parents matched and they have similar renderings.");
+			this.diffMap = e.getOwlDiffMap();
+			this.renderer = RenderingService.get(e);
 		}
 		
 		@Override
-		public String getExplanation() {
-			return "Entities matched up because their parents matched and they have similar renderings.";
+		public boolean hasDetailedExplanation(OWLObject sourceObject) {
+			return sourceSiblingToParentMap.containsKey(sourceObject);
 		}
 		
 		@Override
