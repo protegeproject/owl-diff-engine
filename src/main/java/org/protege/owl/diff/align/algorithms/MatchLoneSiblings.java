@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
@@ -13,6 +12,7 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.present.Changes;
+import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.service.SiblingService;
 import org.protege.owl.diff.util.EntityComparator;
@@ -142,8 +142,12 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 				Collections.sort(targetSubclasses, new EntityComparator(renderer, DifferencePosition.TARGET));
 				sb.append("The other children of the target parent map as follows:\n");
 				for (OWLClassExpression targetSubclass : targetSubclasses) {
-					OWLClass sourceSubclass = (OWLClass) changes.getTargetDiffMap().get(targetSubclass).getSourceEntity();
-					if (sourceSubclass == null) {
+					OWLClass sourceSubclass = null;
+					EntityBasedDiff diff = changes.getTargetDiffMap().get(targetSubclass);
+					if (diff != null) {
+						sourceSubclass = (OWLClass) diff.getSourceEntity();
+					}
+					else {
 						sourceSubclass = targetSubclass.asOWLClass();
 					}
 					sb.append("\t");
