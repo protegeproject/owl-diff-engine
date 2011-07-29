@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -22,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MatchByCode implements AlignmentAlgorithm {
+	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Enties with a common code value are matched.");
     private Logger logger = Logger.getLogger(MatchByCode.class);
     
     private boolean disabled = false;
@@ -91,7 +94,7 @@ public class MatchByCode implements AlignmentAlgorithm {
             return false;
         }
         else {
-            diffMap.addMatchingEntities(matchMap, "Enties with a common code value are matched.");
+            diffMap.addMatchingEntities(matchMap, EXPLANATION);
             return true;
         }
     }

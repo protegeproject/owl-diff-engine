@@ -8,7 +8,9 @@ import java.util.Map;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.EntityType;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -16,6 +18,7 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 
 public class MatchByIdFragment implements AlignmentAlgorithm {
+	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Aligned source and target entities because they have a common IRI fragment.");
 	
 	private ShortFormProvider shortFormProvider;
 	private OwlDiffMap diffs;
@@ -65,7 +68,7 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 				OWLEntity matchingTarget = findMatch(sourceEntity, targetEntities);
 				// don't use the match if the iri is the same - match by id does this with deprecation support
 				if (matchingTarget != null && !sourceEntity.getIRI().equals(matchingTarget.getIRI())) {
-					diffs.addMatch(sourceEntity, matchingTarget, "Aligned source and target entities because they have a common IRI fragment.");
+					diffs.addMatch(sourceEntity, matchingTarget, EXPLANATION);
 				}
 			}
 		}

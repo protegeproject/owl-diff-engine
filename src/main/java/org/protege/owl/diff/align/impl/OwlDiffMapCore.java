@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.util.DiffDuplicator;
@@ -36,7 +37,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     private Set<OWLAnonymousIndividual>                         unmatchedTargetAnonIndividuals;
     
     
-    private Map<OWLObject, String>      explanationMap = new HashMap<OWLObject, String>();
+    private Map<OWLObject, AlignmentExplanation>  explanationMap = new HashMap<OWLObject, AlignmentExplanation>();
 
     
     /*
@@ -74,7 +75,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         return Collections.unmodifiableMap(entityMap);
     }
     
-    public String getExplanation(OWLEntity sourceEntity) {
+    public AlignmentExplanation getExplanation(OWLEntity sourceEntity) {
     	return explanationMap.get(sourceEntity);
     }
     
@@ -82,7 +83,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         return Collections.unmodifiableMap(anonymousIndividualMap);
     }
     
-    public String getExplanation(OWLAnonymousIndividual sourceIndividual) {
+    public AlignmentExplanation getExplanation(OWLAnonymousIndividual sourceIndividual) {
     	return explanationMap.get(sourceIndividual);
     }
 
@@ -117,7 +118,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     /*
      * Match Processing methods
      */
-    public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, String explanation) {
+    public void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, AlignmentExplanation explanation) {
     	clearBadMatches(newMatches);
         unmatchedSourceEntities.removeAll(newMatches.keySet());
         unmatchedTargetEntities.removeAll(newMatches.values());
@@ -129,7 +130,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         fireAddMatchingEntities(newMatches);
     }
     
-    public void addMatch(OWLEntity source, OWLEntity target, String explanation) {
+    public void addMatch(OWLEntity source, OWLEntity target, AlignmentExplanation explanation) {
     	if (!goodMatch(source, target)) {
     		return;
     	}
@@ -155,7 +156,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
     	}
     }
     
-    public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation) {
+    public void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, AlignmentExplanation explanation) {
     	clearBadMatchesForAnonIndividuals(newMatches);
     	unmatchedSourceAnonIndividuals.removeAll(newMatches.keySet());
         unmatchedTargetAnonIndividuals.removeAll(newMatches.values());
@@ -167,7 +168,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         fireAddMatchingAnonymousIndividuals(newMatches);
     }
     
-    public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation) {
+    public void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, AlignmentExplanation explanation) {
     	if (!goodMatch(source, target)) {
     		return;
     	}

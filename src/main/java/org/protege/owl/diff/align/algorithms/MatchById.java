@@ -6,21 +6,17 @@ import java.util.Map;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.DeprecationDeferralService;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLEntityVisitorEx;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MatchById implements AlignmentAlgorithm {
-	public static final String EXPLANATION = "Source and targe entities aligned because they have the same IRI.";
+	public static final AlignmentExplanation EXPLANATION 
+	                = new SimpleAlignmentExplanation("Source and targe entities aligned because they have the same IRI.");
     private boolean disabled = false;
     private OwlDiffMap diffMap;
     private DeprecationDeferralService dds;

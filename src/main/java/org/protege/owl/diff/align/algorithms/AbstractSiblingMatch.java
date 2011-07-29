@@ -68,7 +68,8 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 	};
 	
 	public abstract String getAlgorithmName();
-	protected abstract void checkSiblings(Set<OWLClass> unmatchedSourceSiblings, Set<OWLClass> unmatchedTargetSiblings);
+	protected abstract void checkSiblings(OWLClass sourceParent, Set<OWLClass> unmatchedSourceSiblings, 
+			                              OWLClass targetParent, Set<OWLClass> unmatchedTargetSiblings);
 	
 	public void initialise(Engine e) {
 		this.e = e;
@@ -124,8 +125,8 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 			examinedSourceParents.add(sourceParent);
 			Set<OWLClass> sourceChildren = getSiblingService().getSubClasses(sourceParent, DifferencePosition.SOURCE);
 			Set<OWLClass> targetChildren = getSiblingService().getSubClasses(targetParent, DifferencePosition.TARGET);
-			checkSiblings(filterMatchedSiblings(sourceChildren, DifferencePosition.SOURCE), 
-					      filterMatchedSiblings(targetChildren, DifferencePosition.TARGET));
+			checkSiblings(sourceParent, filterMatchedSiblings(sourceChildren, DifferencePosition.SOURCE), 
+					      targetParent, filterMatchedSiblings(targetChildren, DifferencePosition.TARGET));
 		}
 	}
 	

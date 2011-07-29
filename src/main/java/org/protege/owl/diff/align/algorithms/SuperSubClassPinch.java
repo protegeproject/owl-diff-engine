@@ -9,9 +9,11 @@ import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedSourceAxiom;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.AlignmentListenerAdapter;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -20,6 +22,8 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class SuperSubClassPinch implements AlignmentAlgorithm {
+	public static final AlignmentExplanation EXPLANATION
+	                       = new SimpleAlignmentExplanation("Aligned source and target entities that have a matching parent and child.");
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
     private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
     
@@ -91,7 +95,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             }
         	findCandidateUnmatchedAxioms();
             searchForMatches();
-            diffMap.addMatchingEntities(newMatches, "Aligned source and target entities that have a matching parent and child.");
+            diffMap.addMatchingEntities(newMatches, EXPLANATION);
         }
         finally {
             diffMap.summarize();
@@ -186,7 +190,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	private void searchForMatches(OWLClass sourceClass, Set<OWLClass> possibleTargetSuperclasses, Set<OWLClass> possibleTargetSubclasses) {
     	for (OWLClass possibleTargetSuperClass : possibleTargetSuperclasses) {
     		for (OWLClassExpression possibleTargetClass : possibleTargetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
-    			if (!possibleTargetClass.isAnonymous() && searchForMatches(sourceClass, possibleTargetClass.asOWLClass(), possibleTargetSubclasses)){
+    			if (!possibleTargetClass.isAnonymous() 
+    					&& searchForMatches(sourceClass, possibleTargetClass.asOWLClass(), possibleTargetSubclasses)){
     				return;
     			}
     		}
@@ -194,7 +199,9 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     }
     
     
-    private boolean searchForMatches(OWLClass sourceClass, OWLClass potentialMatchingClass, Set<OWLClass> desiredTargetSubClasses) {
+    private boolean searchForMatches(OWLClass sourceClass, 
+    		                         OWLClass potentialMatchingClass, 
+    		                         Set<OWLClass> desiredTargetSubClasses) {
         int count = 0;
         for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
             if (log.isDebugEnabled()) {

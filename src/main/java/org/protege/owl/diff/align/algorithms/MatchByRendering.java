@@ -7,12 +7,15 @@ import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class MatchByRendering implements AlignmentAlgorithm {
+	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Enties with a common rendering are matched.");
     private Logger logger = Logger.getLogger(MatchByRendering.class);
     
     private boolean disabled = false;
@@ -69,7 +72,7 @@ public class MatchByRendering implements AlignmentAlgorithm {
             return false;
         }
         else {
-            diffMap.addMatchingEntities(matchMap, "Enties with a common rendering are matched.");
+            diffMap.addMatchingEntities(matchMap, EXPLANATION);
             return true;
         }
     }

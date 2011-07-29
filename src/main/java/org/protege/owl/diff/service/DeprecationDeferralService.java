@@ -6,6 +6,7 @@ import java.util.Set;
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -71,7 +72,7 @@ public class DeprecationDeferralService {
 		return false;
 	}
 
-	public void addMatch(OWLEntity sourceEntity, OWLEntity targetEntity, String explanation) {
+	public void addMatch(OWLEntity sourceEntity, OWLEntity targetEntity, AlignmentExplanation explanation) {
 		deferredMatches.add(new DeferredMatchBean(sourceEntity, targetEntity, explanation));
 		engine.getOwlDiffMap().setMatchBlocked(sourceEntity, targetEntity, true);
 	}
@@ -92,9 +93,9 @@ public class DeprecationDeferralService {
 	public static class DeferredMatchBean {
 		private OWLEntity sourceEntity;
 		private OWLEntity targetEntity;
-		private String explanation;
+		private AlignmentExplanation explanation;
 
-		public DeferredMatchBean(OWLEntity sourceEntity, OWLEntity targetEntity, String explanation) {
+		public DeferredMatchBean(OWLEntity sourceEntity, OWLEntity targetEntity, AlignmentExplanation explanation) {
 			this.sourceEntity = sourceEntity;
 			this.targetEntity = targetEntity;
 			this.explanation = explanation;
@@ -108,7 +109,7 @@ public class DeprecationDeferralService {
 			return targetEntity;
 		}
 
-		public String getExplanation() {
+		public AlignmentExplanation getExplanation() {
 			return explanation;
 		}
 		

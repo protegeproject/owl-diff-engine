@@ -8,7 +8,9 @@ import java.util.Set;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -16,6 +18,7 @@ import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 public class MatchStandardVocabulary implements AlignmentAlgorithm {
+	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Aligned common standard vocabulary elements.");
     private static final Set<IRI> STANDARD_OWL_IRIS;
     static {
         STANDARD_OWL_IRIS = new HashSet<IRI>();
@@ -56,7 +59,7 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
                         matches.put(entity, entity);
                     }
                 }
-                diffs.addMatchingEntities(matches, "Aligned common standard vocabulary elements.");
+                diffs.addMatchingEntities(matches, EXPLANATION);
             }
             finally {
                 diffs.summarize();

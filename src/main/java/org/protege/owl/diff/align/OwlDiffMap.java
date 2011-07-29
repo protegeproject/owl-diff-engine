@@ -16,9 +16,9 @@ public interface OwlDiffMap {
     OWLOntology getTargetOntology();
 
     Map<OWLEntity, OWLEntity>   getEntityMap();
-    String getExplanation(OWLEntity sourceEntity);
+    AlignmentExplanation getExplanation(OWLEntity sourceEntity);
     Map<OWLAnonymousIndividual, OWLAnonymousIndividual> getAnonymousIndividualMap();
-    String getExplanation(OWLAnonymousIndividual sourceIndividual);
+    AlignmentExplanation getExplanation(OWLAnonymousIndividual sourceIndividual);
 
     Set<OWLEntity>              getUnmatchedSourceEntities();
     Set<OWLAnonymousIndividual> getUnmatchedSourceAnonymousIndividuals();
@@ -29,10 +29,10 @@ public interface OwlDiffMap {
     Set<OWLAnonymousIndividual> getUnmatchedTargetAnonymousIndividuals();
     Set<OWLAxiom>               getUnmatchedTargetAxioms();
 
-    void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, String explanation);
-    void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, String explanation);
-    void addMatch(OWLEntity source, OWLEntity target, String explanation);
-    void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, String explanation);
+    void addMatchingEntities(Map<OWLEntity, OWLEntity> newMatches, AlignmentExplanation explanation);
+    void addMatchingAnonymousIndividuals(Map<OWLAnonymousIndividual, OWLAnonymousIndividual> newMatches, AlignmentExplanation explanation);
+    void addMatch(OWLEntity source, OWLEntity target, AlignmentExplanation explanation);
+    void addMatch(OWLAnonymousIndividual source, OWLAnonymousIndividual target, AlignmentExplanation explanation);
     
     void setMatchBlocked(OWLEntity source, OWLEntity target, boolean blocked);
     
