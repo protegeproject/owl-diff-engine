@@ -11,16 +11,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
-import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
-import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.PresentationAlgorithm;
-import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class Util {
 	public static final Logger LOGGER = Logger.getLogger(Util.class);
+	
+	private Util() {
+	}
 	
 	public static String getStats(Engine e) {
 		int created = 0;
@@ -55,19 +55,6 @@ public class Util {
 		sb.append(" entities modified only.");
 		return sb.toString();
 	}
-	
-	private static boolean isDiffRefactorOnly(EntityBasedDiff diff) {
-		if (diff.getAxiomMatches().size() == 0) {
-			return true;
-		}
-		else if (diff.getAxiomMatches().size() != 1) {
-			return false;
-		}
-		MatchedAxiom match = diff.getAxiomMatches().iterator().next();
-		return match.getSourceAxiom() != null && match.getSourceAxiom() instanceof OWLDeclarationAxiom
-					&& match.getTargetAxiom() != null && match.getTargetAxiom() instanceof OWLDeclarationAxiom;
-	}
-	
 	
     public static List<Class<? extends AlignmentAlgorithm>> createDeclaredAlignmentAlgorithms(ClassLoader cl) throws IOException {
     	return createDeclaredAlignmentAlgorithms(wrapClassLoader(cl));
@@ -154,5 +141,29 @@ public class Util {
     		factoryReader.close();
     	}
     	return algorithms;
+    }
+    
+    public static OWLEntity getMatchingSourceEntity(Engine engine, OWLEntity target) {
+    	Changes changes = engine.getChanges();
+    	if (changes == null) {
+    		return null; // can't do it
+    	}
+    	EntityBasedDiff diff = changes.getTargetDiffMap().get(target);
+    	OWLEntity possibleMatchingSource;
+    	if (diff != null) {
+    		possibleMatchingSource = diff.getSourceEntity(); // could be null for creation
+    	}
+    	else {
+    		possibleMatchingSource = target; // no diff found because unchanged
+    	}
+    	if (possibleMatchingSource != null) {
+    		OWLEntity targetForCandidateSoure = engine.getOwlDiffMap().getEntityMap().get(possibleMatchingSource);
+    		if (!target.equals(targetForCandidateSoure)) {
+    			LOGGER.warn("Presentation algorithm seems out of synchronization with alignment algorithm for the match:");
+    			LOGGER.warn("\t" + possibleMatchingSource + " --> " + target);
+    			possibleMatchingSource = null; // shouldn't get here
+    		}
+    	}
+    	return possibleMatchingSource;
     }
 }
