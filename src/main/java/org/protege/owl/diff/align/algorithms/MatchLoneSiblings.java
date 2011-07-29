@@ -12,10 +12,10 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
 import org.protege.owl.diff.present.Changes;
-import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.service.SiblingService;
 import org.protege.owl.diff.util.EntityComparator;
+import org.protege.owl.diff.util.Util;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -61,7 +61,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 		private SiblingService siblingService;
 		
 		public Explanation(Engine engine, OWLClass sourceClass, OWLClass sourceParent) {
-			super("Aligned source and target entities that have a matching parent and child.");
+			super("Aligned the lone unmatched siblings.");
 			this.engine = engine;
 			diffMap = engine.getOwlDiffMap();
 			renderer = RenderingService.get(engine);
@@ -107,7 +107,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 			}
 			sourceSubclasses.remove(sourceObject);
 			if (sourceSubclasses.isEmpty()) {
-				sb.append("The source parent has no other subclasses");
+				sb.append("The source parent has no other subclasses\n\n");
 			}
 			else {
 				Collections.sort(sourceSubclasses, new EntityComparator(renderer, DifferencePosition.SOURCE));
@@ -136,22 +136,15 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 			}
 			targetSubclasses.remove(targetClass);
 			if (targetSubclasses.isEmpty()) {
-				sb.append("The target parent has no other subclasses");
+				sb.append("The target parent has no other subclasses.\n\n");
 			}
 			else {
 				Collections.sort(targetSubclasses, new EntityComparator(renderer, DifferencePosition.TARGET));
 				sb.append("The other children of the target parent map as follows:\n");
-				for (OWLClassExpression targetSubclass : targetSubclasses) {
-					OWLClass sourceSubclass = null;
-					EntityBasedDiff diff = changes.getTargetDiffMap().get(targetSubclass);
-					if (diff != null) {
-						sourceSubclass = (OWLClass) diff.getSourceEntity();
-					}
-					else {
-						sourceSubclass = targetSubclass.asOWLClass();
-					}
+				for (OWLClass targetSubclass : targetSubclasses) {
+					OWLClass sourceSubclass = (OWLClass) Util.getMatchingSourceEntity(engine, targetSubclass);
 					sb.append("\t");
-					sb.append(renderer.renderSourceObject(sourceSubclass.asOWLClass()));
+					sb.append(renderer.renderSourceObject(sourceSubclass));
 					sb.append(" --> ");
 					sb.append(renderer.renderTargetObject(targetSubclass));
 					sb.append('\n');
