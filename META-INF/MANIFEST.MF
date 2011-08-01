@@ -4,11 +4,28 @@ Bundle-Name: OWL Diff Library
 Bundle-SymbolicName: org.protege.owl.diff
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Protege Team
-Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.1.0"
-Import-Package: org.apache.log4j
-Export-Package: org.protege.owl.diff,
+Import-Package: org.apache.log4j,
+ org.semanticweb.owlapi.apibinding,
+ org.semanticweb.owlapi.io,
+ org.semanticweb.owlapi.model,
+ org.semanticweb.owlapi.util,
+ org.semanticweb.owlapi.vocab,
+ uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer,
+ org.protege.owl.diff,
  org.protege.owl.diff.align,
  org.protege.owl.diff.align.algorithms,
+ org.protege.owl.diff.align.impl,
+ org.protege.owl.diff.align.util,
+ org.protege.owl.diff.conf,
+ org.protege.owl.diff.present,
+ org.protege.owl.diff.present.algorithms,
+ org.protege.owl.diff.present.util,
+ org.protege.owl.diff.service,
+ org.protege.owl.diff.util
+Export-Package:  org.protege.owl.diff,
+ org.protege.owl.diff.align,
+ org.protege.owl.diff.align.algorithms,
+ org.protege.owl.diff.align.impl,
  org.protege.owl.diff.align.util,
  org.protege.owl.diff.conf,
  org.protege.owl.diff.present,
