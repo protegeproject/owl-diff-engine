@@ -11,7 +11,6 @@ import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.util.OWLEntityCollector;
 
 public class UnmatchedSourceAxiomImpl implements UnmatchedSourceAxiom {
@@ -37,15 +36,6 @@ public class UnmatchedSourceAxiomImpl implements UnmatchedSourceAxiom {
     
     public OWLAxiom getAxiom() {
         return axiom;
-    }
-
-    public OWLObject getLeadingUnmatchedReference() {
-        if (!referencedUnmatchedEntities.isEmpty()) {
-            return referencedUnmatchedEntities.iterator().next();
-        }
-        else {
-            return referencedUnmatchedAnonymousIndividuals.iterator().next();
-        }
     }
     
     public void trim(OwlDiffMap diffMap) {

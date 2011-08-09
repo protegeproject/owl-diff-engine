@@ -3,6 +3,7 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -39,11 +40,21 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     
     private AlignmentListener listener = new AlignmentListenerAdapter() {
     	
-    	// the axiom moved listener doesn't actually work here...
-		
+    	@Override
+    	public void unmatchedAxiomMoved(UnmatchedSourceAxiom unmatched) {
+    		addCandidateUnmatchedAxiom(unmatched);
+    	}
+    	
 		public void addMatch(OWLEntity source, OWLEntity target) {
 			superClassOf.remove(source);
-			subClassOf.remove(target);
+			subClassOf.remove(source);
+		}
+		
+		public void addMatchingEntities(java.util.Map<OWLEntity,OWLEntity> newMatches) {
+			for (OWLEntity source : newMatches.keySet()) {
+				superClassOf.remove(source);
+				subClassOf.remove(source);
+			}
 		}
 	};
    
@@ -92,8 +103,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             if (firstPass) {
                 diffMap.addDiffListener(listener);
             	firstPass = false;
+            	findCandidateUnmatchedAxioms();
             }
-        	findCandidateUnmatchedAxioms();
             searchForMatches();
             diffMap.addMatchingEntities(newMatches, EXPLANATION);
         }

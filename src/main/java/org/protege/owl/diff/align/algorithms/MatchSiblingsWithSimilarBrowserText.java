@@ -21,7 +21,6 @@ public class MatchSiblingsWithSimilarBrowserText extends AbstractApproximateSibl
 	public MatchSiblingsWithSimilarBrowserText() {
 		super();
 	}
-	
 
 	public void initialise(Engine e) {
 		super.initialise(e);
@@ -50,7 +49,7 @@ public class MatchSiblingsWithSimilarBrowserText extends AbstractApproximateSibl
 	}
 	
     public AlignmentAggressiveness getAggressiveness() {
-    	return AlignmentAggressiveness.CONSERVATIVE;
+    	return AlignmentAggressiveness.MODERATE;
     }
     
 	protected boolean checkMatch(Map<OWLEntity, OWLEntity> newMatches, 
