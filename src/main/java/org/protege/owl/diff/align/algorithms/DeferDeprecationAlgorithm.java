@@ -107,6 +107,11 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 		dds = null;
 		diffMap.removeDiffListener(listener);
 	}
+	
+	@Override
+	public boolean isCustom() {
+		return true;
+	}
 
 	
 	public AlignmentAggressiveness getAggressiveness() {
