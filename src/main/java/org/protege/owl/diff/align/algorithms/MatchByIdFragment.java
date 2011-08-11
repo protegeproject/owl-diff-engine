@@ -94,6 +94,11 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 	public void reset() {
 		alreadyRun = false;
 	}
+	
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
 
 	/*
 	 * I don't entirely trust this guy to get the right answer and he is slow.
