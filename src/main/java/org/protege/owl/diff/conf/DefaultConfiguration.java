@@ -1,33 +1,28 @@
 package org.protege.owl.diff.conf;
 
-import org.protege.owl.diff.align.algorithms.MatchByCode;
-import org.protege.owl.diff.align.algorithms.MatchById;
-import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
-import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
-import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
-import org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
-import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
-import org.protege.owl.diff.service.CodeToEntityMapper;
-import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
+import java.io.IOException;
+
+import org.protege.owl.diff.align.AlignmentAggressiveness;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.util.Util;
 
 public class DefaultConfiguration extends Configuration {
+	
+	public DefaultConfiguration() throws IOException, InstantiationException, IllegalAccessException {
+		this(AlignmentAggressiveness.MODERATE);
+	}
 
-	public DefaultConfiguration() {
-		/* addAlignmentAlgorithm(MatchByCode.class); */
-		addAlignmentAlgorithm(MatchById.class);
-		addAlignmentAlgorithm(MatchStandardVocabulary.class);
-		addAlignmentAlgorithm(SuperSubClassPinch.class);
-		addAlignmentAlgorithm(MatchLoneSiblings.class);
-		
-		addPresentationAlgorithm(IdentifyChangedAnnotation.class);
-		addPresentationAlgorithm(IdentifyChangedDefinition.class);
-		addPresentationAlgorithm(IdentifyChangedSuperclass.class);
-		addPresentationAlgorithm(IdentifyRenameOperation.class);
-		addPresentationAlgorithm(IdentifyAxiomAnnotationChanged.class);
-		
-		put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, OWLRDFVocabulary.RDFS_LABEL.getIRI().toString());
+	public DefaultConfiguration(AlignmentAggressiveness requestedEffort) throws IOException, InstantiationException, IllegalAccessException {
+		ClassLoader cl = getClass().getClassLoader();
+		for (Class<? extends AlignmentAlgorithm> algorithmClass : Util.createDeclaredAlignmentAlgorithms(cl)) {
+			AlignmentAlgorithm algorithm = algorithmClass.newInstance();
+			if (!algorithm.isCustom() && algorithm.getAggressiveness().compareTo(requestedEffort) <= 0) {
+				addAlignmentAlgorithm(algorithmClass);
+			}
+		}
+		for (Class<? extends PresentationAlgorithm> presentationClass : Util.createDeclaredPresentationAlgorithms(cl)) {
+			addPresentationAlgorithm(presentationClass);
+		}
 	}
 }
