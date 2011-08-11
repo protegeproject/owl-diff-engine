@@ -59,7 +59,7 @@ public class OpenAndCompare {
         OWLOntology ontology2 = manager2.loadOntologyFromOntologyDocument(altered);
         watch.measure();
         logger.info("Running diff");
-        Engine e = new Engine(manager1.getOWLDataFactory(), ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setParameters(p);
         e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
         e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());

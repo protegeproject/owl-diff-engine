@@ -48,7 +48,7 @@ public class AlignAlgorithmTest extends TestCase {
         loadOntologies("UseCode");
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
@@ -64,7 +64,7 @@ public class AlignAlgorithmTest extends TestCase {
         loadOntologies("UseCodeAndName");
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchStandardVocabulary() });
         e.phase1();
@@ -80,7 +80,7 @@ public class AlignAlgorithmTest extends TestCase {
         loadOntologies("UseCodeAndName");
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://www.tigraworld.com/protege/UseCode#code");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setParameters(parameters);
         e.setAlignmentAlgorithms(new AlignmentAlgorithm[] { new MatchByCode(), new MatchById() });
         e.phase1();
@@ -98,7 +98,7 @@ public class AlignAlgorithmTest extends TestCase {
         parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, 
                                "http://www.tigraworld.com/protege/ParentsAndChildren.owl#code");
         parameters.put(SuperSubClassPinch.REQUIRED_SUBCLASSES_PROPERTY, "2");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setParameters(parameters);
         e.phase1(); // no algorithms are run here.
         OwlDiffMap diffMap = e.getOwlDiffMap();
@@ -133,7 +133,7 @@ public class AlignAlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("LoneUnmatchedSibling01");
         String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -148,7 +148,7 @@ public class AlignAlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("LoneUnmatchedSibling02");
         String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new SuperSubClassPinch(), new MatchLoneSiblings());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -162,7 +162,7 @@ public class AlignAlgorithmTest extends TestCase {
     public void testLoneUnmatchedSibling03() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("LoneUnmatchedSibling02");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -173,7 +173,7 @@ public class AlignAlgorithmTest extends TestCase {
         JunitUtilities.printDivider();
         loadOntologies("LoneUnmatchedSibling03");
         String ns = "http://protege.org/ontologies/LoneUnmatchedSibling.owl";
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new SuperSubClassPinch(), new MatchLoneSiblings());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -187,7 +187,7 @@ public class AlignAlgorithmTest extends TestCase {
     public void testLoneUnmatchedSibling05() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("LoneUnmatchedSibling03");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchLoneSiblings());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();
@@ -197,7 +197,7 @@ public class AlignAlgorithmTest extends TestCase {
     public void testMatchingIdFragments() throws OWLOntologyCreationException {
         JunitUtilities.printDivider();
         loadOntologies("MatchingIdFragments");
-        Engine e = new Engine(factory, ontology1, ontology2);
+        Engine e = new Engine(ontology1, ontology2);
         e.setAlignmentAlgorithms(new MatchById(), new MatchStandardVocabulary(), new MatchByIdFragment());
         e.phase1();
         OwlDiffMap diffs = e.getOwlDiffMap();

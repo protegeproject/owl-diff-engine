@@ -60,7 +60,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	p.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, ns + "#Status");
     	p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
     	e.setPresentationAlgorithms(new IdentifyMergedConcepts());
@@ -109,7 +109,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	p.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
     	p.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, ns + "#Merge_Into");
     	
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchByCode(), new MatchById());
     	e.setPresentationAlgorithms(new IdentifyMergedConcepts(), new IdentifyRetiredConcepts());
@@ -154,7 +154,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, ns + "#OLD_PARENT");
     	p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, ns + "#OLD_CONTEXT");
     	
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyRetiredConcepts());
@@ -198,7 +198,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	String ns = "http://protege.org/ontologies/AddAnnotation.owl";
     	loadOntologies("AddAnnotation");
     	Map<String, String> p = new HashMap<String, String>();
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
@@ -225,7 +225,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	String ns = "http://protege.org/ontologies/RemoveAnnotation.owl";
     	loadOntologies("RemoveAnnotation");
     	Map<String, String> p = new HashMap<String, String>();
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
@@ -265,7 +265,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	OWLClass b = factory.getOWLClass(IRI.create(ns + "#B"));
     	manager2.addAxiom(ontology2, factory.getOWLDeclarationAxiom(b));
     	
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.phase1();
     	e.phase2();
@@ -293,7 +293,7 @@ public class PresentationAlgorithmTest extends TestCase {
     	String ns = "http://protege.org/ontologies/MatchClasses.owl";
     	loadOntologies("MatchSuperClasses");
     	Map<String, String> p = new HashMap<String, String>();
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setParameters(p);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyChangedSuperclass());
@@ -319,7 +319,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testChangedDefinition() throws OWLOntologyCreationException {
     	loadOntologies("ChangedDefinition");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById());
     	e.setPresentationAlgorithms(new IdentifyChangedDefinition());
     	e.phase1();
@@ -333,7 +333,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testOrphanedAnnotationsBaseline() throws OWLOntologyCreationException {
     	loadOntologies("OrphanedAnnotation");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation());
     	e.phase1();
@@ -349,7 +349,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testOrphanedAnnotations() throws OWLOntologyCreationException {
     	loadOntologies("OrphanedAnnotation");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
@@ -375,7 +375,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testOrphanedAnnotationsWithPun() throws OWLOntologyCreationException {
     	loadOntologies("OrphanedAnnotationWithPun");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
@@ -391,7 +391,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testOrphanedAnnotationsNot() throws OWLOntologyCreationException {
     	loadOntologies("OrphanedAnnotationNot");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
@@ -405,7 +405,7 @@ public class PresentationAlgorithmTest extends TestCase {
     
     public void testAnnotationChanged() throws OWLOntologyCreationException {
     	loadOntologies("AnnotationChanged");
-    	Engine e = new Engine(factory, ontology1, ontology2);
+    	Engine e = new Engine(ontology1, ontology2);
     	e.setAlignmentAlgorithms(new MatchById(), new SuperSubClassPinch());
     	e.setPresentationAlgorithms(new IdentifyRenameOperation(), new IdentifyAnnotationRefactored(), new IdentifyChangedAnnotation(), new IdentifyOrphanedAnnotations());
     	e.phase1();
