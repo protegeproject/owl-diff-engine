@@ -2,7 +2,10 @@ package org.protege.owl.diff.align.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.protege.owl.diff.DifferencePosition;
@@ -11,13 +14,12 @@ import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
-import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.service.SiblingService;
 import org.protege.owl.diff.util.EntityComparator;
-import org.protege.owl.diff.util.Util;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 
 public class MatchLoneSiblings extends AbstractSiblingMatch {
@@ -55,14 +57,13 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 	private static class Explanation extends SimpleAlignmentExplanation {
 		private OWLClass sourceClass;
 		private OWLClass sourceParent;
-		private Engine engine;
 		private OwlDiffMap diffMap;
+		private Map<OWLClass, OWLClass> targetToSourceMap;
 		private RenderingService renderer;
 		private SiblingService siblingService;
 		
 		public Explanation(Engine engine, OWLClass sourceClass, OWLClass sourceParent) {
 			super("Aligned the lone unmatched siblings.");
-			this.engine = engine;
 			diffMap = engine.getOwlDiffMap();
 			renderer = RenderingService.get(engine);
 			siblingService = SiblingService.get(engine);
@@ -123,11 +124,6 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 		}
 
 		private void addTargetChildrenExplanation(StringBuffer sb, OwlDiffMap diffMap, OWLClass targetParent, OWLClass targetClass) {
-			Changes changes = engine.getChanges();
-			if (changes == null) {
-				sb.append("Analysis of children of the target parent can't be done until\nphase 2 of the difference algorithm completes");
-				return;
-			}
 			List<OWLClass> targetSubclasses = new ArrayList<OWLClass>();
 			for (OWLClassExpression targetSubclass : siblingService.getSubClasses(targetParent, DifferencePosition.TARGET)) {
 				if (!targetSubclass.isAnonymous()) {
@@ -142,7 +138,7 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 				Collections.sort(targetSubclasses, new EntityComparator(renderer, DifferencePosition.TARGET));
 				sb.append("The other children of the target parent map as follows:\n");
 				for (OWLClass targetSubclass : targetSubclasses) {
-					OWLClass sourceSubclass = (OWLClass) Util.getMatchingSourceEntity(engine, targetSubclass);
+					OWLClass sourceSubclass = getMatchingSourceClass(targetSubclass);
 					sb.append("\t");
 					sb.append(renderer.renderSourceObject(sourceSubclass));
 					sb.append(" --> ");
@@ -152,7 +148,22 @@ public class MatchLoneSiblings extends AbstractSiblingMatch {
 			}
 		}
 		
+		private OWLClass getMatchingSourceClass(OWLClass targetClass) {
+			if (targetToSourceMap == null) {
+				targetToSourceMap = new HashMap<OWLClass, OWLClass>();
+				for (Entry<OWLEntity, OWLEntity> entry : diffMap.getEntityMap().entrySet()) {
+					OWLEntity source = entry.getKey();
+					OWLEntity target = entry.getValue();
+					if (source instanceof OWLClass) {
+						targetToSourceMap.put((OWLClass) target, (OWLClass) source);
+					}
+				}
+			}
+			return targetToSourceMap.get(targetClass);
+		}
+		
 	}
+
 
 
 }
