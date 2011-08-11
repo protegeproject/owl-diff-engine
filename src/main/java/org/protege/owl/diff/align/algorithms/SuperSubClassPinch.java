@@ -3,32 +3,31 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
-import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.protege.owl.diff.align.impl.SimpleAlignmentExplanation;
 import org.protege.owl.diff.align.util.AlignmentListenerAdapter;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
+import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class SuperSubClassPinch implements AlignmentAlgorithm {
-	public static final AlignmentExplanation EXPLANATION
-	                       = new SimpleAlignmentExplanation("Aligned source and target entities that have a matching parent and child.");
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
     private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
     
     private OwlDiffMap diffMap;
+    private RenderingService renderer;
     
     private boolean disabled = false;
     private boolean firstPass = true;
@@ -61,6 +60,11 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     public String getAlgorithmName() {
         return "Super-Sub class pinch algorithm";
     }
+    
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
 
     /*
      * Reliable but it is a bit slow.
@@ -75,6 +79,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 
     public void initialise(Engine e) {
         this.diffMap = e.getOwlDiffMap();
+        this.renderer = RenderingService.get(e);
         requiredSubclasses = 1;
         if (e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY) != null) {
             try {
@@ -91,6 +96,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         superClassOf.clear();
         subClassOf.clear();
         diffMap.removeDiffListener(listener);
+        diffMap = null;
+        renderer = null;
     }
 
     public void run() {
@@ -106,7 +113,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             	findCandidateUnmatchedAxioms();
             }
             searchForMatches();
-            diffMap.addMatchingEntities(newMatches, EXPLANATION);
+            diffMap.addMatchingEntities(newMatches, new Explanation(diffMap, renderer));
         }
         finally {
             diffMap.summarize();
@@ -237,6 +244,67 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
             }
         }
         return false;
+    }
+    
+    private static class Explanation extends SimpleAlignmentExplanation {
+    	private OwlDiffMap diffs;
+    	private RenderingService renderer;
+    	
+    	public Explanation(OwlDiffMap diffs, RenderingService renderer) {
+    		super("Aligned source and target entities that have a matching parent and child.");
+    		this.diffs = diffs;
+    		this.renderer = renderer;
+    	}
+    	
+    	@Override
+    	public boolean hasDetailedExplanation(OWLObject sourceObject) {
+    		return sourceObject instanceof OWLClass;
+    	}
+    	
+    	@Override
+    	public String getDetailedExplanation(OWLObject sourceObject) {
+    		OWLClass source = (OWLClass) sourceObject;
+    		OWLClass target = (OWLClass) diffs.getEntityMap().get(source);
+    		StringBuffer sb = new StringBuffer();
+    		sb.append(getExplanation());
+    		sb.append("\n\t");
+    		sb.append(renderer.renderSourceObject(source));
+    		sb.append("  -->   ");
+    		sb.append(renderer.renderTargetObject(target));
+    		sb.append("\n");
+    		addMatchingParents(source, target, sb);
+    		addMatchingChildren(source, target, sb);
+    		return sb.toString();
+    	}
+    	
+    	private void addMatchingParents(OWLClass source, OWLClass target, StringBuffer sb) {
+    		Set<OWLClassExpression> targetParents = target.getSuperClasses(diffs.getTargetOntology());
+    		for (OWLClassExpression sourceParent : source.getSuperClasses(diffs.getSourceOntology())) {
+    			OWLClass targetParent = (OWLClass) diffs.getEntityMap().get(sourceParent);
+    			if (targetParent != null && targetParents.contains(targetParent)) {
+    				sb.append("Source entity has parent\n\t");
+    				sb.append(renderer.renderSourceObject((OWLClass) sourceParent));
+    				sb.append("\nwhich maps to the following parent of the target entity\n\t");
+    				sb.append(renderer.renderTargetObject(targetParent));
+    				sb.append('\n');
+    			}
+    		}
+    	}
+    	
+    	private void addMatchingChildren(OWLClass source, OWLClass target, StringBuffer sb) {
+    		Set<OWLClassExpression> targetChildren = target.getSubClasses(diffs.getTargetOntology());
+    		for (OWLClassExpression sourceChild : source.getSubClasses(diffs.getSourceOntology())) {
+    			OWLClass targetChild = (OWLClass) diffs.getEntityMap().get(sourceChild);
+    			if (targetChild != null && targetChildren.contains(targetChild)) {
+    				sb.append("Source entity has child\n\t");
+    				sb.append(renderer.renderSourceObject((OWLClass) sourceChild));
+    				sb.append("\nwhich maps to the following child of the target entity\n\t");
+    				sb.append(renderer.renderTargetObject(targetChild));
+    				sb.append('\n');
+    			}
+    		}
+    	}
+    	
     }
 
 }
