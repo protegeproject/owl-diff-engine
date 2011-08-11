@@ -130,7 +130,10 @@ public class MatchByCode implements AlignmentAlgorithm {
     }
     
 
-    
+	@Override
+	public boolean isCustom() {
+		return true;
+	}
 
     
     public String getAlgorithmName() {
