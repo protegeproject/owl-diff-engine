@@ -22,6 +22,11 @@ public class MatchByRendering implements AlignmentAlgorithm {
     private OwlDiffMap diffMap;
     private RenderingService renderer;
 
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
+	
     public int getPriority() {
         return PrioritizedComparator.MAX_PRIORITY - 1;
     }
