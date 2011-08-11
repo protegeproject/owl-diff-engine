@@ -37,10 +37,9 @@ public class Engine {
     private Collection<Object> services = new ArrayList<Object>();
 
     
-    public Engine(OWLDataFactory factory, 
-                  OWLOntology ontology1, 
+    public Engine(OWLOntology ontology1, 
                   OWLOntology ontology2) {
-    	this.factory = factory;
+    	this.factory = ontology2.getOWLOntologyManager().getOWLDataFactory();
     	this.ontology1 = ontology1;
     	this.ontology2 = ontology2;
         this.parameters = new HashMap<String, String>();
