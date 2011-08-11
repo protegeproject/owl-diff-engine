@@ -36,6 +36,11 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
     public String getAlgorithmName() {
         return "Match Standard OWL Terms";
     }
+    
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
 
     public int getPriority() {
         return PrioritizedComparator.MAX_PRIORITY;
