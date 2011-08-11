@@ -24,6 +24,11 @@ public class MatchById implements AlignmentAlgorithm {
     public String getAlgorithmName() {
         return "Match By Id";
     }
+    
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
 
     public int getPriority() {
         return PrioritizedComparator.MAX_PRIORITY;
