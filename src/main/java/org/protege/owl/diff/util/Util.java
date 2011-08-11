@@ -116,11 +116,11 @@ public class Util {
     			if (name == null) {
     				break;
     			}
+				name = name.trim();
     			if (name.startsWith("#") || name.equals("")) {
     				continue;
     			}
     			try {
-    				name = name.trim();
     				Class<?> clazz = cl.loadClass(name);
     				if (toImplement.isAssignableFrom(clazz)) {
     					algorithms.add(clazz.asSubclass(toImplement));
