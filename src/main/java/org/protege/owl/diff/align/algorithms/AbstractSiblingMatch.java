@@ -152,6 +152,10 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 		diffs.removeDiffListener(listener);
 	}
 
+	@Override
+	public boolean isCustom() {
+		return false;
+	}
 	
 	/*
 	 * This is not reliable and it is also slow.
