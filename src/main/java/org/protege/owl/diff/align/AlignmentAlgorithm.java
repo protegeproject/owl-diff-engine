@@ -11,6 +11,8 @@ public interface AlignmentAlgorithm extends Prioritized {
     
     void reset();
     
+    boolean isCustom();
+    
     AlignmentAggressiveness getAggressiveness();
     
     String getAlgorithmName();
