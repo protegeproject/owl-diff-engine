@@ -1,10 +1,11 @@
-package org.protege.owl.diff;
+package org.protege.owl.diff.examples;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
@@ -18,8 +19,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class OpenAndCompare {
-    private static Logger logger = Logger.getLogger(OpenAndCompare.class);
+public class OpenAndCompareNCI {
+    private static Logger logger = Logger.getLogger(OpenAndCompareNCI.class);
 
     private final static File root     = new File("/home/tredmond/Shared/ontologies/NCI/2010-11-29-cbapp-qa2");
     private final static File baseline = new File(root, "Thesaurus-101129-10.11e-saved.owl");
@@ -47,7 +48,7 @@ public class OpenAndCompare {
         p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 2, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD");
         p.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 3, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE");
         
-        StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompare.class));
+        StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompareNCI.class));
         OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
         manager1.setSilentMissingImportsHandling(true);
         logger.info("Loading " + baseline);
