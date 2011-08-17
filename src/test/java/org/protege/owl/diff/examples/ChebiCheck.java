@@ -30,15 +30,25 @@ public class ChebiCheck {
 	
 	public static final OWLAnnotationProperty ALT_ID = OWLManager.getOWLDataFactory().getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/alt_id"));
 	
-	public static final String FILE1 = "/home/tredmond/Shared/ontologies/prompt/Chebi-1.42.owl";
-	public static final String FILE2 = "/home/tredmond/Shared/ontologies/prompt/Chebi-1.81.owl";
+	public static final String ROOT_DIR = "/home/tredmond/Shared/ontologies/prompt/chebi";
+	public static final String [] FILES = { "Chebi-1.42.owl", "Chebi-1.81.owl" };
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		OWLOntology ontology1 = openOntology(FILE1);
-		OWLOntology ontology2 = openOntology(FILE2);
+		checkAllOntologies();
+	}
+	
+	public static void checkAllOntologies() throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
+		for (int i = 0; i < FILES.length - 1; i++ ) {
+			checkOntologies(i, i+1);
+		}
+	}
+	
+	public static void checkOntologies(int i, int j) throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
+		OWLOntology ontology1 = openOntology(new File(ROOT_DIR, FILES[i]));
+		OWLOntology ontology2 = openOntology(new File(ROOT_DIR, FILES[j]));
 		Engine e = getEngine(ontology1, ontology2, true);
 		e.phase1();
 		lookForFalsePositives(e);
@@ -53,10 +63,10 @@ public class ChebiCheck {
 		return e;
 	}
 
-	public static OWLOntology openOntology(String file) throws OWLOntologyCreationException {
+	public static OWLOntology openOntology(File file) throws OWLOntologyCreationException {
 		LOGGER.info("Loading ontology from " + file);
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		return manager.loadOntologyFromOntologyDocument(new File(file));
+		return manager.loadOntologyFromOntologyDocument(file);
 	}
 	
 	public static void lookForFalsePositives(Engine e) {
