@@ -133,7 +133,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     public String getDescription() {
         StringBuffer buffer = new StringBuffer(getShortDescription());
-        buffer.append("\n");
+        buffer.append("\n------------------------------------------------------\n");
         for (MatchedAxiom match : axiomMatches) {
             buffer.append(match.getDescription().getDescription());
             buffer.append(": ");
@@ -151,7 +151,10 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
                 buffer.append("\n\t\t-->\n\t");
                 buffer.append(renderObject(match.getTargetAxiom()));
             }
-            buffer.append("\n");
+            buffer.append('\n');
+        }
+        if (!axiomMatches.isEmpty()) {
+        	buffer.append("------------------------------------------------------\n");
         }
         return buffer.toString();
     }
