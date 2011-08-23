@@ -2,6 +2,9 @@ package org.protege.owl.diff.examples;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -12,6 +15,7 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.conf.DefaultConfiguration;
 import org.protege.owl.diff.service.RenderingService;
+import org.protege.owl.diff.util.Util;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -30,27 +34,48 @@ public class ChebiCheck {
 	
 	public static final OWLAnnotationProperty ALT_ID = OWLManager.getOWLDataFactory().getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/alt_id"));
 	
+	public static final boolean USE_LONE_UNMATCHED_SIBLING = true;
+	public static final boolean RUN_SMALL_DIFFS            = false;
+	
 	public static final String ROOT_DIR = "/home/tredmond/Shared/ontologies/prompt/chebi";
-	public static final String [] FILES = { "Chebi-1.42.owl", "Chebi-1.81.owl" };
+	public static final String FILE1    = "chebi_v1.42.owl";
+	public static final String FILE2    = "chebi_v1.82.obo";
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		checkAllOntologies();
+		if (RUN_SMALL_DIFFS) {
+			checkAllOntologies();
+			LOGGER.info("\n--------------------Final Big Diff----------------------\n");
+		}
+		checkEndPoints();
+	}
+	
+	public static void checkEndPoints() throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
+		checkOntologies(new File(ROOT_DIR, FILE1), new File(ROOT_DIR, FILE2));
 	}
 	
 	public static void checkAllOntologies() throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
-		for (int i = 0; i < FILES.length - 1; i++ ) {
-			checkOntologies(i, i+1);
+		File root = new File(ROOT_DIR);
+		List<File> files = new ArrayList<File>();
+		for (File f : root.listFiles()) {
+			files.add(f);
+		}
+		Collections.sort(files);
+		for (int i = 0; i < files.size() - 1; i++) {
+			checkOntologies(files.get(i), files.get(i + 1));
 		}
 	}
 	
-	public static void checkOntologies(int i, int j) throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
-		OWLOntology ontology1 = openOntology(new File(ROOT_DIR, FILES[i]));
-		OWLOntology ontology2 = openOntology(new File(ROOT_DIR, FILES[j]));
-		Engine e = getEngine(ontology1, ontology2, true);
+	public static void checkOntologies(File f1, File f2) throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
+		LOGGER.info("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
+		OWLOntology ontology1 = openOntology(f1);
+		OWLOntology ontology2 = openOntology(f2);
+		Engine e = getEngine(ontology1, ontology2, USE_LONE_UNMATCHED_SIBLING);
 		e.phase1();
+		e.phase2();
+		LOGGER.info(Util.getStats(e));
 		lookForFalsePositives(e);
 		lookForFalseNegatives(e);
 	}
@@ -100,6 +125,10 @@ public class ChebiCheck {
 	}
 	
 	public static boolean verifyMatch(Engine e, OWLEntity source, OWLEntity target) {
+		RenderingService renderer = RenderingService.get(e);
+		if (renderer.renderSourceObject(source).equals(renderer.renderTargetObject(target))) {
+			return true;
+		}
 		OwlDiffMap diffs = e.getOwlDiffMap();
 		OWLOntology ontology2 = diffs.getTargetOntology();
 		for (OWLAnnotation annotation : target.getAnnotations(ontology2, ALT_ID)) {
