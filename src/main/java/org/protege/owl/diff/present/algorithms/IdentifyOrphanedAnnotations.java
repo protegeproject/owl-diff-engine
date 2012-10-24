@@ -9,7 +9,6 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchDescription;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 

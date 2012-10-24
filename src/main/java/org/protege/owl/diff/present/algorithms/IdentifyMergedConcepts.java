@@ -147,7 +147,6 @@ public class IdentifyMergedConcepts extends AbstractAnalyzerAlgorithm {
 		}
 		OWLEntity retiringEntity = retiringEntityDiff.getSourceEntity();
 		OWLOntology sourceOntology = changes.getRawDiffMap().getSourceOntology();
-		OWLOntology targetOntology = changes.getRawDiffMap().getTargetOntology();
 		for (OWLAxiom axiom : sourceOntology.getReferencingAxioms(retiringEntity)) {
 			OWLAxiom targetAxiom = mergeDuplicator.duplicateObject(sourceToTarget.duplicateObject(axiom));
 			MatchedAxiom axiomAdded = new MatchedAxiom(null, targetAxiom, MatchedAxiom.AXIOM_ADDED);

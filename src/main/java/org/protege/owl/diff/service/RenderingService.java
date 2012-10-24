@@ -14,7 +14,6 @@ import java.util.TreeSet;
 
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
-import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;

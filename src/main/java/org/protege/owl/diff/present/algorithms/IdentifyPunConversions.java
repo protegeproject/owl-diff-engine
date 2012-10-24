@@ -1,8 +1,6 @@
 package org.protege.owl.diff.present.algorithms;
 
 import org.protege.owl.diff.Engine;
-import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.present.Changes;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class IdentifyPunConversions extends AbstractAnalyzerAlgorithm {

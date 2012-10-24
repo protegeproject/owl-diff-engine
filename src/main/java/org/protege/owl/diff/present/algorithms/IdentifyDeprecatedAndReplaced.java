@@ -5,7 +5,6 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
-import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.DeprecationDeferralService;
 import org.semanticweb.owlapi.model.OWLAxiom;

@@ -1,6 +1,8 @@
 package org.protege.owl.diff.align.util;
 
 public class UnmappedEntityException extends RuntimeException {
+    private static final long serialVersionUID = -4014029443231135385L;
+
     public UnmappedEntityException() {
     }
     

@@ -80,12 +80,6 @@ public class IdentifyChangedAnnotation extends AbstractAnalyzerAlgorithm {
 					&& ((OWLAnnotationAssertionAxiom) axiom).getSubject().equals(entity.getIRI());	
 	}
 	
-	private boolean isIdenticalAnnotation(MatchedAxiom deleted, MatchedAxiom added) {
-		return ((OWLAnnotationAssertionAxiom) deleted.getSourceAxiom()).getAnnotation()
-					.equals(((OWLAnnotationAssertionAxiom) added.getTargetAxiom()).getAnnotation());
-	}
-
-	
 	private void addAnnotationAssertionMatch(Map<OWLAnnotationProperty, Set<MatchedAxiom>> map, 
 											 MatchedAxiom match,
 											 OWLAnnotationAssertionAxiom axiom) {

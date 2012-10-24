@@ -234,7 +234,6 @@ public class PresentationAlgorithmTest extends TestCase {
     	OWLClass newEntity = e.getOWLDataFactory().getOWLClass(IRI.create(ns + "#A"));
     	EntityBasedDiff diff = changes.getSourceDiffMap().get(newEntity);
     	int deletedAnnotationCount = 0;
-    	MatchedAxiom deletedAnnotation = null;
     	for (MatchedAxiom match : diff.getAxiomMatches()) {
     		if (match.getDescription().equals(MatchedAxiom.AXIOM_DELETED) && match.getSourceAxiom() instanceof OWLAnnotationAssertionAxiom) {
     			deletedAnnotationCount++;

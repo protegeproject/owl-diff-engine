@@ -1,13 +1,11 @@
 package org.protege.owl.diff;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.protege.owl.diff.align.AlignmentAlgorithm;
-import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.present.PresentationAlgorithm;

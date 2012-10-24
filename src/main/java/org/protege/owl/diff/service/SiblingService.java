@@ -8,7 +8,6 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * This class provides a trivial service - it gets subclasses and superclasses.  It is here as a marker

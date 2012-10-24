@@ -19,7 +19,6 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.util.OWLEntityCollector;
 
 public abstract class OwlDiffMapCore extends DiffListenerCollection implements OwlDiffMap {
 	public static final Logger LOGGER = Logger.getLogger(OwlDiffMapCore.class);
