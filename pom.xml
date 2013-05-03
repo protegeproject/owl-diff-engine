@@ -102,11 +102,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.protege.editor.owl.ProtegeOWL</Bundle-Activator>
 						<Bundle-ClassPath>.</Bundle-ClassPath>
 						<Bundle-SymbolicName>org.protege.owl.diff</Bundle-SymbolicName>
 						<Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
 						<Export-Package>org.protege.owl.diff.*</Export-Package>
+						<Import-Package>org.apache.log4j.*;version="[1.2,2)", *</Import-Package>
 					</instructions>
 					<executions>
 						<execution>
