@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>edu.stanford.protege</groupId>
 		<artifactId>protege-parent</artifactId>
-		<version>5.0.0-beta-02</version>
+		<version>5.0.0-beta-03</version>
 		<relativePath>../protege-parent/pom.xml</relativePath>
 	</parent>
 	
@@ -41,6 +41,16 @@
 			<artifactId>org.protege.editor.core.application</artifactId>
 			<version>${project.parent.version}</version>
 			</dependency>
+			
+		<dependency>
+			<groupId>net.sourceforge.owlapi</groupId>
+			<artifactId>owlapi-distribution</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
