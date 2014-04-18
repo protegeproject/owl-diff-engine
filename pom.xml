@@ -107,7 +107,7 @@
 				<configuration>
 					<skip>true</skip>
                     <systemPropertyVariables>
-                        <log4j.configuration>file:log4j.xml</log4j.configuration>
+                        <log4j.configuration>file:${basedir}/src/test/resources/log4j.xml</log4j.configuration>
                     </systemPropertyVariables>
 				</configuration>
 				<executions>
@@ -122,12 +122,6 @@
 							<suiteXmlFiles>
 								<suiteXmlFile>src/test/resources/unit-tests.xml</suiteXmlFile>
 							</suiteXmlFiles>
-                            <systemProperties>
-                                <property>
-                                    <name>log4j.configuration</name>
-                                    <value>file:log4j.xml</value>
-                                </property>
-                            </systemProperties>
 				        </configuration>
 					</execution>
 				</executions>
