@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>edu.stanford.protege</groupId>
-		<artifactId>protege-parent</artifactId>
-		<version>5.0.0-beta-04</version>
-		<relativePath>../protege-parent/pom.xml</relativePath>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
 	</parent>
 	
+	<groupId>edu.stanford.protege</groupId>
 	<artifactId>org.protege.owl.diff</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
