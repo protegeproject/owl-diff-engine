@@ -37,14 +37,14 @@
 	</mailingLists>
 		
 	<scm>
-		<connection>scm:git:git@github.com:protegeproject/org.protege.owl.diff.git</connection>
-		<developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.diff.git</developerConnection>
-		<url>https://github.com/protegeproject/org.protege.owl.diff</url>
+		<connection>scm:git:git@github.com:protegeproject/owl-diff-engine.git</connection>
+		<developerConnection>scm:git:git@github.com:protegeproject/owl-diff-engine.git</developerConnection>
+		<url>https://github.com/protegeproject/owl-diff-engine</url>
 	</scm>
 	
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/protegeproject/org.protege.owl.diff/issues</url>
+		<url>https://github.com/protegeproject/owl-diff-engine/issues</url>
 	</issueManagement>
   
 	<dependencies>
