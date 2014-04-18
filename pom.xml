@@ -23,6 +23,19 @@
 		</developer>
 	</developers>
 	
+	<mailingLists>
+		<mailingList>
+			<name>protege-dev</name>
+			<subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-dev</subscribe>
+			<unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-dev</unsubscribe>
+			<post>protege-dev@lists.stanford.edu</post>
+			<archive>http://protege-project.136.n4.nabble.com/</archive>
+			<otherArchives>
+				<otherArchive>https://mailman.stanford.edu/pipermail/protege-dev/</otherArchive>
+			</otherArchives>
+		</mailingList>
+	</mailingLists>
+		
 	<scm>
 		<connection>scm:git:git@github.com:protegeproject/org.protege.owl.diff.git</connection>
 		<developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.diff.git</developerConnection>
