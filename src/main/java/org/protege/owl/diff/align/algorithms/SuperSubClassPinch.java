@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
@@ -24,7 +25,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class SuperSubClassPinch implements AlignmentAlgorithm {
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
-    private static Logger log = Logger.getLogger(SuperSubClassPinch.class);
+    private static Logger log = Logger.getLogger(SuperSubClassPinch.class.getName());
     
     private OwlDiffMap diffMap;
     private RenderingService renderer;
@@ -86,7 +87,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
                 requiredSubclasses = Integer.parseInt((String) e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY));
             }
             catch (NumberFormatException t) {
-                log.warn("Could not initialize required subclasses value", t);
+                log.warning("Could not initialize required subclasses value" + t.getMessage());
                 disabled = true;
             }
         }
@@ -133,12 +134,12 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	}
 
 	private void addCandidateUnmatchedAxiom(UnmatchedSourceAxiom unmatched) {
-	    if (log.isDebugEnabled()) {
-	        log.debug("Examining  axiom " + unmatched);
+	    if (log.isLoggable(Level.INFO)) {
+	        log.info("Examining  axiom " + unmatched);
 	    }
 	    if (!isCandidiateUnmatchedAxiom(unmatched)) {
-	    	if (log.isDebugEnabled()) {
-	    		log.debug("no good");
+	    	if (log.isLoggable(Level.INFO)) {
+	    		log.info("no good");
 	    	}
 	        return;
 	    }
@@ -146,14 +147,14 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	    OWLClass subClass = subClassOfAxiom.getSubClass().asOWLClass();
 	    OWLClass superClass = subClassOfAxiom.getSuperClass().asOWLClass();
 	    if (diffMap.getUnmatchedSourceEntities().contains(subClass)) {
-	        if (log.isDebugEnabled()) {
-	            log.debug("found super class of " + subClass);
+	        if (log.isLoggable(Level.INFO)) {
+	            log.info("found super class of " + subClass);
 	        }
 	        addToMap(superClassOf, subClass, superClass);
 	    }
 	    if (diffMap.getUnmatchedSourceEntities().contains(superClass)) {
-	        if (log.isDebugEnabled()) {
-	            log.debug("found sub class of " + superClass);
+	        if (log.isLoggable(Level.INFO)) {
+	            log.info("found sub class of " + superClass);
 	        }
 	        addToMap(subClassOf, superClass, subClass);
 	    }
@@ -199,8 +200,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 				}
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("" + sourceClass + " subclasses map to "  + mappedTargetClasses);
+		if (log.isLoggable(Level.INFO)) {
+			log.info("" + sourceClass + " subclasses map to "  + mappedTargetClasses);
 		}
 		return mappedTargetClasses;
 	}
@@ -222,24 +223,24 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     		                         Set<OWLClass> desiredTargetSubClasses) {
         int count = 0;
         for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
-            if (log.isDebugEnabled()) {
-                log.debug("\t" + targetSubclass);
+            if (log.isLoggable(Level.INFO)) {
+                log.info("\t" + targetSubclass);
             }
             if (desiredTargetSubClasses.contains(targetSubclass)) {
-            	if (log.isDebugEnabled()) {
-            		log.debug("\tgood subclass");
+            	if (log.isLoggable(Level.INFO)) {
+            		log.info("\tgood subclass");
             	}
                 if (++count >= requiredSubclasses) {
-                	if (log.isDebugEnabled()) {
-                		log.debug("match added");
+                	if (log.isLoggable(Level.INFO)) {
+                		log.info("match added");
                 	}
                     newMatches.put(sourceClass, potentialMatchingClass);
                     return true;
                 }
             }
             else {
-            	if (log.isDebugEnabled()) {
-            		log.debug("\tbad subclass");
+            	if (log.isLoggable(Level.INFO)) {
+            		log.info("\tbad subclass");
             	}
             }
         }

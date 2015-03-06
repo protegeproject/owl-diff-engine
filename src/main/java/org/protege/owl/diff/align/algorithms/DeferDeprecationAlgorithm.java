@@ -1,8 +1,9 @@
 package org.protege.owl.diff.align.algorithms;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
@@ -16,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
-	public final static Logger LOGGER = Logger.getLogger(DeferDeprecationAlgorithm.class);
+	public final static Logger LOGGER = Logger.getLogger(DeferDeprecationAlgorithm.class.getName());
 	
 	private OwlDiffMap diffMap;
 	private DeprecationDeferralService dds;
@@ -95,9 +96,9 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 					&& diffMap.getUnmatchedTargetEntities().contains(targetEntity)) {
 				diffMap.addMatch(sourceEntity, targetEntity, bean.getExplanation());
 			}
-			else if (LOGGER.isDebugEnabled()){
-				LOGGER.debug(sourceEntity + " was deprecated but found a better refactor operation:");
-				LOGGER.debug("\t" + sourceEntity + " -> " + diffMap.getEntityMap().get(sourceEntity));
+			else if (LOGGER.isLoggable(Level.INFO)){
+				LOGGER.info(sourceEntity + " was deprecated but found a better refactor operation:");
+				LOGGER.info("\t" + sourceEntity + " -> " + diffMap.getEntityMap().get(sourceEntity));
 			}
 		}
 	}

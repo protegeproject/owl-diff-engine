@@ -7,8 +7,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.present.Changes;
@@ -17,7 +17,7 @@ import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class Util {
-	public static final Logger LOGGER = Logger.getLogger(Util.class);
+	public static final Logger LOGGER = Logger.getLogger(Util.class.getName());
 	
 	private Util() {
 	}
@@ -128,11 +128,11 @@ public class Util {
     				}
     			}
     			catch (Exception e) {
-    				LOGGER.warn("Exception caught", e);
+    				LOGGER.warning("Exception caught " + e.getMessage());
     			}
     			finally {
     				if (!success) {
-        				LOGGER.warn("Problems reading " + toImplement + " instances from " + cl);
+        				LOGGER.warning("Problems reading " + toImplement + " instances from " + cl);
     				}
     			}
     		}
@@ -159,8 +159,8 @@ public class Util {
     	if (possibleMatchingSource != null) {
     		OWLEntity targetForCandidateSoure = engine.getOwlDiffMap().getEntityMap().get(possibleMatchingSource);
     		if (!target.equals(targetForCandidateSoure)) {
-    			LOGGER.warn("Presentation algorithm seems out of synchronization with alignment algorithm for the match:");
-    			LOGGER.warn("\t" + possibleMatchingSource + " --> " + target);
+    			LOGGER.warning("Presentation algorithm seems out of synchronization with alignment algorithm for the match:");
+    			LOGGER.warning("\t" + possibleMatchingSource + " --> " + target);
     			possibleMatchingSource = null; // shouldn't get here
     		}
     	}

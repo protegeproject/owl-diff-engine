@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
@@ -24,7 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OpenAndCompare {
-    private static Logger logger = Logger.getLogger(OpenAndCompare.class);
+    private static Logger logger = Logger.getLogger(OpenAndCompare.class.getName());
 
     private final static File root     = new File("/home/tredmond/Shared/ontologies/prompt");
     private final static File baseline = new File(root, "BiomedicalResourceOntology_v2.6_v2.6.owl");
@@ -44,7 +44,7 @@ public class OpenAndCompare {
      * @throws InstantiationException 
      */
     public static void main(String[] args) throws OWLOntologyCreationException, InstantiationException, IllegalAccessException, IOException {
-        StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompare.class));
+        StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompare.class.getName()));
         OWLOntologyLoaderConfiguration configuration = new OWLOntologyLoaderConfiguration();
         OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
         logger.info("Loading " + baseline);

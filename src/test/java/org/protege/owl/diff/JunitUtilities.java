@@ -1,9 +1,10 @@
 package org.protege.owl.diff;
 
-import org.apache.log4j.Logger;
+
+import java.util.logging.Logger;
 
 public class JunitUtilities {
-    private static Logger logger = Logger.getLogger(JunitUtilities.class);
+    private static Logger logger = Logger.getLogger(JunitUtilities.class.getName());
     
     public static final String PROJECTS_DIRECTORY="src/test/resources/";
 

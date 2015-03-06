@@ -1,8 +1,8 @@
 package org.protege.owl.diff.align.impl;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentListener;
 import org.protege.owl.diff.align.util.AlignmentListenerAdapter;
@@ -12,7 +12,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class OwlDiffMapImpl extends OwlDiffMapCore {
-    private Logger logger = Logger.getLogger(OwlDiffMapImpl.class);
+    private Logger logger = Logger.getLogger(OwlDiffMapImpl.class.getName());
     
     private static final String SEPARATOR_STRING = " **************** ";
     

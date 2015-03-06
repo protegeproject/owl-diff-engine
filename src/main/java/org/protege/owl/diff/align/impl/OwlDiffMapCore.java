@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.UnmatchedSourceAxiom;
@@ -21,7 +22,7 @@ import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public abstract class OwlDiffMapCore extends DiffListenerCollection implements OwlDiffMap {
-	public static final Logger LOGGER = Logger.getLogger(OwlDiffMapCore.class);
+	public static final Logger LOGGER = Logger.getLogger(OwlDiffMapCore.class.getName());
 	
     /*
      * Entities
@@ -89,8 +90,8 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         unmatchedTargetEntities = new HashSet<OWLEntity>(targetOntology.getSignature());
         unmatchedTargetAnonIndividuals = new HashSet<OWLAnonymousIndividual>(targetOntology.getReferencedAnonymousIndividuals());        
     
-        if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("Initialization of core diff map structures took " + (System.currentTimeMillis() - startTime) + "ms.");
+        if (LOGGER.isLoggable(Level.INFO)) {
+        	LOGGER.info("Initialization of core diff map structures took " + (System.currentTimeMillis() - startTime) + "ms.");
         }
     }
     

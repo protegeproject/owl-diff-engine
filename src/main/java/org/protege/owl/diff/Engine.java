@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.impl.OwlDiffMapImpl;
@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class Engine {
-    private Logger logger = Logger.getLogger(Engine.class);    
+    private Logger logger = Logger.getLogger(Engine.class.getName());
     
     private OWLDataFactory factory;
     private OWLOntology ontology1;
@@ -140,13 +140,10 @@ public class Engine {
                 try {
                     da.run();
                  }
-                catch (Error e) {
-                    logger.warn("Diff Algorithm " + da.getAlgorithmName()  + "failed (" + e + ").  Continuing...");
+                catch (Error | Exception e) {
+                    logger.warning("Diff Algorithm " + da.getAlgorithmName() + "failed (" + e + ").  Continuing...");
                 }
-                catch (Exception t) {
-                    logger.warn("Diff Algorithm " + da.getAlgorithmName()  + "failed (" + t + ").  Continuing...");
-                }
-                progress = progress ||
+				progress = progress ||
                               (entitiesCount > diffMap.getUnmatchedSourceEntities().size()) ||
                               (individualsCount > diffMap.getUnmatchedSourceAnonymousIndividuals().size());
             }
@@ -160,13 +157,10 @@ public class Engine {
 	        try {
 	            algorithm.reset();
 	        }
-	        catch (Error t) {
-	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
+	        catch (Error | Exception t) {
+	            logger.warning("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
 	        }
-	        catch (Exception t) {
-	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
-	        }
-	    }
+		}
 	}
 
 	public void phase2() {
