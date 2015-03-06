@@ -1,2 +1,9 @@
 target/
 diff.log
+
+#intelliJ
+*.iws
+*.ipr
+.idea
+*.iml
+build/
