@@ -1,5 +1,6 @@
 package org.protege.owl.diff.align.algorithms;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class SuperSubClassPinch implements AlignmentAlgorithm {
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
@@ -84,7 +86,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         requiredSubclasses = 1;
         if (e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY) != null) {
             try {
-                requiredSubclasses = Integer.parseInt((String) e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY));
+                requiredSubclasses = Integer.parseInt(e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY));
             }
             catch (NumberFormatException t) {
                 log.warning("Could not initialize required subclasses value" + t.getMessage());
@@ -208,7 +210,9 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 
 	private void searchForMatches(OWLClass sourceClass, Set<OWLClass> possibleTargetSuperclasses, Set<OWLClass> possibleTargetSubclasses) {
     	for (OWLClass possibleTargetSuperClass : possibleTargetSuperclasses) {
-    		for (OWLClassExpression possibleTargetClass : possibleTargetSuperClass.getSubClasses(diffMap.getTargetOntology())) {
+            for (OWLClassExpression possibleTargetClass : EntitySearcher
+                    .getSubClasses(possibleTargetSuperClass,
+                            diffMap.getTargetOntology())) {
     			if (!possibleTargetClass.isAnonymous() 
     					&& searchForMatches(sourceClass, possibleTargetClass.asOWLClass(), possibleTargetSubclasses)){
     				return;
@@ -222,7 +226,8 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     		                         OWLClass potentialMatchingClass, 
     		                         Set<OWLClass> desiredTargetSubClasses) {
         int count = 0;
-        for (OWLClassExpression targetSubclass : potentialMatchingClass.getSubClasses(diffMap.getTargetOntology())) {
+        for (OWLClassExpression targetSubclass : EntitySearcher.getSubClasses(
+                potentialMatchingClass, diffMap.getTargetOntology())) {
             if (log.isLoggable(Level.INFO)) {
                 log.info("\t" + targetSubclass);
             }
@@ -279,12 +284,14 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     	}
     	
     	private void addMatchingParents(OWLClass source, OWLClass target, StringBuffer sb) {
-    		Set<OWLClassExpression> targetParents = target.getSuperClasses(diffs.getTargetOntology());
-    		for (OWLClassExpression sourceParent : source.getSuperClasses(diffs.getSourceOntology())) {
+            Collection<OWLClassExpression> targetParents = EntitySearcher
+                    .getSuperClasses(target, diffs.getTargetOntology());
+            for (OWLClassExpression sourceParent : EntitySearcher
+                    .getSuperClasses(source, diffs.getSourceOntology())) {
     			OWLClass targetParent = (OWLClass) diffs.getEntityMap().get(sourceParent);
     			if (targetParent != null && targetParents.contains(targetParent)) {
     				sb.append("Source entity has parent\n\t");
-    				sb.append(renderer.renderSourceObject((OWLClass) sourceParent));
+    				sb.append(renderer.renderSourceObject(sourceParent));
     				sb.append("\nwhich maps to the following parent of the target entity\n\t");
     				sb.append(renderer.renderTargetObject(targetParent));
     				sb.append('\n');
@@ -293,12 +300,14 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     	}
     	
     	private void addMatchingChildren(OWLClass source, OWLClass target, StringBuffer sb) {
-    		Set<OWLClassExpression> targetChildren = target.getSubClasses(diffs.getTargetOntology());
-    		for (OWLClassExpression sourceChild : source.getSubClasses(diffs.getSourceOntology())) {
+            Collection<OWLClassExpression> targetChildren = EntitySearcher
+                    .getSubClasses(target, diffs.getTargetOntology());
+            for (OWLClassExpression sourceChild : EntitySearcher.getSubClasses(
+                    source, diffs.getSourceOntology())) {
     			OWLClass targetChild = (OWLClass) diffs.getEntityMap().get(sourceChild);
     			if (targetChild != null && targetChildren.contains(targetChild)) {
     				sb.append("Source entity has child\n\t");
-    				sb.append(renderer.renderSourceObject((OWLClass) sourceChild));
+    				sb.append(renderer.renderSourceObject(sourceChild));
     				sb.append("\nwhich maps to the following child of the target entity\n\t");
     				sb.append(renderer.renderTargetObject(targetChild));
     				sb.append('\n');

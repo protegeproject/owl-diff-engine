@@ -15,8 +15,10 @@ import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
 import org.protege.owl.diff.util.StopWatch;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.MissingImportHandlingStrategy;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OpenAndCompareNCI {
@@ -50,12 +52,15 @@ public class OpenAndCompareNCI {
         
         StopWatch watch = new StopWatch(Logger.getLogger(OpenAndCompareNCI.class.getName()));
         OWLOntologyManager manager1 = OWLManager.createOWLOntologyManager();
-        manager1.setSilentMissingImportsHandling(true);
+        OWLOntologyLoaderConfiguration config = manager1
+                .getOntologyLoaderConfiguration();
+        config.setMissingImportHandlingStrategy(MissingImportHandlingStrategy.SILENT);
+        manager1.setOntologyLoaderConfiguration(config);
         logger.info("Loading " + baseline);
         OWLOntology ontology1 = manager1.loadOntologyFromOntologyDocument(baseline);
         watch.measure();
         OWLOntologyManager manager2 = OWLManager.createOWLOntologyManager();
-        manager2.setSilentMissingImportsHandling(true);
+        manager2.setOntologyLoaderConfiguration(config);
         logger.info("Loading " + altered);
         OWLOntology ontology2 = manager2.loadOntologyFromOntologyDocument(altered);
         watch.measure();

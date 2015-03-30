@@ -11,7 +11,7 @@ import org.protege.owl.diff.align.UnmatchedSourceAxiom;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.util.OWLEntityCollector;
+import org.semanticweb.owlapi.util.DeprecatedOWLEntityCollector;
 
 public class UnmatchedSourceAxiomImpl implements UnmatchedSourceAxiom {
     private Set<OWLEntity> referencedUnmatchedEntities;
@@ -22,7 +22,9 @@ public class UnmatchedSourceAxiomImpl implements UnmatchedSourceAxiom {
         this.axiom = axiom;
         referencedUnmatchedEntities = new HashSet<OWLEntity>();
         referencedUnmatchedAnonymousIndividuals = new HashSet<OWLAnonymousIndividual>();
-        OWLEntityCollector collector = new OWLEntityCollector(referencedUnmatchedEntities, referencedUnmatchedAnonymousIndividuals);
+        DeprecatedOWLEntityCollector collector = new DeprecatedOWLEntityCollector(
+                referencedUnmatchedEntities,
+                referencedUnmatchedAnonymousIndividuals);
         axiom.accept(collector);
     }
 

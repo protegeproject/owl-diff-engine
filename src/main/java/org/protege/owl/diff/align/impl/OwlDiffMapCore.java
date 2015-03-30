@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.parameters.Imports;
 
 public abstract class OwlDiffMapCore extends DiffListenerCollection implements OwlDiffMap {
 	public static final Logger LOGGER = Logger.getLogger(OwlDiffMapCore.class.getName());
@@ -88,7 +89,9 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
         }
         
         unmatchedTargetEntities = new HashSet<OWLEntity>(targetOntology.getSignature());
-        unmatchedTargetAnonIndividuals = new HashSet<OWLAnonymousIndividual>(targetOntology.getReferencedAnonymousIndividuals());        
+        unmatchedTargetAnonIndividuals = new HashSet<OWLAnonymousIndividual>(
+                targetOntology
+                        .getReferencedAnonymousIndividuals(Imports.EXCLUDED));
     
         if (LOGGER.isLoggable(Level.INFO)) {
         	LOGGER.info("Initialization of core diff map structures took " + (System.currentTimeMillis() - startTime) + "ms.");
