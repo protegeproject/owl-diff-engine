@@ -8,6 +8,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 /**
  * This class provides a trivial service - it gets subclasses and superclasses.  It is here as a marker
@@ -37,7 +38,8 @@ public class SiblingService {
 	
 	public Set<OWLClass> getSourceSuperClasses(OWLClass c) {
 		Set<OWLClass> superClasses = new HashSet<OWLClass>();
-		for (OWLClassExpression ce : c.getSuperClasses(diffs.getSourceOntology())) {
+        for (OWLClassExpression ce : EntitySearcher.getSuperClasses(c,
+                diffs.getSourceOntology())) {
 			if (!ce.isAnonymous()) {
 				superClasses.add(ce.asOWLClass());
 			}
@@ -48,7 +50,8 @@ public class SiblingService {
 	
 	public Set<OWLClass> getSubClasses(OWLClass c, DifferencePosition position) {
 		Set<OWLClass> subClasses = new HashSet<OWLClass>();
-		for (OWLClassExpression ce : c.getSubClasses(position.getOntology(diffs))) {
+        for (OWLClassExpression ce : EntitySearcher.getSubClasses(c,
+                position.getOntology(diffs))) {
 			if (!ce.isAnonymous()) {
 				subClasses.add(ce.asOWLClass());
 			}

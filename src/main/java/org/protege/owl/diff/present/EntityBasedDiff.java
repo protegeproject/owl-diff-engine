@@ -4,13 +4,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.util.SimpleIRIShortFormProvider;
 
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 
 public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     public enum DiffType {

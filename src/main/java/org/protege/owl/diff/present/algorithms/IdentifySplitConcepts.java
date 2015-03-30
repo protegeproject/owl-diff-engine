@@ -28,6 +28,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.OWLObjectDuplicator;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
@@ -49,7 +50,7 @@ public class IdentifySplitConcepts extends AbstractAnalyzerAlgorithm {
 		this.diffMap = changes.getRawDiffMap();
 		this.mapper = CodeToEntityMapper.get(e);
 		OWLDataFactory factory = diffMap.getOWLDataFactory();
-		String splitFromPropertyName = (String) e.getParameters().get(SPLIT_FROM_ANNOTATION_PROPERTY);
+		String splitFromPropertyName = e.getParameters().get(SPLIT_FROM_ANNOTATION_PROPERTY);
 		if (splitFromPropertyName == null) {
 			disabled = true;
 			return;
@@ -145,8 +146,10 @@ public class IdentifySplitConcepts extends AbstractAnalyzerAlgorithm {
 		if (!viewed.contains(child)) {
 			viewed.add(child);
 			Set<OWLClassExpression> parents = new TreeSet<OWLClassExpression>();
-			parents.addAll(child.getSuperClasses(sourceOntology));
-			parents.addAll(child.getEquivalentClasses(sourceOntology));
+            parents.addAll(EntitySearcher
+                    .getSuperClasses(child, sourceOntology));
+            parents.addAll(EntitySearcher.getEquivalentClasses(child,
+                    sourceOntology));
 			for (OWLClassExpression parent : parents) {
 				if (parent instanceof OWLClass) {
 					result.add(parent);
