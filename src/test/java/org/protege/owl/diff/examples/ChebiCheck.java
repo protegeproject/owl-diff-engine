@@ -27,6 +27,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 public class ChebiCheck {
@@ -131,7 +132,8 @@ public class ChebiCheck {
 		}
 		OwlDiffMap diffs = e.getOwlDiffMap();
 		OWLOntology ontology2 = diffs.getTargetOntology();
-		for (OWLAnnotation annotation : target.getAnnotations(ontology2, ALT_ID)) {
+        for (OWLAnnotation annotation : EntitySearcher.getAnnotations(target,
+                ontology2, ALT_ID)) {
 			IRI altIri = getAltIri(annotation.getValue());
 			if (altIri != null && source.getIRI().equals(altIri)) {
 				return true;
@@ -159,7 +161,8 @@ public class ChebiCheck {
 		OWLDataFactory factory = e.getOWLDataFactory();
 		OwlDiffMap diffs = e.getOwlDiffMap();
 		OWLOntology ontology2 = diffs.getTargetOntology();
-		for (OWLAnnotation annotation : targetEntity.getAnnotations(ontology2, ALT_ID)) {
+        for (OWLAnnotation annotation : EntitySearcher.getAnnotations(
+                targetEntity, ontology2, ALT_ID)) {
 			IRI altIri = getAltIri(annotation.getValue());
 			if (altIri != null) {
 				OWLEntity sourceEntity = factory.getOWLEntity(targetEntity.getEntityType(), altIri);

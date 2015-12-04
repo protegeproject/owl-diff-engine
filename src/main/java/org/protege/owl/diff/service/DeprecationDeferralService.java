@@ -9,9 +9,11 @@ import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class DeprecationDeferralService {
 	private boolean initialized = false;
@@ -55,8 +57,9 @@ public class DeprecationDeferralService {
 	
 	public boolean isDeprecated(OWLEntity e, DifferencePosition position) {
 		OWLOntology ontology = position.getOntology(engine.getOwlDiffMap());
+		OWLAnnotationProperty deprecated = engine.getOWLDataFactory().getOWLDeprecated();
 		for (OWLOntology ont : ontology.getImportsClosure()) {
-			for (OWLAnnotation annotation : e.getAnnotations(ont, engine.getOWLDataFactory().getOWLDeprecated())) {
+            for (OWLAnnotation annotation : EntitySearcher.getAnnotations(e, ont, deprecated)) {
 				if (!(annotation.getValue() instanceof OWLLiteral)) {
 					continue;
 				}

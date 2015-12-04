@@ -16,6 +16,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class CodeToEntityMapper {
 	public static final Logger LOGGER = Logger.getLogger(CodeToEntityMapper.class.getName());
@@ -42,7 +43,7 @@ public class CodeToEntityMapper {
 		if (codeName == null) {
 			return;
 		}
-        IRI codeIri = IRI.create((String) codeName);
+        IRI codeIri = IRI.create(codeName);
         codeProperty = diffMap.getOWLDataFactory().getOWLAnnotationProperty(codeIri);
         if (!diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeIri)) {
         	LOGGER.warning("Source ontology does not have selected code annotation " + codeName);
@@ -64,7 +65,8 @@ public class CodeToEntityMapper {
 	}
 	
     public String getCode(OWLOntology ontology, OWLEntity entity) {
-        for (OWLAnnotation annotation : entity.getAnnotations(ontology)) {
+        for (OWLAnnotation annotation : EntitySearcher.getAnnotations(entity,
+                ontology)) {
             if (!annotation.getProperty().equals(codeProperty)) {
                 continue;
             }
