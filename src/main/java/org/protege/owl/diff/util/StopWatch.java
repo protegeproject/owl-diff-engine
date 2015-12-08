@@ -1,7 +1,7 @@
 package org.protege.owl.diff.util;
 
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class StopWatch {
     private Logger logger;

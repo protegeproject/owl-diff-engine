@@ -1,8 +1,8 @@
 package org.protege.owl.diff.align.algorithms;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
-	public final static Logger LOGGER = Logger.getLogger(DeferDeprecationAlgorithm.class.getName());
+	public final static Logger LOGGER = LoggerFactory.getLogger(DeferDeprecationAlgorithm.class.getName());
 	
 	private OwlDiffMap diffMap;
 	private DeprecationDeferralService dds;
@@ -96,7 +96,7 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 					&& diffMap.getUnmatchedTargetEntities().contains(targetEntity)) {
 				diffMap.addMatch(sourceEntity, targetEntity, bean.getExplanation());
 			}
-			else if (LOGGER.isLoggable(Level.INFO)){
+			else if (LOGGER.isInfoEnabled()){
 				LOGGER.info(sourceEntity + " was deprecated but found a better refactor operation:");
 				LOGGER.info("\t" + sourceEntity + " -> " + diffMap.getEntityMap().get(sourceEntity));
 			}

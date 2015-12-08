@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
@@ -27,7 +27,7 @@ import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class SuperSubClassPinch implements AlignmentAlgorithm {
     public static final String REQUIRED_SUBCLASSES_PROPERTY="diff.pinch.required.subclasses";
-    private static Logger log = Logger.getLogger(SuperSubClassPinch.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SuperSubClassPinch.class.getName());
     
     private OwlDiffMap diffMap;
     private RenderingService renderer;
@@ -89,7 +89,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
                 requiredSubclasses = Integer.parseInt(e.getParameters().get(REQUIRED_SUBCLASSES_PROPERTY));
             }
             catch (NumberFormatException t) {
-                log.warning("Could not initialize required subclasses value" + t.getMessage());
+                log.warn("Could not initialize required subclasses value" + t.getMessage());
                 disabled = true;
             }
         }
@@ -136,11 +136,11 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	}
 
 	private void addCandidateUnmatchedAxiom(UnmatchedSourceAxiom unmatched) {
-	    if (log.isLoggable(Level.INFO)) {
+	    if (log.isInfoEnabled()) {
 	        log.info("Examining  axiom " + unmatched);
 	    }
 	    if (!isCandidiateUnmatchedAxiom(unmatched)) {
-	    	if (log.isLoggable(Level.INFO)) {
+	    	if (log.isInfoEnabled()) {
 	    		log.info("no good");
 	    	}
 	        return;
@@ -149,13 +149,13 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 	    OWLClass subClass = subClassOfAxiom.getSubClass().asOWLClass();
 	    OWLClass superClass = subClassOfAxiom.getSuperClass().asOWLClass();
 	    if (diffMap.getUnmatchedSourceEntities().contains(subClass)) {
-	        if (log.isLoggable(Level.INFO)) {
+	        if (log.isInfoEnabled()) {
 	            log.info("found super class of " + subClass);
 	        }
 	        addToMap(superClassOf, subClass, superClass);
 	    }
 	    if (diffMap.getUnmatchedSourceEntities().contains(superClass)) {
-	        if (log.isLoggable(Level.INFO)) {
+	        if (log.isInfoEnabled()) {
 	            log.info("found sub class of " + superClass);
 	        }
 	        addToMap(subClassOf, superClass, subClass);
@@ -202,7 +202,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
 				}
 			}
 		}
-		if (log.isLoggable(Level.INFO)) {
+		if (log.isInfoEnabled()) {
 			log.info("" + sourceClass + " subclasses map to "  + mappedTargetClasses);
 		}
 		return mappedTargetClasses;
@@ -228,15 +228,15 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
         int count = 0;
         for (OWLClassExpression targetSubclass : EntitySearcher.getSubClasses(
                 potentialMatchingClass, diffMap.getTargetOntology())) {
-            if (log.isLoggable(Level.INFO)) {
+            if (log.isInfoEnabled()) {
                 log.info("\t" + targetSubclass);
             }
             if (desiredTargetSubClasses.contains(targetSubclass)) {
-            	if (log.isLoggable(Level.INFO)) {
+            	if (log.isInfoEnabled()) {
             		log.info("\tgood subclass");
             	}
                 if (++count >= requiredSubclasses) {
-                	if (log.isLoggable(Level.INFO)) {
+                	if (log.isInfoEnabled()) {
                 		log.info("match added");
                 	}
                     newMatches.put(sourceClass, potentialMatchingClass);
@@ -244,7 +244,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
                 }
             }
             else {
-            	if (log.isLoggable(Level.INFO)) {
+            	if (log.isInfoEnabled()) {
             		log.info("\tbad subclass");
             	}
             }

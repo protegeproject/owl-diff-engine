@@ -3,8 +3,8 @@ package org.protege.owl.diff.align.algorithms;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
@@ -26,7 +26,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MatchByCode implements AlignmentAlgorithm {
 	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Enties with a common code value are matched.");
-    private Logger logger = Logger.getLogger(MatchByCode.class.getName());
+    private Logger logger = LoggerFactory.getLogger(MatchByCode.class.getName());
     
     private boolean disabled = false;
     private OwlDiffMap diffMap;
@@ -52,7 +52,7 @@ public class MatchByCode implements AlignmentAlgorithm {
         if (!disabled) {
             diffMap.announce(this);
             try {
-                if (logger.isLoggable(Level.INFO)) {
+                if (logger.isInfoEnabled()) {
                     logger.info("Matching source entities with target entities");
                 }
                 matchEntities();

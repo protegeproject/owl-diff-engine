@@ -2,8 +2,8 @@ package org.protege.owl.diff.align.algorithms;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 public class MatchByRendering implements AlignmentAlgorithm {
 	public static final AlignmentExplanation EXPLANATION = new SimpleAlignmentExplanation("Enties with a common rendering are matched.");
-    private Logger logger = Logger.getLogger(MatchByRendering.class.getName());
+    private Logger logger = LoggerFactory.getLogger(MatchByRendering.class.getName());
     
     private boolean disabled = false;
     private OwlDiffMap diffMap;
@@ -45,8 +45,8 @@ public class MatchByRendering implements AlignmentAlgorithm {
         if (!disabled) {
             diffMap.announce(this);
             try {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Matching source entities with target entities");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Matching source entities with target entities");
                 }
                 matchEntities();
             }

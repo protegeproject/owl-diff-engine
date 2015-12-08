@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.OwlDiffMap;
@@ -19,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class CodeToEntityMapper {
-	public static final Logger LOGGER = Logger.getLogger(CodeToEntityMapper.class.getName());
+	public static final Logger logger = LoggerFactory.getLogger(CodeToEntityMapper.class.getName());
 	
 	public static final String CODE_ANNOTATION_PROPERTY = "code.annotation.property";
 	
@@ -46,10 +47,10 @@ public class CodeToEntityMapper {
         IRI codeIri = IRI.create(codeName);
         codeProperty = diffMap.getOWLDataFactory().getOWLAnnotationProperty(codeIri);
         if (!diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeIri)) {
-        	LOGGER.warning("Source ontology does not have selected code annotation " + codeName);
+        	logger.warn("Source ontology does not have selected code annotation " + codeName);
         }
         else if (!diffMap.getTargetOntology().containsAnnotationPropertyInSignature(codeIri)) {
-        	LOGGER.warning("Target ontology does not have selected code annotation " + codeName);
+        	logger.warn("Target ontology does not have selected code annotation " + codeName);
         }
 
 	}

@@ -2,7 +2,8 @@ package org.protege.owl.diff.examples;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
@@ -20,7 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 public class InterestingChebiDifferences {
-	public static final Logger LOGGER = Logger.getLogger(InterestingChebiDifferences.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(InterestingChebiDifferences.class.getName());
 		
 	public static final boolean USE_LONE_UNMATCHED_SIBLING = true;
 	

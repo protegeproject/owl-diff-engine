@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
@@ -19,9 +18,11 @@ import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.present.util.PresentationAlgorithmComparator;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Engine {
-    private Logger logger = Logger.getLogger(Engine.class.getName());
+    private Logger logger = LoggerFactory.getLogger(Engine.class.getName());
     
     private OWLDataFactory factory;
     private OWLOntology ontology1;
@@ -141,7 +142,7 @@ public class Engine {
                     da.run();
                  }
                 catch (Error | Exception e) {
-                    logger.warning("Diff Algorithm " + da.getAlgorithmName() + "failed (" + e + ").  Continuing...");
+                    logger.warn("Diff Algorithm " + da.getAlgorithmName() + "failed (" + e + ").  Continuing...");
                 }
 				progress = progress ||
                               (entitiesCount > diffMap.getUnmatchedSourceEntities().size()) ||
@@ -158,7 +159,7 @@ public class Engine {
 	            algorithm.reset();
 	        }
 	        catch (Error | Exception t) {
-	            logger.warning("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
+	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
 	        }
 		}
 	}

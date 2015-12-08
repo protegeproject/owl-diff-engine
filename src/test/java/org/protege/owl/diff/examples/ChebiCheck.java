@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.DifferencePosition;
 import org.protege.owl.diff.Engine;
@@ -31,7 +32,7 @@ import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
 public class ChebiCheck {
-	public static final Logger LOGGER = Logger.getLogger(ChebiCheck.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(ChebiCheck.class.getName());
 	
 	public static final OWLAnnotationProperty ALT_ID = OWLManager.getOWLDataFactory().getOWLAnnotationProperty(IRI.create("http://purl.obolibrary.org/obo/alt_id"));
 	

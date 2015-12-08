@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
 public abstract class OwlDiffMapCore extends DiffListenerCollection implements OwlDiffMap {
-	public static final Logger LOGGER = Logger.getLogger(OwlDiffMapCore.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(OwlDiffMapCore.class.getName());
 	
     /*
      * Entities
@@ -93,7 +93,7 @@ public abstract class OwlDiffMapCore extends DiffListenerCollection implements O
                 targetOntology
                         .getReferencedAnonymousIndividuals(Imports.EXCLUDED));
     
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
         	LOGGER.info("Initialization of core diff map structures took " + (System.currentTimeMillis() - startTime) + "ms.");
         }
     }
