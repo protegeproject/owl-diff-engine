@@ -140,7 +140,7 @@ public class RenderingService {
 	}
 	
 	public String renderDiff(EntityBasedDiff diff) {
-		StringBuffer diffDescription = new StringBuffer();
+		StringBuilder diffDescription = new StringBuilder();
 		diffDescription.append(diff.getDiffTypeDescription());
 		diffDescription.append(": ");
 		switch (diff.getDiffType()) {
