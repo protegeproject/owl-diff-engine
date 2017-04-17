@@ -77,7 +77,7 @@ public class RenderingService {
 	 * Pardon me - I am stealing this code from Protege 4.  Dependencies make it unclear how to share it.
 	 */
 	public static List<String> getDefaultLanguages() {
-		List<String> langs = new ArrayList<String>();
+		List<String> langs = new ArrayList<>();
 		Locale locale = Locale.getDefault();
 		if (locale != null && locale.getLanguage() != null && !locale.getLanguage().equals("")) {
 			langs.add(locale.getLanguage());
