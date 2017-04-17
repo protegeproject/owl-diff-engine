@@ -147,14 +147,9 @@ public class RenderingService {
 		case CREATED:
 			diffDescription.append(renderTargetObject(diff.getTargetEntity()));
 			break;
-		case DELETED:
-			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
-			break;
 		case EQUIVALENT:
 			break;
-		case MODIFIED:
-		case RENAMED:
-		case RENAMED_AND_MODIFIED:
+		default:
 			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
 			break;
 		}
