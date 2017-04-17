@@ -187,8 +187,8 @@ public class RenderingService {
 	
 	public OWLEntity getTargetEntityByRendering(String rendering) {
 		if (targetNameToEntityMap == null) {
-			targetNameToEntityMap = new HashMap<String, OWLEntity>();
-			Set<String> toRemove = new TreeSet<String>();
+			targetNameToEntityMap = new HashMap<>();
+			Set<String> toRemove = new TreeSet<>();
 			for (OWLEntity e : engine.getOwlDiffMap().getTargetOntology().getSignature()) {
 				String eRendering = renderTargetObject(e);
 				if (eRendering == null) {
