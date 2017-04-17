@@ -211,11 +211,7 @@ public class RenderingService {
 	private static class WriterDelegate extends Writer {
 
         private StringWriter delegate;
-
-        public WriterDelegate() {
-		}
-
-
+        
 		private void reset() {
             delegate = new StringWriter();
         }
