@@ -65,7 +65,7 @@ public class RenderingService {
 	}
 	
 	public static ShortFormProvider getShortFormProvider(OWLOntology ontology, List<OWLAnnotationProperty> annotationProperties, List<String> langs) {
-		Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<OWLAnnotationProperty, List<String>>();
+		Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
 		for (OWLAnnotationProperty annotationProperty : annotationProperties) {
 			preferredLanguageMap.put(annotationProperty, langs);
 		}
