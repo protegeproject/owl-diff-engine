@@ -79,9 +79,9 @@ public class RenderingService {
 	public static List<String> getDefaultLanguages() {
 		List<String> langs = new ArrayList<>();
 		Locale locale = Locale.getDefault();
-		if (locale != null && locale.getLanguage() != null && !"".getLanguage().equals(locale)) {
+		if (locale != null && locale.getLanguage() != null && !"".equals(locale.getLanguage())) {
 			langs.add(locale.getLanguage());
-			if (locale.getCountry() != null && !"".getCountry().equals(locale)) {
+			if (locale.getCountry() != null && !"".equals(locale.getCountry()) {
 				langs.add(locale.getLanguage() + "-" + locale.getCountry());
 			}
 		}
