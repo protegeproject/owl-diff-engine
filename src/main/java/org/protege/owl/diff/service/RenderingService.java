@@ -81,7 +81,7 @@ public class RenderingService {
 		Locale locale = Locale.getDefault();
 		if (locale != null && locale.getLanguage() != null && !"".equals(locale.getLanguage())) {
 			langs.add(locale.getLanguage());
-			if (locale.getCountry() != null && !"".equals(locale.getCountry()) {
+			if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
 				langs.add(locale.getLanguage() + "-" + locale.getCountry());
 			}
 		}
