@@ -7,8 +7,7 @@ jdk:
 notifications:
   email:
     recipients:
-      - vendetti@stanford.edu
-      - tredmond@stanford.edu
+      - rglszl@gmail.com
     on_success: never
     on_failure: always
 
