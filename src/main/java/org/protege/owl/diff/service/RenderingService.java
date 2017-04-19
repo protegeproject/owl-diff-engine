@@ -36,7 +36,11 @@ public class RenderingService {
 	private OWLDataFactory factory;
 	
 	private Engine engine;
-	
+
+
+	//ManchesterOWLSyntaxObjectRenderer is deprecated, but i didn't find any other class to replace with it
+    //I also didn't found the source of it or a good documentation to see what it does and write an other class
+    //so i think it works now and we should not make big changes on it.
 	
 	private WriterDelegate sourceWriter = new WriterDelegate();
 	private ManchesterOWLSyntaxObjectRenderer sourceRenderer;
@@ -45,7 +49,9 @@ public class RenderingService {
 	private ManchesterOWLSyntaxObjectRenderer targetRenderer;
 	
 	private Map<String, OWLEntity> targetNameToEntityMap;
-	
+
+
+	//returns a new RenderingService
 	public static RenderingService get(Engine e) {
 		RenderingService renderer = e.getService(RenderingService.class);
 		if (renderer == null) {
@@ -133,7 +139,8 @@ public class RenderingService {
 		}
 		return render(o, DifferencePosition.SOURCE);
 	}
-	
+
+
 	public String renderTargetObject(OWLObject o) {
 		if (engine.getOwlDiffMap() == null) {
 			return "";
@@ -184,7 +191,8 @@ public class RenderingService {
 			}
 		};
 	}
-	
+
+	// creates a new IRIShortFormProvider to the given ShortFormProvider
 	private IRIShortFormProvider getIRIShortFormProvider(final ShortFormProvider shortFormProvider) {
 		return new IRIShortFormProvider() {
 			
@@ -194,7 +202,8 @@ public class RenderingService {
 			}
 		};
 	}
-	
+
+
 	public OWLEntity getTargetEntityByRendering(String rendering) {
 		if (targetNameToEntityMap == null) {
 			targetNameToEntityMap = new HashMap<String, OWLEntity>();
