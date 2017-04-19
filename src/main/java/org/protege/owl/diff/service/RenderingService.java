@@ -36,7 +36,11 @@ public class RenderingService {
 	private OWLDataFactory factory;
 	
 	private Engine engine;
-	
+
+
+	//ManchesterOWLSyntaxObjectRenderer is deprecated, but i didn't find any other class to replace with it
+    //I also didn't found the source of it or a good documentation to see what it does and write an other class
+    //so i think it works now and we should not make big changes on it.
 	
 	private WriterDelegate sourceWriter = new WriterDelegate();
 	private ManchesterOWLSyntaxObjectRenderer sourceRenderer;
@@ -45,7 +49,9 @@ public class RenderingService {
 	private ManchesterOWLSyntaxObjectRenderer targetRenderer;
 	
 	private Map<String, OWLEntity> targetNameToEntityMap;
-	
+
+
+	//returns a new RenderingService
 	public static RenderingService get(Engine e) {
 		RenderingService renderer = e.getService(RenderingService.class);
 		if (renderer == null) {
@@ -77,20 +83,27 @@ public class RenderingService {
 	 * Pardon me - I am stealing this code from Protege 4.  Dependencies make it unclear how to share it.
 	 */
 	public static List<String> getDefaultLanguages() {
-		List<String> langs = new ArrayList<>();
+
+		List<String> languages = new ArrayList<String>();
 		Locale locale = Locale.getDefault();
-		if (locale != null && locale.getLanguage() != null && !"".equals(locale.getLanguage())) {
-			langs.add(locale.getLanguage());
-			if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
-				langs.add(locale.getLanguage() + "-" + locale.getCountry());
+		//this if validates the language os the local of the JVM instance
+		if (locale != null && locale.getLanguage() != null && !locale.getLanguage().equals("")) {
+			languages.add(locale.getLanguage());
+			//this if validates the country of the local of the JVM instance
+			if (locale.getCountry() != null && !locale.getCountry().equals("")) {
+				languages.add(locale.getLanguage() + "-" + locale.getCountry());
+
 			}
 		}
-		langs.add(NO_LANGUAGE_SET);
+		//this add an empty string
+		languages.add(NO_LANGUAGE_SET);
+
+		//languages must conatain english
 		String en = Locale.ENGLISH.getLanguage();
-		if (!langs.contains(en)) {
-			langs.add(en);
+		if (!languages.contains(en)) {
+			languages.add(en);
 		}
-		return langs;
+		return languages;
 	}
 
 	private RenderingService(Engine e) {
@@ -128,7 +141,8 @@ public class RenderingService {
 		}
 		return render(o, DifferencePosition.SOURCE);
 	}
-	
+
+
 	public String renderTargetObject(OWLObject o) {
 		if (engine.getOwlDiffMap() == null) {
 			return "";
@@ -174,7 +188,8 @@ public class RenderingService {
 			}
 		};
 	}
-	
+
+	// creates a new IRIShortFormProvider to the given ShortFormProvider
 	private IRIShortFormProvider getIRIShortFormProvider(final ShortFormProvider shortFormProvider) {
 		return new IRIShortFormProvider() {
 			
@@ -184,7 +199,8 @@ public class RenderingService {
 			}
 		};
 	}
-	
+
+
 	public OWLEntity getTargetEntityByRendering(String rendering) {
 		if (targetNameToEntityMap == null) {
 			targetNameToEntityMap = new HashMap<>();
@@ -207,7 +223,9 @@ public class RenderingService {
 		}
 		return targetNameToEntityMap.get(rendering);
 	}
-	
+
+	//this is a class which contains a StringWriter, and cals it's methods
+    //Is it really neccessary to have this class insted of using a simple StringWriter?
 	private static class WriterDelegate extends Writer {
 
         private StringWriter delegate;
