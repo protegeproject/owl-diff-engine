@@ -173,6 +173,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     	}
     }
     
+    @Override
     public int compareTo(EntityBasedDiff o) {
         int ret;
 
