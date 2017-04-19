@@ -29,7 +29,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     private OWLEntity sourceEntity;
     private OWLEntity targetEntity;
-    private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<MatchedAxiom>();
+    private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<>();
     private String diffTypeDescription;
     
     public OWLEntity getSourceEntity() {
@@ -71,9 +71,9 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     private boolean isPureRename() {
     	boolean pureRenameIdentified = 
-    		(axiomMatches.size() == 1 
+    		axiomMatches.size() == 1 
     			&& axiomMatches.iterator().next().getDescription()
-    					.equals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION));
+    					.equals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION);
     	return !sourceEntity.equals(targetEntity) && (axiomMatches.isEmpty() || pureRenameIdentified);
     }
     
