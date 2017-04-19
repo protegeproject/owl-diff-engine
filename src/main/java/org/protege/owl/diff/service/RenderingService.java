@@ -217,7 +217,9 @@ public class RenderingService {
 		}
 		return targetNameToEntityMap.get(rendering);
 	}
-	
+
+	//this is a class which contains a StringWriter, and cals it's methods
+    //Is it really neccessary to have this class insted of using a simple StringWriter?
 	private static class WriterDelegate extends Writer {
 
         private StringWriter delegate;
