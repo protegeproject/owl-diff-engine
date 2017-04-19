@@ -29,7 +29,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     private OWLEntity sourceEntity;
     private OWLEntity targetEntity;
-    private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<MatchedAxiom>();
+    private SortedSet<MatchedAxiom> axiomMatches = new TreeSet<>();
     private String diffTypeDescription;
     
     public OWLEntity getSourceEntity() {
@@ -71,9 +71,9 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     
     private boolean isPureRename() {
     	boolean pureRenameIdentified = 
-    		(axiomMatches.size() == 1 
+    		axiomMatches.size() == 1 
     			&& axiomMatches.iterator().next().getDescription()
-    					.equals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION));
+    					.equals(IdentifyRenameOperation.RENAMED_CHANGE_DESCRIPTION);
     	return !sourceEntity.equals(targetEntity) && (axiomMatches.isEmpty() || pureRenameIdentified);
     }
     
@@ -98,7 +98,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     }
     
     public String getShortDescription() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getDiffTypeDescription());
         buffer.append(" ");
         switch (getDiffType()) {
@@ -132,7 +132,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     }
     
     public String getDescription() {
-        StringBuffer buffer = new StringBuffer(getShortDescription());
+        StringBuilder buffer = new StringBuilder(getShortDescription());
         buffer.append("\n------------------------------------------------------\n");
         for (MatchedAxiom match : axiomMatches) {
             buffer.append(match.getDescription().getDescription());
@@ -163,7 +163,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     	if (o instanceof OWLAnnotationAssertionAxiom && ((OWLAnnotationAssertionAxiom) o).getSubject() instanceof IRI) {
     	    SimpleIRIShortFormProvider iriShortFormProvider = new SimpleIRIShortFormProvider();
     		OWLAnnotationAssertionAxiom axiom = (OWLAnnotationAssertionAxiom) o;
-    		StringBuffer buffer = new StringBuffer(iriShortFormProvider.getShortForm((IRI) axiom.getSubject()));
+    		StringBuilder buffer = new StringBuilder(iriShortFormProvider.getShortForm((IRI) axiom.getSubject()));
     		buffer.append(" ");
     		buffer.append(new ManchesterOWLSyntaxOWLObjectRendererImpl().render(axiom.getAnnotation()));
     		return buffer.toString();
@@ -173,6 +173,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     	}
     }
     
+    @Override
     public int compareTo(EntityBasedDiff o) {
         int ret;
 
