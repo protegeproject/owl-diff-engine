@@ -8,6 +8,8 @@ notifications:
   email:
     recipients:
       - rglszl@gmail.com
+      - reischl.barnabas@gmail.com
+      
     on_success: never
     on_failure: always
 
