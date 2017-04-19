@@ -98,7 +98,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     }
     
     public String getShortDescription() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(getDiffTypeDescription());
         buffer.append(" ");
         switch (getDiffType()) {
@@ -132,7 +132,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     }
     
     public String getDescription() {
-        StringBuffer buffer = new StringBuffer(getShortDescription());
+        StringBuilder buffer = new StringBuilder(getShortDescription());
         buffer.append("\n------------------------------------------------------\n");
         for (MatchedAxiom match : axiomMatches) {
             buffer.append(match.getDescription().getDescription());
@@ -163,7 +163,7 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
     	if (o instanceof OWLAnnotationAssertionAxiom && ((OWLAnnotationAssertionAxiom) o).getSubject() instanceof IRI) {
     	    SimpleIRIShortFormProvider iriShortFormProvider = new SimpleIRIShortFormProvider();
     		OWLAnnotationAssertionAxiom axiom = (OWLAnnotationAssertionAxiom) o;
-    		StringBuffer buffer = new StringBuffer(iriShortFormProvider.getShortForm((IRI) axiom.getSubject()));
+    		StringBuilder buffer = new StringBuilder(iriShortFormProvider.getShortForm((IRI) axiom.getSubject()));
     		buffer.append(" ");
     		buffer.append(new ManchesterOWLSyntaxOWLObjectRendererImpl().render(axiom.getAnnotation()));
     		return buffer.toString();
