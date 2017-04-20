@@ -103,13 +103,11 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         buffer.append(" ");
         switch (getDiffType()) {
         case CREATED:
+        case EQUIVALENT:
             buffer.append(renderObject(targetEntity));
             break;
         case DELETED:
             buffer.append(renderObject(sourceEntity));
-            break;
-        case EQUIVALENT:
-            buffer.append(renderObject(targetEntity));
             break;
         case RENAMED:
             buffer.append(renderObject(sourceEntity));
@@ -180,16 +178,10 @@ public class EntityBasedDiff implements Comparable<EntityBasedDiff> {
         if (sourceEntity == null && o.sourceEntity == null && targetEntity == null && o.targetEntity == null) {
         	return 0;
         }
-        if (sourceEntity != null && o.sourceEntity == null) {
+        if ((sourceEntity != null && o.sourceEntity == null) || (targetEntity != null && o.targetEntity == null)) {
             return +1;
         }
-        else if (sourceEntity == null && o.sourceEntity != null) {
-            return -1;
-        }
-        else if (targetEntity != null && o.targetEntity == null) {
-            return +1;
-        }
-        else if (targetEntity == null && o.targetEntity != null) {
+        else if ((sourceEntity == null && o.sourceEntity != null) || (targetEntity == null && o.targetEntity != null)) {
             return -1;
         }
         else if (sourceEntity != null && (ret = sourceEntity.compareTo(o.sourceEntity)) != 0) {
