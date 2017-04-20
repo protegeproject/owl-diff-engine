@@ -30,7 +30,7 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxObjectRenderer;
 
-public class RenderingService {
+public class  RenderingService {
     public static final String NO_LANGUAGE_SET = "";
     
 	private OWLDataFactory factory;
@@ -42,12 +42,12 @@ public class RenderingService {
     //I also didn't found the source of it or a good documentation to see what it does and write an other class
     //so i think it works now and we should not make big changes on it.
 	
-	private WriterDelegate sourceWriter = new WriterDelegate();
+	private StringWriter sourceWriter = new StringWriter();
 	private ManchesterOWLSyntaxObjectRenderer sourceRenderer;
 	
-	private WriterDelegate targetWriter = new WriterDelegate();
+	private StringWriter targetWriter = new StringWriter();
 	private ManchesterOWLSyntaxObjectRenderer targetRenderer;
-	
+
 	private Map<String, OWLEntity> targetNameToEntityMap;
 
 
@@ -171,14 +171,14 @@ public class RenderingService {
 	}
 
 	private String render(OWLObject o, DifferencePosition position) {
-		WriterDelegate writer = (position == DifferencePosition.TARGET) ? targetWriter : sourceWriter;
-		writer.reset();
+		StringWriter writer = (position == DifferencePosition.TARGET) ? targetWriter : sourceWriter;
+		resetWriter(writer);
 		ManchesterOWLSyntaxObjectRenderer renderer = (position == DifferencePosition.TARGET) ? targetRenderer : sourceRenderer;
 		o.accept(renderer);
 		return writer.toString();
 	}
 
-	private ManchesterOWLSyntaxObjectRenderer getRenderer(WriterDelegate writer, 
+	private ManchesterOWLSyntaxObjectRenderer getRenderer(StringWriter writer,
 													      final ShortFormProvider shortFormProvider, 
 													      final IRIShortFormProvider iriShortFormProvider) {
 		return new ManchesterOWLSyntaxObjectRenderer(writer, shortFormProvider) {
@@ -224,39 +224,8 @@ public class RenderingService {
 		return targetNameToEntityMap.get(rendering);
 	}
 
-	//this is a class which contains a StringWriter, and cals it's methods
-    //Is it really neccessary to have this class insted of using a simple StringWriter?
-	private static class WriterDelegate extends Writer {
-
-        private StringWriter delegate;
-        
-		private void reset() {
-            delegate = new StringWriter();
-        }
-
-
-        @Override
-		public String toString() {
-            return delegate.getBuffer().toString();
-        }
-
-
-        @Override
-		public void close() throws IOException {
-            delegate.close();
-        }
-
-
-        @Override
-		public void flush() throws IOException {
-            delegate.flush();
-        }
-
-
-        @Override
-		public void write(char cbuf[], int off, int len) throws IOException {
-            delegate.write(cbuf, off, len);
-        }
-    }
+	private void resetWriter(StringWriter w){
+		w = new StringWriter();
+	}
 
 }
