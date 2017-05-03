@@ -122,7 +122,7 @@ public class Engine {
     	services.clear();
 		diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
 		for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-			algorithm.initialise(this);
+			algorithm.initialize(this);
 		}
 	}
     

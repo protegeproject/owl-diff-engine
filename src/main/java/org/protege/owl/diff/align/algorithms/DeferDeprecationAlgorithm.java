@@ -67,7 +67,7 @@ public class DeferDeprecationAlgorithm implements AlignmentAlgorithm {
 	}
 
 	
-	public void initialise(Engine e) {
+	public void initialize(Engine e) {
 		dds = DeprecationDeferralService.get(e);
 		diffMap = e.getOwlDiffMap();
 		progress = false;

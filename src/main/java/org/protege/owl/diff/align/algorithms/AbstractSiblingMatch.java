@@ -71,7 +71,7 @@ public abstract class AbstractSiblingMatch implements AlignmentAlgorithm {
 	protected abstract void checkSiblings(OWLClass sourceParent, Set<OWLClass> unmatchedSourceSiblings, 
 			                              OWLClass targetParent, Set<OWLClass> unmatchedTargetSiblings);
 	
-	public void initialise(Engine e) {
+	public void initialize(Engine e) {
 		this.e = e;
 		diffs = e.getOwlDiffMap();
 	}

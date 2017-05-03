@@ -5,7 +5,7 @@ import org.protege.owl.diff.Engine;
 
 public interface AlignmentAlgorithm extends Prioritized {
     
-    void initialise(Engine e);
+    void initialize(Engine e);
     
     void run();
     

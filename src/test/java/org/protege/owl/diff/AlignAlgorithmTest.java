@@ -111,7 +111,7 @@ public class AlignAlgorithmTest extends TestCase {
         Collections.sort(algorithms, new PrioritizedComparator());
         for (int i =0 ;i < 2; i++) {
         	for (AlignmentAlgorithm algorithm : algorithms) {
-        		algorithm.initialise(e);
+        		algorithm.initialize(e);
         		algorithm.run();
         	}
         }

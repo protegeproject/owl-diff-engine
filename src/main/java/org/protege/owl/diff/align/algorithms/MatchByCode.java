@@ -40,7 +40,7 @@ public class MatchByCode implements AlignmentAlgorithm {
     	return AlignmentAggressiveness.IGNORE_REFACTOR;
     }
 
-    public void initialise(Engine e) {
+    public void initialize(Engine e) {
         this.diffMap = e.getOwlDiffMap();
         codeMapper = CodeToEntityMapper.get(e);
         if (codeMapper.codeNotPresent()) {
