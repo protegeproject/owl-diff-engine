@@ -10,12 +10,14 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
+import org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarBrowserText;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
@@ -205,5 +207,17 @@ public class AlignAlgorithmTest extends TestCase {
         for (OWLEntity entity : diffs.getUnmatchedSourceEntities()) {
         	assertTrue(entity.getIRI().toString().endsWith("RefactoredNotMatcheable"));
         }
+    }
+    
+    public void testMatchSiblingsWithSimilarBrowserText() throws OWLOntologyCreationException{
+    	MatchSiblingsWithSimilarBrowserText match = new MatchSiblingsWithSimilarBrowserText();
+    	loadOntologies("MatchingIdFragments");
+    	Engine e = new Engine(ontology1, ontology2);
+    	match.initialize(e);
+    	String expected = "Match Siblings with approximately similar renderings";
+    	String actual = match.getAlgorithmName();
+    	AlignmentAggressiveness aggr = match.getAggressiveness();
+    	assertEquals(AlignmentAggressiveness.MODERATE, aggr);
+    	assertEquals(expected, actual);
     }
 }
