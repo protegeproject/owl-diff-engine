@@ -16,6 +16,7 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
+import org.protege.owl.diff.align.algorithms.MatchByRendering;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
 import org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarBrowserText;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
@@ -30,6 +31,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLObject;
 
 
 public class AlignAlgorithmTest extends TestCase {
@@ -220,4 +222,35 @@ public class AlignAlgorithmTest extends TestCase {
     	assertEquals(AlignmentAggressiveness.MODERATE, aggr);
     	assertEquals(expected, actual);
     }
+    
+    public void testSuperSubclassPinch()throws OWLOntologyCreationException{
+    	SuperSubClassPinch pinch = new SuperSubClassPinch();
+    	loadOntologies("MatchingIdFragments");
+    	Engine e = new Engine(ontology1, ontology2);
+    	pinch.initialize(e);
+    	AlignmentAggressiveness aggr = pinch.getAggressiveness();
+    	assertEquals(AlignmentAggressiveness.MODERATE, aggr);
+    }
+    
+    public void testMatchingByRendering() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("MatchingByRendering");
+        Engine e = new Engine(ontology1, ontology2);
+        e.setAlignmentAlgorithms( new MatchByRendering());
+        for (AlignmentAlgorithm algorithm : e.getAlignmentAlgorithms()) {
+        	assertFalse(algorithm.isCustom());
+        	int expectedPrior = PrioritizedComparator.MAX_PRIORITY - 1;
+        	assertEquals(expectedPrior,algorithm.getPriority());
+        	assertEquals(AlignmentAggressiveness.MODERATE,algorithm.getAggressiveness());
+        	String expectedName = "Match By Rendering";
+        	assertEquals(expectedName,algorithm.getAlgorithmName());       	
+        	
+        }
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
+        
+    }
+    
+    
 }
