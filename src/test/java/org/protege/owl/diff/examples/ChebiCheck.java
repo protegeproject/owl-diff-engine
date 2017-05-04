@@ -61,8 +61,13 @@ public class ChebiCheck {
 	public static void checkAllOntologies() throws OWLOntologyCreationException, IOException, InstantiationException, IllegalAccessException {
 		File root = new File(ROOT_DIR);
 		List<File> files = new ArrayList<File>();
-		for (File f : root.listFiles()) {
-			files.add(f);
+		if(root.listFiles() != null) {
+			File[] filePaths = root.listFiles();
+			if (filePaths != null) {
+				for (File f : filePaths) {
+					files.add(f);
+				}
+			}
 		}
 		Collections.sort(files);
 		for (int i = 0; i < files.size() - 1; i++) {

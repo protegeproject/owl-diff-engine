@@ -25,8 +25,8 @@ import org.semanticweb.owlapi.model.OWLObject;
 public class MatchLoneSiblings extends AbstractSiblingMatch {
 
 	@Override
-	public void initialise(Engine e) {
-		super.initialise(e);
+	public void initialize(Engine e) {
+		super.initialize(e);
 	}
 	
 	protected void checkSiblings(OWLClass sourceParent, Set<OWLClass> unmatchedSourceSiblings, 

@@ -30,12 +30,12 @@ public class Engine {
     private Map<String, String> parameters;
     
     private OwlDiffMap diffMap;
-    private List<AlignmentAlgorithm> diffAlgorithms = new ArrayList<AlignmentAlgorithm>();
+    private List<AlignmentAlgorithm> diffAlgorithms = new ArrayList<>();
 
     private Changes changes;
-    private List<PresentationAlgorithm> changeAlgorithms = new ArrayList<PresentationAlgorithm>();
+    private List<PresentationAlgorithm> changeAlgorithms = new ArrayList<>();
     
-    private Collection<Object> services = new ArrayList<Object>();
+    private Collection<Object> services = new ArrayList<>();
 
     
     public Engine(OWLOntology ontology1, 
@@ -43,7 +43,7 @@ public class Engine {
     	this.factory = ontology2.getOWLOntologyManager().getOWLDataFactory();
     	this.ontology1 = ontology1;
     	this.ontology2 = ontology2;
-        this.parameters = new HashMap<String, String>();
+        this.parameters = new HashMap<>();
     }
     
     public OWLDataFactory getOWLDataFactory() {
@@ -122,7 +122,7 @@ public class Engine {
     	services.clear();
 		diffMap = new OwlDiffMapImpl(factory, ontology1, ontology2);
 		for (AlignmentAlgorithm algorithm : diffAlgorithms) {
-			algorithm.initialise(this);
+			algorithm.initialize(this);
 		}
 	}
     
@@ -141,7 +141,7 @@ public class Engine {
                 try {
                     da.run();
                  }
-                catch (Error | Exception e) {
+                catch (Exception e) {
                     logger.warn("Diff Algorithm " + da.getAlgorithmName() + "failed (" + e + ").  Continuing...");
                 }
 				progress = progress ||
@@ -158,7 +158,7 @@ public class Engine {
 	        try {
 	            algorithm.reset();
 	        }
-	        catch (Error | Exception t) {
+	        catch (Exception t) {
 	            logger.warn("Diff Algorithm " + algorithm.getAlgorithmName() + " wouldn't reset (" + t + ")");
 	        }
 		}

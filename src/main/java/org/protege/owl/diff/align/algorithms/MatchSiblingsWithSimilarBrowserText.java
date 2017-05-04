@@ -22,8 +22,8 @@ public class MatchSiblingsWithSimilarBrowserText extends AbstractApproximateSibl
 		super();
 	}
 
-	public void initialise(Engine e) {
-		super.initialise(e);
+	public void initialize(Engine e) {
+		super.initialize(e);
 		renderer = RenderingService.get(e);
 		explanation = new Explain(e);
 	}

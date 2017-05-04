@@ -80,7 +80,7 @@ public class SuperSubClassPinch implements AlignmentAlgorithm {
     	return AlignmentAggressiveness.MODERATE;
     }
 
-    public void initialise(Engine e) {
+    public void initialize(Engine e) {
         this.diffMap = e.getOwlDiffMap();
         this.renderer = RenderingService.get(e);
         requiredSubclasses = 1;

@@ -38,7 +38,7 @@ public class MatchById implements AlignmentAlgorithm {
     	return AlignmentAggressiveness.IGNORE_REFACTOR;
     }
 
-    public void initialise(Engine e) {
+    public void initialize(Engine e) {
         this.diffMap = e.getOwlDiffMap();
         dds = DeprecationDeferralService.get(e);
     }
