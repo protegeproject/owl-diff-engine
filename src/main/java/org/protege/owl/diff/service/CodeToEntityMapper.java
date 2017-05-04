@@ -47,10 +47,10 @@ public class CodeToEntityMapper {
         IRI codeIri = IRI.create(codeName);
         codeProperty = diffMap.getOWLDataFactory().getOWLAnnotationProperty(codeIri);
         if (!diffMap.getSourceOntology().containsAnnotationPropertyInSignature(codeIri)) {
-        	logger.warn("Source ontology does not have selected code annotation " + codeName);
+        	logger.warn("Source ontology does not have selected code annotation %s", codeName);
         }
         else if (!diffMap.getTargetOntology().containsAnnotationPropertyInSignature(codeIri)) {
-        	logger.warn("Target ontology does not have selected code annotation " + codeName);
+        	logger.warn("Target ontology does not have selected code annotation %s", codeName);
         }
 
 	}

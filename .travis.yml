@@ -1,14 +1,14 @@
 language: java
-
+install: mvn install -Dgpg.skip=true
 jdk:
-  - oraclejdk7
-  - openjdk7
+  - oraclejdk8
 
 notifications:
   email:
     recipients:
-      - vendetti@stanford.edu
-      - tredmond@stanford.edu
+      - rglszl@gmail.com
+      - reischl.barnabas@gmail.com
+      
     on_success: never
     on_failure: always
 

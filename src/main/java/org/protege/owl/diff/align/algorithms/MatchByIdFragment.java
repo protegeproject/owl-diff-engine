@@ -25,7 +25,7 @@ public class MatchByIdFragment implements AlignmentAlgorithm {
 	private boolean alreadyRun = false;
 	
 
-	public void initialise(Engine e) {
+	public void initialize(Engine e) {
 		shortFormProvider = new SimpleShortFormProvider();
 		diffs = e.getOwlDiffMap();
 	}

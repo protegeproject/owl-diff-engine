@@ -10,12 +10,15 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
+import org.protege.owl.diff.align.algorithms.MatchByRendering;
 import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
+import org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarBrowserText;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.align.util.PrioritizedComparator;
@@ -28,6 +31,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLObject;
 
 
 public class AlignAlgorithmTest extends TestCase {
@@ -111,7 +115,7 @@ public class AlignAlgorithmTest extends TestCase {
         Collections.sort(algorithms, new PrioritizedComparator());
         for (int i =0 ;i < 2; i++) {
         	for (AlignmentAlgorithm algorithm : algorithms) {
-        		algorithm.initialise(e);
+        		algorithm.initialize(e);
         		algorithm.run();
         	}
         }
@@ -206,4 +210,47 @@ public class AlignAlgorithmTest extends TestCase {
         	assertTrue(entity.getIRI().toString().endsWith("RefactoredNotMatcheable"));
         }
     }
+    
+    public void testMatchSiblingsWithSimilarBrowserText() throws OWLOntologyCreationException{
+    	MatchSiblingsWithSimilarBrowserText match = new MatchSiblingsWithSimilarBrowserText();
+    	loadOntologies("MatchingIdFragments");
+    	Engine e = new Engine(ontology1, ontology2);
+    	match.initialize(e);
+    	String expected = "Match Siblings with approximately similar renderings";
+    	String actual = match.getAlgorithmName();
+    	AlignmentAggressiveness aggr = match.getAggressiveness();
+    	assertEquals(AlignmentAggressiveness.MODERATE, aggr);
+    	assertEquals(expected, actual);
+    }
+    
+    public void testSuperSubclassPinch()throws OWLOntologyCreationException{
+    	SuperSubClassPinch pinch = new SuperSubClassPinch();
+    	loadOntologies("MatchingIdFragments");
+    	Engine e = new Engine(ontology1, ontology2);
+    	pinch.initialize(e);
+    	AlignmentAggressiveness aggr = pinch.getAggressiveness();
+    	assertEquals(AlignmentAggressiveness.MODERATE, aggr);
+    }
+    
+    public void testMatchingByRendering() throws OWLOntologyCreationException {
+        JunitUtilities.printDivider();
+        loadOntologies("MatchingByRendering");
+        Engine e = new Engine(ontology1, ontology2);
+        e.setAlignmentAlgorithms( new MatchByRendering());
+        for (AlignmentAlgorithm algorithm : e.getAlignmentAlgorithms()) {
+        	assertFalse(algorithm.isCustom());
+        	int expectedPrior = PrioritizedComparator.MAX_PRIORITY - 1;
+        	assertEquals(expectedPrior,algorithm.getPriority());
+        	assertEquals(AlignmentAggressiveness.MODERATE,algorithm.getAggressiveness());
+        	String expectedName = "Match By Rendering";
+        	assertEquals(expectedName,algorithm.getAlgorithmName());       	
+        	
+        }
+        e.phase1();
+        OwlDiffMap diffs = e.getOwlDiffMap();
+        assertTrue(diffs.getUnmatchedSourceEntities().isEmpty());
+        
+    }
+    
+    
 }

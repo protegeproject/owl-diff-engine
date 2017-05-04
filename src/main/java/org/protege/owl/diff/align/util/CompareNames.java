@@ -38,7 +38,7 @@ public class CompareNames {
 	}
 
 	private static String removeCharacter(String s, char c) {
-		String result = new String();
+		String result = "";
 		int currentIndex = 0;
 		int searchIndex;
 

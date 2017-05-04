@@ -50,7 +50,7 @@ public class MatchStandardVocabulary implements AlignmentAlgorithm {
     	return AlignmentAggressiveness.IGNORE_REFACTOR;
     }
 
-    public void initialise(Engine e) {
+    public void initialize(Engine e) {
         diffs = e.getOwlDiffMap();
     }
 
