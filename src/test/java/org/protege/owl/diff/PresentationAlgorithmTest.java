@@ -431,7 +431,7 @@ public class PresentationAlgorithmTest extends TestCase {
             identifySplitConcepts.initialise(e);
             fail("NullPointerException expected");
         } catch (NullPointerException ex) {
-
+            //We get a NullPointerException, because the engine.phase1() is not called. Is it OK?
         } catch (Exception ex) {
             fail("NullPointerException expected");
 
