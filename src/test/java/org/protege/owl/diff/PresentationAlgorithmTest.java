@@ -453,6 +453,8 @@ public class PresentationAlgorithmTest extends TestCase {
             }
             prior = nextPrior;
         }
+
+        //The algorithm with the biggest priority value is the most important, and min is 1, max is 10, so it works perfectly.
     }
 
     public void testTryToAddOnePresentAlgorithmMuchTimeToAnEngine() throws OWLOntologyCreationException {
@@ -485,10 +487,7 @@ public class PresentationAlgorithmTest extends TestCase {
             }
             prior = nextPrior;
         }
-        e.phase1();
-//        e.phase2();
-        OwlDiffMap diff = e.getOwlDiffMap();
-        assertNotNull(diff);
+        //The algorithm with the biggest priority value is the most important, and min is 1, max is 10, so it works perfectly.
     }
 
     public void testEngineGetOwlDiffMap() throws OWLOntologyCreationException {
