@@ -19,10 +19,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 public class Util {
 	public static final Logger logger = LoggerFactory.getLogger(Util.class.getName());
-	
-	private Util() {
-	}
-	
+		
 	public static String getStats(Engine e) {
 		int created = 0;
 		int deleted = 0;
