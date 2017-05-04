@@ -7,14 +7,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.junit.*;
-import org.protege.owl.diff.align.algorithms.MatchByCode;
-import org.protege.owl.diff.align.algorithms.MatchById;
-import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
-import org.protege.owl.diff.present.Changes;
-import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.OwlDiffMap;
+import org.protege.owl.diff.align.algorithms.*;
+import org.protege.owl.diff.present.*;
 import org.protege.owl.diff.present.EntityBasedDiff.DiffType;
-import org.protege.owl.diff.present.MatchDescription;
-import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.algorithms.*;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
@@ -425,11 +422,7 @@ public class PresentationAlgorithmTest extends TestCase {
         }
     }
 
-    public void testIdentifySplitConceptsConstructing() {
-        IdentifySplitConcepts identifySplitConcepts = new IdentifySplitConcepts();
-    }
 
-    @Test(expected = NullPointerException.class)
     public void testInitialiseIdentifySplitConcepts_NotInitalisedEngine() throws OWLOntologyCreationException {
         loadOntologies("AnnotationChanged");
         Engine e = new Engine(ontology1, ontology2);
@@ -446,20 +439,76 @@ public class PresentationAlgorithmTest extends TestCase {
 
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testInitialiseIdentifySplitConcepts() throws OWLOntologyCreationException {
+    public void testEnginePresentationAlgorithmsSort() throws OWLOntologyCreationException {
         loadOntologies("AnnotationChanged");
         Engine e = new Engine(ontology1, ontology2);
-        e.setAlignmentAlgorithms(new MatchById());
-        e.setPresentationAlgorithms(new IdentifySplitConcepts());
+
+        e.setPresentationAlgorithms(new IdentifyOrphanedAnnotations(), new IdentifyOrphanedAnnotations(), new IdentifyAxiomAnnotationChanged(), new IdentifySplitConcepts(), new IdentifyAxiomAnnotationChanged(), new IdentifyChangedSuperclass(), new IdentifyOrphanedAnnotations());
+        int prior = 10;
+        int nextPrior = 10;
+        for (PresentationAlgorithm algorithm : e.getPresentationAlgorithms()) {
+            nextPrior = algorithm.getPriority();
+            if (nextPrior > prior) {
+                fail("bad sort");
+            }
+            prior = nextPrior;
+        }
+    }
+
+    public void testTryToAddOnePresentAlgorithmMuchTimeToAnEngine() throws OWLOntologyCreationException {
+        loadOntologies("AnnotationChanged");
+        Engine e = new Engine(ontology1, ontology2);
+        e.setPresentationAlgorithms(new IdentifyAxiomAnnotationChanged(), new IdentifyAxiomAnnotationChanged(), new IdentifyAxiomAnnotationChanged());
+        assertEquals(3, e.getPresentationAlgorithms().size());
+        //You can add one algorithm more time
+    }
+
+    public void testTryToAddOneAlignAlgorithmMuchTimeToAnEngine() throws OWLOntologyCreationException {
+        loadOntologies("AnnotationChanged");
+        Engine e = new Engine(ontology1, ontology2);
+        e.setAlignmentAlgorithms(new DeferDeprecationAlgorithm(), new DeferDeprecationAlgorithm(), new DeferDeprecationAlgorithm());
+        assertEquals(3, e.getAlignmentAlgorithms().size());
+        //You can add one algorithm more time
+    }
+
+    public void testEngineAlignmentAlgorithmsSort() throws OWLOntologyCreationException {
+        loadOntologies("AnnotationChanged");
+        Engine e = new Engine(ontology1, ontology2);
+
+        e.setAlignmentAlgorithms(new DeferDeprecationAlgorithm(), new MatchById(), new MatchById(), new MatchByCode(), new SuperSubClassPinch(), new MatchStandardVocabulary());
+        int prior = 10;
+        int nextPrior = 10;
+        for (AlignmentAlgorithm algorithm : e.getAlignmentAlgorithms()) {
+            nextPrior = algorithm.getPriority();
+            if (nextPrior > prior) {
+                fail("bad sort");
+            }
+            prior = nextPrior;
+        }
         e.phase1();
-        e.phase2();
+//        e.phase2();
+        OwlDiffMap diff = e.getOwlDiffMap();
+        assertNotNull(diff);
+    }
 
-        IdentifySplitConcepts identifySplitConcepts = new IdentifySplitConcepts();
-        identifySplitConcepts.initialise(e);
+    public void testEngineGetOwlDiffMap() throws OWLOntologyCreationException {
+        loadOntologies("AnnotationChanged");
+        Engine e = new Engine(ontology1, ontology2);
 
+        OwlDiffMap diff = e.getOwlDiffMap();
+        assertNull(diff);
+
+        //you need to call magic method Engine.phase1() to get engine work. Why isn't it called in ctor?
 
     }
 
+    public void testEnginePhaseMethods() throws OWLOntologyCreationException {
+        loadOntologies("AnnotationChanged");
+        Engine e = new Engine(ontology1, ontology2);
+        // e.phase2();
+        e.phase1();
 
+        //if you call phase2() before phase1(), you will get a NullPointerException
+        assertNotNull(e);
+    }
 }
