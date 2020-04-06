@@ -65,7 +65,7 @@ public class RenderingService {
 	}
 	
 	public static ShortFormProvider getShortFormProvider(OWLOntology ontology, List<OWLAnnotationProperty> annotationProperties, List<String> langs) {
-		Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<OWLAnnotationProperty, List<String>>();
+		Map<OWLAnnotationProperty, List<String>> preferredLanguageMap = new HashMap<>();
 		for (OWLAnnotationProperty annotationProperty : annotationProperties) {
 			preferredLanguageMap.put(annotationProperty, langs);
 		}
@@ -77,11 +77,11 @@ public class RenderingService {
 	 * Pardon me - I am stealing this code from Protege 4.  Dependencies make it unclear how to share it.
 	 */
 	public static List<String> getDefaultLanguages() {
-		List<String> langs = new ArrayList<String>();
+		List<String> langs = new ArrayList<>();
 		Locale locale = Locale.getDefault();
-		if (locale != null && locale.getLanguage() != null && !locale.getLanguage().equals("")) {
+		if (locale != null && locale.getLanguage() != null && !"".equals(locale.getLanguage())) {
 			langs.add(locale.getLanguage());
-			if (locale.getCountry() != null && !locale.getCountry().equals("")) {
+			if (locale.getCountry() != null && !"".equals(locale.getCountry())) {
 				langs.add(locale.getLanguage() + "-" + locale.getCountry());
 			}
 		}
@@ -140,21 +140,16 @@ public class RenderingService {
 	}
 	
 	public String renderDiff(EntityBasedDiff diff) {
-		StringBuffer diffDescription = new StringBuffer();
+		StringBuilder diffDescription = new StringBuilder();
 		diffDescription.append(diff.getDiffTypeDescription());
 		diffDescription.append(": ");
 		switch (diff.getDiffType()) {
 		case CREATED:
 			diffDescription.append(renderTargetObject(diff.getTargetEntity()));
 			break;
-		case DELETED:
-			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
-			break;
 		case EQUIVALENT:
 			break;
-		case MODIFIED:
-		case RENAMED:
-		case RENAMED_AND_MODIFIED:
+		default:
 			diffDescription.append(renderSourceObject(diff.getSourceEntity()));
 			break;
 		}
@@ -192,8 +187,8 @@ public class RenderingService {
 	
 	public OWLEntity getTargetEntityByRendering(String rendering) {
 		if (targetNameToEntityMap == null) {
-			targetNameToEntityMap = new HashMap<String, OWLEntity>();
-			Set<String> toRemove = new TreeSet<String>();
+			targetNameToEntityMap = new HashMap<>();
+			Set<String> toRemove = new TreeSet<>();
 			for (OWLEntity e : engine.getOwlDiffMap().getTargetOntology().getSignature()) {
 				String eRendering = renderTargetObject(e);
 				if (eRendering == null) {
@@ -216,11 +211,7 @@ public class RenderingService {
 	private static class WriterDelegate extends Writer {
 
         private StringWriter delegate;
-
-        public WriterDelegate() {
-		}
-
-
+        
 		private void reset() {
             delegate = new StringWriter();
         }
